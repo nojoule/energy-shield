@@ -1,0 +1,7 @@
+[gd_resource type="Curve" format=3 uid="uid://cv0k0umipiy7n"]
+
+[resource]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2

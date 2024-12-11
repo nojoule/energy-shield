@@ -1,0 +1,36 @@
+[gd_scene load_steps=7 format=3 uid="uid://bqo3es5yd4r70"]
+
+[ext_resource type="Shader" path="res://addons/nojoule-energy-shield/shield.gdshader" id="1_181ey"]
+[ext_resource type="Script" path="res://addons/nojoule-energy-shield/shield.gd" id="1_k7nhx"]
+[ext_resource type="Curve" uid="uid://cv0k0umipiy7n" path="res://addons/nojoule-energy-shield/impact_animation_curve.tres" id="2_utjra"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ll2q5"]
+render_priority = 0
+shader = ExtResource("1_181ey")
+shader_parameter/_shield_color = Color(0.26, 0.975, 1, 1)
+shader_parameter/_shield_color_brightness = 15.0
+shader_parameter/_shield_intensity = 3.0
+shader_parameter/_quantization = true
+shader_parameter/_hightlight_border = false
+shader_parameter/_highlight_border_intensity = 1.0
+shader_parameter/_highlight_border_percentage = 0.1
+shader_parameter/_highlight_wave = false
+shader_parameter/_highlight_wave_intensity = 0.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_wowso"]
+material = SubResource("ShaderMaterial_ll2q5")
+radial_segments = 256
+rings = 256
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1ncxy"]
+
+[node name="ShieldSphere" type="MeshInstance3D"]
+mesh = SubResource("SphereMesh_wowso")
+script = ExtResource("1_k7nhx")
+animation_curve = ExtResource("2_utjra")
+anim_time = 5.0
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_1ncxy")

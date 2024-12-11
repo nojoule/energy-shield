@@ -1,0 +1,26 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+  - id: check-yaml
+  - id: end-of-file-fixer
+  - id: trailing-whitespace
+- repo: https://github.com/Scony/godot-gdscript-toolkit
+  rev: 4.3.2
+  hooks:
+  - id: gdlint
+    name: gdlint
+    description: "gdlint - linter for GDScript"
+    entry: gdlint
+    language: python
+    language_version: python3
+    require_serial: true
+    types: [gdscript]
+  - id: gdformat
+    name: gdformat
+    description: "gdformat - formatter for GDScript"
+    entry: gdformat
+    language: python
+    language_version: python3
+    require_serial: true
+    types: [gdscript]
