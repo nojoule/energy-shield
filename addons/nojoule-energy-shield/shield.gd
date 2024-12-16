@@ -17,8 +17,8 @@ func _ready() -> void:
 
 
 func set_impact_origin(pos: Vector3):
-	set_instance_shader_parameter("_impact_origin", pos)
-	set_instance_shader_parameter("_impact_time", 0.0)
+	set_instance_shader_parameter("_origin_impact", pos)
+	set_instance_shader_parameter("_time_impact", 0.0)
 	animate = true
 	elapsed_time = 0.0
 
@@ -27,10 +27,10 @@ func _physics_process(delta: float) -> void:
 	if animate:
 		if elapsed_time < anim_time:
 			var normalized_time = elapsed_time / anim_time
-			set_instance_shader_parameter("_impact_time", animation_curve.sample(normalized_time))
+			set_instance_shader_parameter("_time_impact", animation_curve.sample(normalized_time))
 			elapsed_time += delta
 		else:
-			set_instance_shader_parameter("_impact_time", 0.0)
+			set_instance_shader_parameter("_time_impact", 0.0)
 			elapsed_time = 0.0
 			animate = false
 

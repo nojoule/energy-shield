@@ -1,21 +1,42 @@
-[gd_scene load_steps=7 format=3 uid="uid://bvqb5fugcfm5k"]
+[gd_scene load_steps=8 format=3 uid="uid://bvqb5fugcfm5k"]
 
 [ext_resource type="Shader" path="res://addons/nojoule-energy-shield/shield.gdshader" id="1_lcksv"]
 [ext_resource type="Script" path="res://addons/nojoule-energy-shield/shield.gd" id="1_sja5q"]
 [ext_resource type="Curve" uid="uid://cv0k0umipiy7n" path="res://addons/nojoule-energy-shield/impact_animation_curve.tres" id="2_6wogk"]
+[ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="2_lw1e0"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_m621f"]
 render_priority = 0
 shader = ExtResource("1_lcksv")
-shader_parameter/_shield_color = Color(0.26, 0.975, 1, 1)
-shader_parameter/_shield_color_brightness = 15.0
-shader_parameter/_shield_intensity = 3.0
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_show_normals = false
 shader_parameter/_quantization = true
-shader_parameter/_hightlight_border = true
-shader_parameter/_highlight_border_intensity = 3.0
-shader_parameter/_highlight_border_percentage = 0.2
-shader_parameter/_highlight_wave = false
-shader_parameter/_highlight_wave_intensity = 1.0
+shader_parameter/_steps_quantization = 5
+shader_parameter/noise_texture = ExtResource("2_lw1e0")
+shader_parameter/_origin_create = Vector3(0, 0, 0)
+shader_parameter/_time_create = 0.0
+shader_parameter/_speed_create = 1.0
+shader_parameter/_thickness_create = 0.05
+shader_parameter/_destroy = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/_active_static = false
+shader_parameter/_origin_static = Vector3(0, 0, 0)
+shader_parameter/_speed_static = 0.1
+shader_parameter/_frequency_static = 80.0
+shader_parameter/_amplitude_static = 0.002
+shader_parameter/_effect_radius_static = 1.2
+shader_parameter/_normal_amplitude_static = 0.002
+shader_parameter/_active_border = true
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_active_static_offset_hl = true
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7myad"]
 material = SubResource("ShaderMaterial_m621f")
@@ -27,6 +48,10 @@ subdivide_depth = 128
 size = Vector3(1, 0.05, 1)
 
 [node name="ShieldPlane" type="MeshInstance3D"]
+instance_shader_parameters/_amplitude_impact = 0.02
+instance_shader_parameters/_normal_amplitude_impact = 0.05
+instance_shader_parameters/_origin_impact = Vector3(0, 0.5, 0)
+instance_shader_parameters/_time_impact = 0.0
 mesh = SubResource("PlaneMesh_7myad")
 script = ExtResource("1_sja5q")
 animation_curve = ExtResource("2_6wogk")
