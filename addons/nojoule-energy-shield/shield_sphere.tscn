@@ -12,11 +12,6 @@ shader_parameter/_speed_noise = Vector2(0.02, 0.02)
 shader_parameter/_quantization = true
 shader_parameter/_steps_quantization = 5
 shader_parameter/noise_texture = ExtResource("2_g0rh4")
-shader_parameter/_origin_create = Vector3(0, 0.5, 0)
-shader_parameter/_time_create = 0.0
-shader_parameter/_speed_create = 1.0
-shader_parameter/_thickness_create = 0.05
-shader_parameter/_destroy = false
 shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
@@ -54,10 +49,16 @@ rings = 256
 [sub_resource type="SphereShape3D" id="SphereShape3D_1ncxy"]
 
 [node name="ShieldSphere" type="MeshInstance3D"]
-transform = Transform3D(0.83869, 0, -0.54461, 0, 1, 0, 0.54461, 0, 0.83869, 0, 0, 0)
+instance_shader_parameters/_destroy = false
+instance_shader_parameters/_relative_origin_create = true
+instance_shader_parameters/_speed_create = 1.0
+instance_shader_parameters/_thickness_create = 0.25
+instance_shader_parameters/_time_create = 1.0
 mesh = SubResource("SphereMesh_wowso")
 script = ExtResource("1_k7nhx")
 animation_curve = ExtResource("2_utjra")
+anim_time = null
+shield_origin = null
 
 [node name="Area3D" type="Area3D" parent="."]
 

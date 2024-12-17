@@ -12,13 +12,15 @@ uniform vec2 _speed_noise = vec2(0.05, 0.05);
 uniform bool _quantization = true;
 uniform int _steps_quantization : hint_range(1, 20, 1) = 5;
 instance uniform float object_scale = 1.0;
+instance uniform float object_size = 1.0;
 
 group_uniforms Create_Destroy;
-uniform vec3 _origin_create = vec3(0.0, 0.5, 0.0);
-uniform float _time_create = 0.0;
-uniform float _speed_create = 1.0;
-uniform float _thickness_create = 0.05;
-uniform bool _destroy = false;
+instance uniform vec3 _origin_create = vec3(0.0, 0.5, 0.0);
+instance uniform bool _relative_origin_create = true;
+instance uniform float _time_create = 1.0;
+instance uniform float _speed_create = 1.0;
+instance uniform float _thickness_create = 0.25;
+instance uniform bool _destroy = false;
 
 group_uniforms Shield_Color;
 uniform vec3 _color_shield : source_color = vec3(0.26, 0.975, 1);
@@ -152,7 +154,7 @@ vec3 adjustNormal(
 	vec3 normal,
 	bool backface
 ) {
-	vec3 waveNormal = -calculateNormalFromTangent(normalize(vec3(1.0, -slope, 0.0)));;
+	vec3 waveNormal = -calculateNormalFromTangent(normalize(vec3(1.0, -slope, 0.0)));
 	if (!backface) {
 		waveNormal = vec3(-waveNormal.x, waveNormal.y, waveNormal.z);
 	}
@@ -251,13 +253,11 @@ float computeCreated(
 	vec3 vertex,
 	vec3 origin,
 	float thickness,
-	float speed,
+	float size,
 	float time
 ) {
 	float impact_distance = length(origin - vertex);
-	float wave_position = (time * speed - impact_distance) / thickness;
-	float current_wave = wave_position / (2.0 * PI);
-	return clamp(current_wave, 0.0, 1.0);
+	return clamp(((time * (1.0 + thickness)) * size - impact_distance) / thickness, 0.0, 1.0);
 }
 
 void vertex() {
@@ -285,9 +285,9 @@ void vertex() {
 				_amplitude_impact,
 				denormalized_time
 			);
-		}		
+		}
 	}
-	
+
 	if (_active_static) {
 		origin_static_world = (MODEL_MATRIX * vec4(_origin_static, 1.0)).xyz;
 		static_offset = computeStaticOffset(
@@ -302,7 +302,11 @@ void vertex() {
 		static_offset = 0.0;
 	}
 
-	origin_create_world = (MODEL_MATRIX * vec4(_origin_create, 1.0)).xyz;
+	if (_relative_origin_create) {
+		origin_create_world = (MODEL_MATRIX * vec4(_origin_create, 1.0)).xyz;
+	} else {
+		origin_create_world = _origin_create;
+	}
 
 	VERTEX += NORMAL * (impact_offset + static_offset);
 }
@@ -390,12 +394,13 @@ void fragment() {
 		shield_visibility = max(shield_visibility, border_visibility);
 	}
 
+
 	float creation_status = computeCreated(
 		world_pos,
 		origin_create_world,
 		_thickness_create,
-		_speed_create,
-		TIME - _time_create
+		object_scale * object_size,
+		_time_create
 		//mod(TIME, 2.0/_speed_create)
 	);
 	if (_destroy) {

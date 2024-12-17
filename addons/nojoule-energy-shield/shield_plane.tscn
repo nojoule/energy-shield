@@ -12,11 +12,6 @@ shader_parameter/_speed_noise = Vector2(0.02, 0.02)
 shader_parameter/_quantization = true
 shader_parameter/_steps_quantization = 5
 shader_parameter/noise_texture = ExtResource("2_lw1e0")
-shader_parameter/_origin_create = Vector3(0, 0, 0)
-shader_parameter/_time_create = 0.0
-shader_parameter/_speed_create = 1.0
-shader_parameter/_thickness_create = 0.05
-shader_parameter/_destroy = false
 shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
@@ -56,9 +51,13 @@ subdivide_depth = 128
 size = Vector3(1, 0.05, 1)
 
 [node name="ShieldPlane" type="MeshInstance3D"]
+instance_shader_parameters/object_size = 1.42
 mesh = SubResource("PlaneMesh_7myad")
 script = ExtResource("1_sja5q")
 animation_curve = ExtResource("2_6wogk")
+anim_time = null
+shield_origin = null
+instance_shader_parameters/object_size = 1.42
 
 [node name="Area3D" type="Area3D" parent="."]
 
