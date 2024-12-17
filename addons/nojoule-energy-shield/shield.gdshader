@@ -4,12 +4,11 @@ specular_disabled, ambient_light_disabled, unshaded;
 
 uniform sampler2D depth_texture : hint_depth_texture;
 uniform sampler2D noise_texture;
-uniform vec2 _speed_noise = vec2(0.02, 0.02);
+uniform vec2 _speed_noise = vec2(0.05, 0.05);
 
 /**
  *
  */
-uniform bool _show_normals = false;
 uniform bool _quantization = true;
 uniform int _steps_quantization : hint_range(1, 20, 1) = 5;
 instance uniform float object_scale = 1.0;
@@ -36,14 +35,14 @@ uniform float _effect_radius_static = 1.2;
 uniform float _normal_amplitude_static = 0.002;
 
 group_uniforms Impact_Ripple;
-instance uniform vec3 _origin_impact = vec3(0.0, 0.5, 0.0);
-instance uniform float _frequency_impact = 20.0;
-instance uniform float _waves_impact = 0.0;
-instance uniform float _fade_waves_impact = 2.0;
-instance uniform float _amplitude_impact = 0.02;
-instance uniform float _radius_impact = 1.0;
-instance uniform float _time_impact: hint_range(0.0, 1.0, 0.005) = 0.0;
-instance uniform float _normal_amplitude_impact = 0.05;
+uniform vec3[5] _origin_impact;
+uniform float _frequency_impact = 20.0;
+uniform float _waves_impact = 0.0;
+uniform float _fade_waves_impact = 2.0;
+uniform float _amplitude_impact = 0.02;
+uniform float _radius_impact = 1.0;
+uniform float[5] _time_impact; //: hint_range(0.0, 1.0, 0.005)[];
+uniform float _normal_amplitude_impact = 0.05;
 
 group_uniforms BorderHighlight;
 uniform bool _active_border = false;
@@ -58,12 +57,16 @@ uniform bool _active_static_offset_hl = true;
 uniform float _strength_static_offset_hl = 1.0;
 uniform float _intensity_static_offset_hl = 5.0;
 
+group_uniforms Debug;
+uniform bool _show_normals = false;
+
 varying vec3 world_pos;
 varying float impact_offset;
 varying float static_offset;
-varying flat float denormalized_time;
 varying flat vec3 origin_static_world;
 varying flat vec3 origin_create_world;
+
+const int max_impacts = 5;
 
 /*
 * time is expected to be normalized between 0 and 1. Denormalize it to the
@@ -134,27 +137,22 @@ vec3 calculateNormalFromTangent(vec3 tangent) {
     return normal;
 }
 
-vec3 calculateWaveNormal(
-	float x,
+float calculateSlope(
+	float time,
 	float amplitude,
 	float frequency,
 	float phase
 ) {
-    float slope = cos(frequency * x + phase) * frequency * amplitude;
-	return calculateNormalFromTangent(normalize(vec3(1.0, -slope, 0.0)));
+    return cos(frequency * time + phase) * frequency * amplitude;
 }
 
 vec3 adjustNormal(
 	vec3 wave_direction,
-	float wave_phase,
-	float frequency,
-	float amplitude,
-	float time,
+	float slope,
 	vec3 normal,
 	bool backface
 ) {
-	vec3 waveNormal =
-		-calculateWaveNormal(time, amplitude, frequency, wave_phase);
+	vec3 waveNormal = -calculateNormalFromTangent(normalize(vec3(1.0, -slope, 0.0)));;
 	if (!backface) {
 		waveNormal = vec3(-waveNormal.x, waveNormal.y, waveNormal.z);
 	}
@@ -192,15 +190,13 @@ vec3 adjustImpactNormal(
 		wave_direction =
 			normalize((model_view * vec4(wave_direction, 0.0)).xyz);
 		float wave_amplitude = amplitude * distance_fade * time_fade;
+		float slope = calculateSlope(time, wave_amplitude, frequency, wave_phase);
 		return adjustNormal(
 			wave_direction,
-			wave_phase,
-			frequency,
-			wave_amplitude,
-			time,
+			slope,
 			normal,
 			backface
-		) * wave_amplitude;
+		) * wave_amplitude * abs(slope);
 	}
 	return normal * 0.00001;
 }
@@ -222,15 +218,13 @@ vec3 adjustStaticNormal(
 	vec3 wave_direction = normalize(position - origin);
 	wave_direction = normalize((model_view * vec4(wave_direction, 0.0)).xyz);
 	float wave_amplitude = amplitude * distance_fade;
+	float slope = calculateSlope(time, wave_amplitude, frequency, wave_phase);
 	return adjustNormal(
 		wave_direction,
-		wave_phase,
-		frequency,
-		wave_amplitude,
-		time,
+		slope,
 		normal,
 		backface
-	) * wave_amplitude;
+	) * wave_amplitude * abs(slope);
 }
 
 float computeDepthDifference(
@@ -270,24 +264,30 @@ void vertex() {
 	// world_position of the vertex
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 
-	denormalized_time = denormalizeTime(
-		_time_impact,
-		_frequency_impact / object_scale,
-		_waves_impact + _fade_waves_impact,
-		_radius_impact * object_scale
-	);
+	impact_offset = 0.0;
+	for(int i=0;i<max_impacts;++i)
+	{
+		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
+			float denormalized_time = denormalizeTime(
+				_time_impact[i],
+				_frequency_impact / object_scale,
+				_waves_impact + _fade_waves_impact,
+				_radius_impact * object_scale
+			);
 
-	impact_offset = computeImpactOffset(
-		world_pos,
-		_origin_impact,
-		_radius_impact * object_scale,
-		_frequency_impact / object_scale,
-		_waves_impact,
-		_fade_waves_impact,
-		_amplitude_impact,
-		denormalized_time
-	);
-
+			impact_offset += computeImpactOffset(
+				world_pos,
+				_origin_impact[i],
+				_radius_impact * object_scale,
+				_frequency_impact / object_scale,
+				_waves_impact,
+				_fade_waves_impact,
+				_amplitude_impact,
+				denormalized_time
+			);
+		}		
+	}
+	
 	if (_active_static) {
 		origin_static_world = (MODEL_MATRIX * vec4(_origin_static, 1.0)).xyz;
 		static_offset = computeStaticOffset(
@@ -325,19 +325,32 @@ void fragment() {
 		);
 	}
 
-	vec3 impact_normal = adjustImpactNormal(
-		world_pos,
-		_origin_impact,
-		_radius_impact * object_scale,
-		_frequency_impact / object_scale,
-		_waves_impact,
-		_fade_waves_impact,
-		_normal_amplitude_impact * object_scale,
-		denormalized_time,
-		NORMAL,
-		VIEW_MATRIX,
-		FRONT_FACING
-	);
+	vec3 impact_normal = vec3(0.0);
+	for(int i=0;i<max_impacts;++i)
+	{
+		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
+			float denormalized_time = denormalizeTime(
+				_time_impact[i],
+				_frequency_impact / object_scale,
+				_waves_impact + _fade_waves_impact,
+				_radius_impact * object_scale
+			);
+
+			impact_normal += adjustImpactNormal(
+				world_pos,
+				_origin_impact[i],
+				_radius_impact * object_scale,
+				_frequency_impact / object_scale,
+				_waves_impact,
+				_fade_waves_impact,
+				_normal_amplitude_impact * object_scale,
+				denormalized_time,
+				NORMAL,
+				VIEW_MATRIX,
+				FRONT_FACING
+			);
+		}
+	}
 
 	NORMAL = normalize(static_normal + impact_normal);
 

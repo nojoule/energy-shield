@@ -8,8 +8,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ll2q5"]
 render_priority = 0
 shader = ExtResource("1_181ey")
-shader_parameter/_speed_noise = Vector2(0.05, -0.05)
-shader_parameter/_show_normals = false
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
 shader_parameter/_quantization = true
 shader_parameter/_steps_quantization = 5
 shader_parameter/noise_texture = ExtResource("2_g0rh4")
@@ -28,6 +27,14 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_normal_amplitude_static = 0.002
+shader_parameter/_origin_impact = PackedVector3Array(0, 0.5, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 0.0
+shader_parameter/_fade_waves_impact = 2.0
+shader_parameter/_amplitude_impact = 0.02
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/_normal_amplitude_impact = 0.05
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -37,6 +44,7 @@ shader_parameter/_intensity_impact_offset_hl = 5.0
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_show_normals = false
 
 [sub_resource type="SphereMesh" id="SphereMesh_wowso"]
 material = SubResource("ShaderMaterial_ll2q5")
@@ -46,15 +54,10 @@ rings = 256
 [sub_resource type="SphereShape3D" id="SphereShape3D_1ncxy"]
 
 [node name="ShieldSphere" type="MeshInstance3D"]
-instance_shader_parameters/_amplitude_impact = 0.02
-instance_shader_parameters/_normal_amplitude_impact = 0.05
-instance_shader_parameters/_origin_impact = Vector3(0, 0.5, 0)
-instance_shader_parameters/_time_impact = 0.0
-instance_shader_parameters/_waves_impact = 0.0
+transform = Transform3D(0.83869, 0, -0.54461, 0, 1, 0, 0.54461, 0, 0.83869, 0, 0, 0)
 mesh = SubResource("SphereMesh_wowso")
 script = ExtResource("1_k7nhx")
 animation_curve = ExtResource("2_utjra")
-anim_time = 5.0
 
 [node name="Area3D" type="Area3D" parent="."]
 
