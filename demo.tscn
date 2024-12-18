@@ -50,14 +50,10 @@ transform = Transform3D(0.648053, 0.60603, -0.461253, 0, 0.605641, 0.795738, 0.7
 [node name="ShieldPlane" parent="." instance=ExtResource("2_00woi")]
 transform = Transform3D(0.523986, -0.851727, 3.72302e-08, 0, -4.37114e-08, -1, 0.851727, 0.523986, -2.29041e-08, 0.469895, 0.211706, 0.172691)
 animation_curve = SubResource("Curve_urt7i")
-anim_time = null
-shield_origin = null
 
 [node name="ShieldSphere" parent="." instance=ExtResource("1_tvbm3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.355191, -1.19209e-07, 0.174721)
 animation_curve = SubResource("Curve_t4aep")
-anim_time = null
-shield_origin = null
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.239108, 0, 0.439121, 0, 0.5, 0, -0.439121, 0, 0.239108, -0.859163, -1.19209e-07, 0.441666)

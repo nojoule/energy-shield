@@ -11,16 +11,16 @@ uniform vec2 _speed_noise = vec2(0.05, 0.05);
  */
 uniform bool _quantization = true;
 uniform int _steps_quantization : hint_range(1, 20, 1) = 5;
-instance uniform float object_scale = 1.0;
-instance uniform float object_size = 1.0;
+uniform float object_scale = 1.0;
+uniform float object_size = 1.0;
 
 group_uniforms Create_Destroy;
-instance uniform vec3 _origin_create = vec3(0.0, 0.5, 0.0);
-instance uniform bool _relative_origin_create = true;
-instance uniform float _time_create = 1.0;
-instance uniform float _speed_create = 1.0;
-instance uniform float _thickness_create = 0.25;
-instance uniform bool _destroy = false;
+uniform vec3 _origin_create = vec3(0.0, 0.5, 0.0);
+uniform bool _relative_origin_create = true;
+uniform float _time_create = 1.0;
+uniform float _speed_create = 1.0;
+uniform float _thickness_create = 0.25;
+uniform bool _destroy = false;
 
 group_uniforms Shield_Color;
 uniform vec3 _color_shield : source_color = vec3(0.26, 0.975, 1);
