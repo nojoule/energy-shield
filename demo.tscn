@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dfbm0s35vohwq"]
+[gd_scene load_steps=13 format=3 uid="uid://dfbm0s35vohwq"]
 
 [ext_resource type="PackedScene" uid="uid://bqo3es5yd4r70" path="res://addons/nojoule-energy-shield/shield_sphere.tscn" id="1_tvbm3"]
 [ext_resource type="PackedScene" uid="uid://bvqb5fugcfm5k" path="res://addons/nojoule-energy-shield/shield_plane.tscn" id="2_00woi"]
@@ -11,10 +11,14 @@ sky_material = SubResource("ProceduralSkyMaterial_7fmh4")
 [sub_resource type="Environment" id="Environment_se5ni"]
 background_mode = 2
 sky = SubResource("Sky_utt55")
+glow_enabled = true
 
 [sub_resource type="CameraAttributesPractical" id="CameraAttributesPractical_qer7y"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_rnqi4"]
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_imm5f"]
+material = SubResource("ShaderMaterial_rnqi4")
 
 [sub_resource type="Curve" id="Curve_urt7i"]
 resource_local_to_scene = true

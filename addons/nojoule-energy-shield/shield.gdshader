@@ -3,76 +3,119 @@ render_mode blend_mix, cull_disabled, depth_draw_opaque, shadows_disabled,
 specular_disabled, ambient_light_disabled, unshaded;
 
 uniform sampler2D depth_texture : hint_depth_texture;
-uniform sampler2D noise_texture;
-uniform vec2 _speed_noise = vec2(0.05, 0.05);
 
-/**
- *
- */
+/** Use quantization for alpha and color values to get a more pixelated look. */
 uniform bool _quantization = true;
+/** Quantization steps for the alpha and color values. */
 uniform int _steps_quantization : hint_range(1, 20, 1) = 5;
-uniform float object_scale = 1.0;
-uniform float object_size = 1.0;
 
-group_uniforms Create_Destroy;
-uniform vec3 _origin_create = vec3(0.0, 0.5, 0.0);
-uniform bool _relative_origin_create = true;
-uniform float _time_create = 1.0;
-uniform float _speed_create = 1.0;
-uniform float _thickness_create = 0.25;
+/** The scale of the object, used to adjust the impact radius and frequency, to match the scaling of objects. Using the shield.gd script, the scale is set to the x-axis scale of the global transform automatically. */
+uniform float _object_scale = 1.0;
+/** Expected to be the maximum diameter of an object. If this is shorter the generation or collapse of the shield might not complete and stop early. */
+uniform float _object_size = 1.0;
+
+group_uniforms Noise;
+/** The noise texture used to add some dynamic to the shield color, which affects the color and alpha values of the shield. Should be seemless, to avoid visible seams. */
+uniform sampler2D _noise_texture;
+/** Defines the rate at which the noise texture is displaced in the x and y direction. */
+uniform vec2 _speed_noise = vec2(0.02, 0.02);
+
+group_uniforms Generate_Collapse_Animation;
+/** The origin of the shield generation, where the shield will start to generate from. By default, it is expected to be in local space. */
+uniform vec3 _origin_generate = vec3(0.0, 0.5, 0.0);
+/** Defines if the coordinates of the origin is relative to the object position or in world space. */
+uniform bool _relative_origin_generate = true;
+/** The time of the generation or collapse animation, normalized between 0 and 1. */
+uniform float _time_generate = 1.0;
+/** The border thickness of the generated shield highlighting the just generated shield surface. */
+uniform float _thickness_generate = 0.25;
+/** By default this animation generates the shield, but if set to true, it will collapse the shield instead. */
 uniform bool _destroy = false;
 
 group_uniforms Shield_Color;
+/** The base color of the shield, which is modifeid by the brightness and intensity. and varies across the shield surface. */
 uniform vec3 _color_shield : source_color = vec3(0.26, 0.975, 1);
-uniform float _color_brightness_shield : hint_range(0.25, 20.0, 0.05) = 15.0;
-uniform float _intensity_shield : hint_range(0.25, 5.0, 0.05) = 3.0;
+/** The brightness of the shield color, which is multiplied with the shield visibility. */
+uniform float _color_brightness_shield : hint_range(0.1, 100.0, 0.05) = 15.0;
+/** The intensity of the shield, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
+uniform float _intensity_shield : hint_range(0.0, 5.0, 0.05) = 3.0;
+/** Is glow effect enabled for the shield. */
+uniform bool glow_enabled = true;
+/** The strength of the glow effect, defining how strong the glow is. */
+uniform float glow_strength = 0.1;
 
 group_uniforms Static_Ripple;
+/** Activates/deactivates the static ripple effect. Creating a constant repeating ripple effect. */
 uniform bool _active_static = true;
+/** The origin of the static ripple effect, where the ripple will start from. It is expected to be in local space of the object. */
 uniform vec3 _origin_static = vec3(0.0, 0.5, 0.0);
+/** The speed of the static ripple effect, which defines how fast the ripple moves. */
 uniform float _speed_static = 0.1;
+/** The frequency of the static ripple effect, which defines how close the waves are generated. */
 uniform float _frequency_static = 80.0;
+/** The maximum vertex displacement amplitude of the static ripple effect, which defines the height of the waves. */
 uniform float _amplitude_static = 0.002;
-uniform float _effect_radius_static = 1.2;
+/** The amplitude of the static ripple effect used for the normal calculation, which can be different from the displacement amplitude, to exaggerate visual effects based on the normal (fresnel). */
 uniform float _normal_amplitude_static = 0.002;
+/** The effect radius of the static ripple, wich fades out the effect based on the distance from the origin. Increase this value to make the effect visible further away from the origin. */
+uniform float _effect_radius_static = 1.2;
 
 group_uniforms Impact_Ripple;
+/** List of impact origins, where the impact ripples will start from. It is expected to be in world space. */
 uniform vec3[5] _origin_impact;
+/** List of impact times, which defines the time of the impact ripples, normalized between 0 and 1. */
+uniform float[5] _time_impact;
+/** The frequency of the impact ripples, which defines how close the waves are generated. */
 uniform float _frequency_impact = 20.0;
+/** The number of waves generated by the impact, which won't fade over time, but just by distance. */
 uniform float _waves_impact = 0.0;
+/** The additional number of waves generated by the impact, were each gets smaller than the previous one. */
 uniform float _fade_waves_impact = 2.0;
+/** The maximum vertex displacement amplitude of the static ripple effect, which defines the height of the waves. */
 uniform float _amplitude_impact = 0.02;
-uniform float _radius_impact = 1.0;
-uniform float[5] _time_impact; //: hint_range(0.0, 1.0, 0.005)[];
+/** The amplitude of the impact ripples used for the normal calculation, which can be different from the displacement amplitude, to exaggerate visual effects based on the normal (fresnel). */
 uniform float _normal_amplitude_impact = 0.05;
+/** The effect radius of the impact ripples, wich fades out the effect based on the distance from the origin. Increase this value to make the effect visible further away from the origin. */
+uniform float _radius_impact = 1.0;
 
-group_uniforms BorderHighlight;
+group_uniforms Highlights;
+group_uniforms Highlights.BorderHighlight;
+/** Activates/deactivates the border highlighting effect, which highlights the border of the shield, based on the UV coordinates. */
 uniform bool _active_border = false;
-uniform float _intensity_border = 2.0;
+/** The intensity of the border highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
+uniform float _intensity_border: hint_range(0.0, 5.0, 0.05) = 2.0;
+/** Thickness of the border in percentage. 1.0 makes the border stretch to the center of the object. 0.0 makes the border disappear. */
 uniform float _percentage_border: hint_range(0.0, 1.0) = 0.1;
 
-group_uniforms OffsetHighlight;
+group_uniforms Highlights.OffsetHighlight;
+/** Activates/deactivates the vertex offset highlighting effect, which highlights the offset of the shield, based on the vertex displacement from impact effects. */
 uniform bool _active_impact_offset_hl = true;
+/** The strength of the impact offset highlighting effect, defines how strong the highlighting is. */
 uniform float _strength_impact_offset_hl = 1.0;
+/** The intensity of the impact offset highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_impact_offset_hl = 5.0;
+/** Activates/deactivates the static offset highlighting effect, which highlights the offset of the shield, based on the vertex displacement from static effects. */
 uniform bool _active_static_offset_hl = true;
+/** The strength of the static offset highlighting effect, defines how strong the highlighting is. */
 uniform float _strength_static_offset_hl = 1.0;
+/** The intensity of the static offset highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_static_offset_hl = 5.0;
 
 group_uniforms Debug;
+/** @debug Show the normals of the shield, which are used for the normal calculation of the shield. */
 uniform bool _show_normals = false;
 
 varying vec3 world_pos;
 varying float impact_offset;
 varying float static_offset;
 varying flat vec3 origin_static_world;
-varying flat vec3 origin_create_world;
+varying flat vec3 origin_generate_world;
 
+/** Maximum number of impacts, which can be used to generate impact ripples. */
 const int max_impacts = 5;
 
-/*
-* time is expected to be normalized between 0 and 1. Denormalize it to the
-* actual time based on the frequency, desired waves and maximum distance.
+/**
+* Time is expected to be normalized between 0 and 1. Denormalize it to the actual time based on the frequency, desired waves and maximum distance.
 */
 float denormalizeTime(
 	float time,
@@ -85,6 +128,9 @@ float denormalizeTime(
 	return (time * length - wave_start_offset) / frequency;
 }
 
+/**
+ * Compute the offset for the vertex position from impacts.
+ */
 float computeImpactOffset(
 	vec3 vertex,
 	vec3 origin,
@@ -96,22 +142,31 @@ float computeImpactOffset(
 	float time
 ) {
 	float impact_distance = length(origin - vertex);
+	// the wave starts at -sin(-0.5 * PI)
 	float wave_position =
 		max((time - impact_distance) * frequency, - 0.5 * PI);
+
 	float surface_offset = -sin(wave_position) * amplitude;
 
-	// offset for the first half of the sin wave to start at 0 offset
+	// -sin(-0.5 * PI) is 1.0, but to not start with an offset, we modify the displacement for the first part of the wave  to only displace inward.
 	if (wave_position < 0.5 * PI) {
 		surface_offset = surface_offset * 0.5 - 0.5 * amplitude;
 	}
 
+	// fade out the waves over time after the initial waves are through for the fade_waves
 	float current_wave = wave_position / (2.0 * PI);
 	float time_fade =
 		1.0 - smoothstep(waves, waves + fade_waves, current_wave);
+
+	// fade out the waves over distance
 	float distance_fade = smoothstep(radius, 0.0, impact_distance);
+
 	return surface_offset * distance_fade * time_fade;
 }
 
+/**
+ * Compute the offset for the vertex position from static waves.
+ */
 float computeStaticOffset(
 	vec3 vertex,
 	vec3 origin,
@@ -123,22 +178,33 @@ float computeStaticOffset(
 	float impact_distance = length(origin - vertex);
 	float wave_position = (time - impact_distance) * frequency;
 	float surface_offset = -sin(wave_position) * amplitude;
+
+	// fade out the waves over distance
 	float distance_fade = smoothstep(radius, 0.0, impact_distance);
 	return surface_offset * distance_fade;
 }
 
-float computeFresnel(vec3 norm, vec3 view_dir, float intensity) {
-	float fresnel = clamp(1.0 - dot(norm, view_dir), 0.0, 1.0);
+/**
+ * Compute the fresnel effect based on the normal and view direction.
+ */
+float computeFresnel(vec3 normal, vec3 view_dir, float intensity) {
+	float fresnel = clamp(1.0 - dot(normal, view_dir), 0.0, 1.0);
 	fresnel = pow(fresnel, intensity);
 	return fresnel;
 }
 
+/**
+ * Calculate the normal from the tangent of the wave.
+ */
 vec3 calculateNormalFromTangent(vec3 tangent) {
     vec3 binormal = vec3(0.0, 0.0, 1.0); // Assume z-axis binormal
     vec3 normal = cross(normalize(tangent), binormal);
     return normal;
 }
 
+/**
+ * Calculate the slope at the current surface position on a sinus wave.
+ */
 float calculateSlope(
 	float time,
 	float amplitude,
@@ -148,6 +214,9 @@ float calculateSlope(
     return cos(frequency * time + phase) * frequency * amplitude;
 }
 
+/**
+ * Adjust the default normal based on the wave direction and current slope of the wave.
+ */
 vec3 adjustNormal(
 	vec3 wave_direction,
 	float slope,
@@ -165,6 +234,9 @@ vec3 adjustNormal(
 	return wave_adjusted_normal;
 }
 
+/**
+ * Adjust the normal based on the wave generated from an impact and check if the effect is active at the position based on the time.
+ */
 vec3 adjustImpactNormal(
 	vec3 position,
 	vec3 origin,
@@ -183,16 +255,23 @@ vec3 adjustImpactNormal(
 	float current_wave_position =
 		max((time - distance) * frequency, - 0.5 * PI);
 	float current_wave_count = current_wave_position / (2.0 * PI);
+
+	// check if all impact waves have passed the current fragment position
 	if (current_wave_count < waves + fade_waves
 			&& (time - distance) * frequency >= - 0.5 * PI) {
+		// fade out the waves over time after the initial waves are through for the fade_waves
 		float time_fade =
 			1.0 - smoothstep(waves, waves + fade_waves, current_wave_count);
+		// fade out the waves over distance
 		float distance_fade = smoothstep(radius, 0.0, distance);
+
+		// calculate direction and the slope of the wave at the current position
 		vec3 wave_direction = normalize(position - origin);
 		wave_direction =
 			normalize((model_view * vec4(wave_direction, 0.0)).xyz);
 		float wave_amplitude = amplitude * distance_fade * time_fade;
 		float slope = calculateSlope(time, wave_amplitude, frequency, wave_phase);
+
 		return adjustNormal(
 			wave_direction,
 			slope,
@@ -203,6 +282,9 @@ vec3 adjustImpactNormal(
 	return normal * 0.00001;
 }
 
+/**
+ * Adjust the normal based on the wave generated from a static effect.
+ */
 vec3 adjustStaticNormal(
 	vec3 position,
 	vec3 origin,
@@ -215,12 +297,17 @@ vec3 adjustStaticNormal(
 	bool backface
 ) {
 	float distance = length(origin - position);
-	float wave_phase = -distance * frequency;
+
+	// fade out the waves over distance
 	float distance_fade = smoothstep(radius, 0.0, distance);
+
+	// calculate direction and the slope of the wave at the current position
+	float wave_phase = -distance * frequency;
 	vec3 wave_direction = normalize(position - origin);
 	wave_direction = normalize((model_view * vec4(wave_direction, 0.0)).xyz);
 	float wave_amplitude = amplitude * distance_fade;
 	float slope = calculateSlope(time, wave_amplitude, frequency, wave_phase);
+
 	return adjustNormal(
 		wave_direction,
 		slope,
@@ -229,13 +316,17 @@ vec3 adjustStaticNormal(
 	) * wave_amplitude * abs(slope);
 }
 
+/**
+ * Compute the highlight effect, based on the distance to any object behing the shield-surface.
+ */
 float computeDepthDifference(
 	vec2 screen_uv,
 	vec3 vertex,
 	mat4 inv_projection,
 	float intensity
 ) {
-	float depth_offset = 1.0/_intensity_shield * object_scale;
+	// calculate a value representing the distance to any object behind the shield
+	float depth_offset = 1.0/_intensity_shield * _object_scale;
 	float depth_tex = texture(depth_texture, screen_uv).r;
 	vec4 proj_depth_pos = vec4(screen_uv * 2.0 - 1.0, depth_tex, 1.0);
 	vec4 depth_world_pos = inv_projection * proj_depth_pos;
@@ -245,11 +336,16 @@ float computeDepthDifference(
 		0.0,
 		1.0
 	);
-	depth_diff = pow(depth_diff, 5.0);
+
+	// apply intensity to the depth difference to create the highlight strength
+	depth_diff = pow(depth_diff, intensity);
 	return depth_diff;
 }
 
-float computeCreated(
+/**
+ * Compute the progression of the shield generation or collapse, normalized between 0.0 and 1.0, based on the distance to the origin and the time.
+ */
+float computeGenerationProgress(
 	vec3 vertex,
 	vec3 origin,
 	float thickness,
@@ -264,22 +360,23 @@ void vertex() {
 	// world_position of the vertex
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 
+	// calculate the vertex displacement from dynamic impact effects
 	impact_offset = 0.0;
 	for(int i=0;i<max_impacts;++i)
 	{
 		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
 			float denormalized_time = denormalizeTime(
 				_time_impact[i],
-				_frequency_impact / object_scale,
+				_frequency_impact / _object_scale,
 				_waves_impact + _fade_waves_impact,
-				_radius_impact * object_scale
+				_radius_impact * _object_scale
 			);
 
 			impact_offset += computeImpactOffset(
 				world_pos,
 				_origin_impact[i],
-				_radius_impact * object_scale,
-				_frequency_impact / object_scale,
+				_radius_impact * _object_scale,
+				_frequency_impact / _object_scale,
 				_waves_impact,
 				_fade_waves_impact,
 				_amplitude_impact,
@@ -288,13 +385,14 @@ void vertex() {
 		}
 	}
 
+	// calculate the vertex displacement from the static wave effect
 	if (_active_static) {
-		origin_static_world = (MODEL_MATRIX * vec4(_origin_static, 1.0)).xyz;
+		origin_static_world = (MODEL_MATRIX * vec4(_origin_static * _object_scale, 1.0)).xyz;
 		static_offset = computeStaticOffset(
 			world_pos,
 			origin_static_world,
-			_effect_radius_static * object_scale,
-			_frequency_static / object_scale,
+			_effect_radius_static * _object_scale,
+			_frequency_static / _object_scale,
 			_amplitude_static,
 			TIME * _speed_static
 		);
@@ -302,26 +400,29 @@ void vertex() {
 		static_offset = 0.0;
 	}
 
-	if (_relative_origin_create) {
-		origin_create_world = (MODEL_MATRIX * vec4(_origin_create, 1.0)).xyz;
+	// transform the generation origin to world space
+	if (_relative_origin_generate) {
+		origin_generate_world = (MODEL_MATRIX * vec4(_origin_generate * _object_scale, 1.0)).xyz;
 	} else {
-		origin_create_world = _origin_create;
+		origin_generate_world = _origin_generate;
 	}
 
 	VERTEX += NORMAL * (impact_offset + static_offset);
 }
 
 void fragment() {
+	// discard backfacing fragments when the debug option for showing normals is active
 	if (_show_normals && !FRONT_FACING) discard;
 
+	// calculate the modified normal based on static wave traveling across the shield surface
 	vec3 static_normal = vec3(0.0);
 	if (_active_static) {
 		static_normal = adjustStaticNormal(
 			world_pos,
 			origin_static_world,
-			_effect_radius_static * object_scale,
-			_frequency_static / object_scale,
-			_normal_amplitude_static * object_scale,
+			_effect_radius_static * _object_scale,
+			_frequency_static / _object_scale,
+			_normal_amplitude_static * _object_scale,
 			TIME * _speed_static,
 			NORMAL,
 			VIEW_MATRIX,
@@ -329,25 +430,26 @@ void fragment() {
 		);
 	}
 
+	// calculate the modified normal based on impact waves traveling across the shield surface
 	vec3 impact_normal = vec3(0.0);
 	for(int i=0;i<max_impacts;++i)
 	{
 		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
 			float denormalized_time = denormalizeTime(
 				_time_impact[i],
-				_frequency_impact / object_scale,
+				_frequency_impact / _object_scale,
 				_waves_impact + _fade_waves_impact,
-				_radius_impact * object_scale
+				_radius_impact * _object_scale
 			);
 
 			impact_normal += adjustImpactNormal(
 				world_pos,
 				_origin_impact[i],
-				_radius_impact * object_scale,
-				_frequency_impact / object_scale,
+				_radius_impact * _object_scale,
+				_frequency_impact / _object_scale,
 				_waves_impact,
 				_fade_waves_impact,
-				_normal_amplitude_impact * object_scale,
+				_normal_amplitude_impact * _object_scale,
 				denormalized_time,
 				NORMAL,
 				VIEW_MATRIX,
@@ -356,10 +458,16 @@ void fragment() {
 		}
 	}
 
-	NORMAL = normalize(static_normal + impact_normal);
+	// combine the normals and normalize the result, this is the new surface normal at this fragment
+	NORMAL = normalize(static_normal + impact_normal  + 0.001 * NORMAL);
 
-	float shield_visibility = computeFresnel(NORMAL, VIEW, _intensity_shield);
+	// calculate the shield visibility, which determines the color and transparency of the shield.
+	float shield_visibility = 0.0;
 
+	// apply fresnel highlight
+	shield_visibility = computeFresnel(NORMAL, VIEW, _intensity_shield);
+
+	// apply surface displacement highlight for impacts
 	if (_active_impact_offset_hl) {
 		float impact_offset_hl = pow(
 			-_strength_impact_offset_hl * impact_offset/_amplitude_impact,
@@ -368,6 +476,7 @@ void fragment() {
 		shield_visibility = max(shield_visibility, impact_offset_hl);
 	}
 
+	// apply surface displacement highlight for static waves
 	if (_active_static_offset_hl) {
 		float static_offset_hl = pow(
 			-_strength_static_offset_hl * static_offset/_amplitude_static,
@@ -376,10 +485,12 @@ void fragment() {
 		shield_visibility = max(shield_visibility, static_offset_hl);
 	}
 
+	// apply depth difference highlight for objects behind the shield
 	float depth_diff =
 		computeDepthDifference(SCREEN_UV, VERTEX, INV_PROJECTION_MATRIX, _intensity_shield);
 	shield_visibility = max(shield_visibility, depth_diff);
 
+	// apply border highlighting
 	if (_active_border) {
 		float border_closeness = min(
 			min(UV.x, UV.y),
@@ -394,37 +505,40 @@ void fragment() {
 		shield_visibility = max(shield_visibility, border_visibility);
 	}
 
-
-	float creation_status = computeCreated(
+	// apply shield generation or collapse animation highlight
+	float creation_progress = computeGenerationProgress(
 		world_pos,
-		origin_create_world,
-		_thickness_create,
-		object_scale * object_size,
-		_time_create
-		//mod(TIME, 2.0/_speed_create)
+		origin_generate_world,
+		_thickness_generate,
+		_object_scale * _object_size,
+		_time_generate
+		// mod(TIME, 1.0 / _object_scale * _object_size) //see the effect looping
 	);
 	if (_destroy) {
-		if (creation_status >= 1.0) {
+		if (creation_progress >= 1.0) {
 			shield_visibility = 0.0;
 		} else {
-			float creation_visibility = pow(creation_status, 5.0);
+			float creation_visibility = pow(creation_progress, 5.0);
 			shield_visibility = max(shield_visibility, creation_visibility);
 		}
 	} else {
-		if (creation_status <= 0.0) {
+		if (creation_progress <= 0.0) {
 			shield_visibility = 0.0;
 		} else {
-			float creation_visibility = pow(1.0 - creation_status, 5.0);
+			float creation_visibility = pow(1.0 - creation_progress, 5.0);
 			shield_visibility = max(shield_visibility, creation_visibility);
 		}
 	}
 
-	shield_visibility = shield_visibility * (texture(noise_texture, vec2(UV.x + TIME * _speed_noise.x, UV.y - TIME * _speed_noise.y)).r + 0.5);
+	// modify value by noise texture to the shield visibility
+	shield_visibility = shield_visibility * (texture(_noise_texture, vec2(UV.x + TIME * _speed_noise.x, UV.y - TIME * _speed_noise.y)).r + 0.5);
 
-	//quantizations
+	// apply quantization for the value
 	if (_quantization) {
+		float quantization_offset = 1.0 * _object_scale;
 		shield_visibility = round(shield_visibility * (
-			float(_steps_quantization) + 1.0 * object_scale))/float(_steps_quantization);
+			float(_steps_quantization) + quantization_offset))
+			/ float(_steps_quantization);
 	}
 
 	if (_show_normals) {
@@ -435,8 +549,19 @@ void fragment() {
 		);
 		ALPHA = 1.0;
 	} else {
-		ALBEDO = pow(shield_visibility, _intensity_shield)
+		vec3 color = pow(shield_visibility, _intensity_shield)
 			* _color_brightness_shield * _color_shield;
+		vec3 clamped_color = vec3(
+			clamp(color.r, 0.0, 1.0),
+			clamp(color.g, 0.0, 1.0),
+			clamp(color.b, 0.0, 1.0)
+		);
+
+		if (glow_enabled) {
+			ALBEDO = clamped_color + glow_strength * (color - clamped_color);
+		} else {
+			ALBEDO = clamped_color;
+		}
 		ALPHA = clamp(shield_visibility, 0.0, 1.0);
 	}
 }
