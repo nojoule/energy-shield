@@ -6,6 +6,7 @@
 [ext_resource type="Curve" uid="uid://cv0k0umipiy7n" path="res://addons/nojoule-energy-shield/impact_animation_curve.tres" id="2_utjra"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ll2q5"]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_181ey")
 shader_parameter/_quantization = true
@@ -18,7 +19,7 @@ shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
 shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
-shader_parameter/_destroy = false
+shader_parameter/_collapse = false
 shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
@@ -51,6 +52,7 @@ shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_show_normals = false
 
 [sub_resource type="SphereMesh" id="SphereMesh_wowso"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_ll2q5")
 radial_segments = 256
 rings = 256

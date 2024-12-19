@@ -83,7 +83,7 @@ func generate() -> void:
 	if _generating_or_collapsing or !_collapsed:
 		return
 	generate_from(shield_origin)
-	material.set_shader_parameter("_relative_origin_create", true)
+	material.set_shader_parameter("_relative_origin_generate", true)
 
 
 ## Generate the shield from a specific position, starting the generation
@@ -93,10 +93,10 @@ func generate_from(pos: Vector3) -> void:
 		return
 	_generating_or_collapsing = true
 	_generate_time = 0.0
-	material.set_shader_parameter("_relative_origin_create", false)
-	material.set_shader_parameter("_destroy", false)
-	material.set_shader_parameter("_origin_create", pos)
-	material.set_shader_parameter("_time_create", _generate_time)
+	material.set_shader_parameter("_relative_origin_generate", false)
+	material.set_shader_parameter("_collapse", false)
+	material.set_shader_parameter("_origin_generate", pos)
+	material.set_shader_parameter("_time_generate", _generate_time)
 
 
 ## Collapse the shield from the default origin, starting the collapse
@@ -104,8 +104,8 @@ func generate_from(pos: Vector3) -> void:
 func collapse() -> void:
 	if _generating_or_collapsing or _collapsed:
 		return
-	generate_from(shield_origin)
-	material.set_shader_parameter("_relative_origin_create", true)
+	collapse_from(shield_origin)
+	material.set_shader_parameter("_relative_origin_generate", true)
 
 
 ## Collapse the shield from a specific position, starting the collapse
@@ -115,10 +115,10 @@ func collapse_from(pos: Vector3) -> void:
 		return
 	_generating_or_collapsing = true
 	_generate_time = 0.0
-	material.set_shader_parameter("_relative_origin_create", false)
-	material.set_shader_parameter("_destroy", true)
-	material.set_shader_parameter("_origin_create", pos)
-	material.set_shader_parameter("_time_create", _generate_time)
+	material.set_shader_parameter("_relative_origin_generate", false)
+	material.set_shader_parameter("_collapse", true)
+	material.set_shader_parameter("_origin_generate", pos)
+	material.set_shader_parameter("_time_generate", _generate_time)
 
 
 ## Create an impact at the [param pos] position, starting a new impact
@@ -156,7 +156,7 @@ func _physics_process(delta: float) -> void:
 	# update the shield generation or collapse animation
 	if _generating_or_collapsing && _generate_time <= 1.0:
 		_generate_time += delta
-		material.set_shader_parameter("_time_create", _generate_time)
+		material.set_shader_parameter("_time_generate", _generate_time)
 	else:
 		if _generating_or_collapsing:
 			_collapsed = !_collapsed

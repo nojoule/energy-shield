@@ -30,7 +30,7 @@ uniform float _time_generate = 1.0;
 /** The border thickness of the generated shield highlighting the just generated shield surface. */
 uniform float _thickness_generate = 0.25;
 /** By default this animation generates the shield, but if set to true, it will collapse the shield instead. */
-uniform bool _destroy = false;
+uniform bool _collapse = false;
 
 group_uniforms Shield_Color;
 /** The base color of the shield, which is modifeid by the brightness and intensity. and varies across the shield surface. */
@@ -512,9 +512,9 @@ void fragment() {
 		_thickness_generate,
 		_object_scale * _object_size,
 		_time_generate
-		// mod(TIME, 1.0 / _object_scale * _object_size) //see the effect looping
+		//mod(TIME, 1.0 / _object_scale * _object_size) //see the effect looping
 	);
-	if (_destroy) {
+	if (_collapse) {
 		if (creation_progress >= 1.0) {
 			shield_visibility = 0.0;
 		} else {

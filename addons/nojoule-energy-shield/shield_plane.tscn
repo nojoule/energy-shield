@@ -18,7 +18,7 @@ shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
 shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
-shader_parameter/_destroy = false
+shader_parameter/_collapse = false
 shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
@@ -51,6 +51,7 @@ shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_show_normals = false
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7myad"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_m621f")
 size = Vector2(1, 1)
 subdivide_width = 128

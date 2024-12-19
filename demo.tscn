@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dfbm0s35vohwq"]
+[gd_scene load_steps=14 format=3 uid="uid://dfbm0s35vohwq"]
 
 [ext_resource type="PackedScene" uid="uid://bqo3es5yd4r70" path="res://addons/nojoule-energy-shield/shield_sphere.tscn" id="1_tvbm3"]
 [ext_resource type="PackedScene" uid="uid://bvqb5fugcfm5k" path="res://addons/nojoule-energy-shield/shield_plane.tscn" id="2_00woi"]
@@ -36,6 +36,12 @@ point_count = 2
 
 [sub_resource type="SphereMesh" id="SphereMesh_5wogb"]
 
+[sub_resource type="Curve" id="Curve_u2khf"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [node name="EnergyShieldDemo" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -66,3 +72,7 @@ mesh = SubResource("BoxMesh_fberq")
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.610951, 0, 0.0973498)
 mesh = SubResource("SphereMesh_5wogb")
+
+[node name="ShieldSphere2" parent="." instance=ExtResource("1_tvbm3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.861923, 0, 0)
+animation_curve = SubResource("Curve_u2khf")
