@@ -100,6 +100,7 @@ uniform bool _active_static_offset_hl = true;
 uniform float _strength_static_offset_hl = 1.0;
 /** The intensity of the static offset highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_static_offset_hl = 5.0;
+group_uniforms;
 
 group_uniforms Debug;
 /** @debug Show the normals of the shield, which are used for the normal calculation of the shield. */
@@ -148,9 +149,26 @@ float computeImpactOffset(
 
 	float surface_offset = -sin(wave_position) * amplitude;
 
-	// -sin(-0.5 * PI) is 1.0, but to not start with an offset, we modify the displacement for the first part of the wave  to only displace inward.
+	// -sin(-0.5 * PI) is 1.0, but to not start with an offset from the original vertex position, we modify the displacement for the first part of the wave to only displace inward. This prevents the mesh to be inflated by default.
 	if (wave_position < 0.5 * PI) {
 		surface_offset = surface_offset * 0.5 - 0.5 * amplitude;
+	}
+
+	// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
+	if (impact_distance < PI/frequency) {
+		float wave_impact_position = (time) * frequency;
+		float blend_surface_offset = -sin(wave_impact_position) * amplitude;
+
+		// -sin(-0.5 * PI) is 1.0, but to not start with an offset from the original vertex position, we modify the displacement for the first part of the wave to only displace inward. This prevents the mesh to be inflated by default.
+		if (wave_position < 0.5 * PI) {
+			blend_surface_offset = blend_surface_offset * 0.5 - 0.5 * amplitude;
+		}
+
+		float blend_t = clamp(impact_distance / (PI/frequency), 0.0, 1.0);
+		//ease-in ease-out function for blending
+		float blend_value =
+			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
+		surface_offset = mix(blend_surface_offset, surface_offset, blend_value);
 	}
 
 	// fade out the waves over time after the initial waves are through for the fade_waves
@@ -179,8 +197,20 @@ float computeStaticOffset(
 	float wave_position = (time - impact_distance) * frequency;
 	float surface_offset = -sin(wave_position) * amplitude;
 
+	// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
+	if (impact_distance < PI/frequency) {
+		float wave_impact_position = (time) * frequency;
+		float blend_surface_offset = -sin(wave_impact_position) * amplitude;
+		float blend_t = clamp(impact_distance / (PI/frequency), 0.0, 1.0);
+		//ease-in ease-out function for blending
+		float blend_value =
+			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
+		surface_offset = mix(blend_surface_offset, surface_offset, blend_value);
+	}
+
 	// fade out the waves over distance
 	float distance_fade = smoothstep(radius, 0.0, impact_distance);
+
 	return surface_offset * distance_fade;
 }
 
@@ -272,6 +302,16 @@ vec3 adjustImpactNormal(
 		float wave_amplitude = amplitude * distance_fade * time_fade;
 		float slope = calculateSlope(time, wave_amplitude, frequency, wave_phase);
 
+		// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
+		if (distance < PI/frequency) {
+			float blend_slope = 0.0;
+			float blend_t = clamp(distance / (PI/frequency), 0.0, 1.0);
+			//ease-in ease-out function for blending
+			float blend_value =
+				blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
+			slope = (1.0 - blend_value) * blend_slope + blend_value * slope;
+		}
+
 		return adjustNormal(
 			wave_direction,
 			slope,
@@ -307,6 +347,16 @@ vec3 adjustStaticNormal(
 	wave_direction = normalize((model_view * vec4(wave_direction, 0.0)).xyz);
 	float wave_amplitude = amplitude * distance_fade;
 	float slope = calculateSlope(time, wave_amplitude, frequency, wave_phase);
+
+	// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
+	if (distance < PI/frequency) {
+		float blend_slope = 0.0;
+		float blend_t = clamp(distance / (PI/frequency), 0.0, 1.0);
+		//ease-in ease-out function for blending
+		float blend_value =
+			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
+		slope = mix(0, slope, blend_value);
+	}
 
 	return adjustNormal(
 		wave_direction,
