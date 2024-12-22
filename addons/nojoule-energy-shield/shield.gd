@@ -21,6 +21,11 @@ const _MAX_IMPACTS: int = 5
 ## by default if not provided otherwise in the functions.
 @export var shield_origin: Vector3 = Vector3(0.0, 0.5, 0.0)
 
+## To prevent artifacts due to transparency and disabled culling, the shield can
+## be split into a front and back part.
+@export var split_front_back: bool = false
+
+## Make shield interactable by mouse-clicks.
 @export var handle_input_events: bool = true
 
 # The current impact index, used to keep track of the impacts and overwrite the
@@ -70,11 +75,28 @@ func _ready() -> void:
 
 	# Get the material and set the initial scale
 	material = get_active_material(0)
-	material.set_shader_parameter("object_scale", global_transform.basis.get_scale().x)
+
+	# Set the split front and back shader if enabled, copying all uniform
+	# settings
+	if split_front_back:
+		material.next_pass = material.duplicate()
+		var back_shader = load("res://addons/nojoule-energy-shield/shield_back.gdshader")
+		material.shader = back_shader
+		var front_shader = load("res://addons/nojoule-energy-shield/shield_front.gdshader")
+		material.next_pass.shader = front_shader
+	_update_material("object_scale", global_transform.basis.get_scale().x)
 
 	# Connect the input event to the shield
 	if handle_input_events and $Area3D:
 		$Area3D.input_event.connect(_on_area_3d_input_event)
+
+
+# Update the shader parameter [param name] with the [param value] and make sure
+# to update the front and back shader if split is enabled.
+func _update_material(name: String, value: Variant) -> void:
+	material.set_shader_parameter(name, value)
+	if split_front_back:
+		material.next_pass.set_shader_parameter(name, value)
 
 
 ## Generate the shield from the default origin, starting the generation
@@ -83,7 +105,7 @@ func generate() -> void:
 	if _generating_or_collapsing or !_collapsed:
 		return
 	generate_from(shield_origin)
-	material.set_shader_parameter("_relative_origin_generate", true)
+	_update_material("_relative_origin_generate", true)
 
 
 ## Generate the shield from a specific position, starting the generation
@@ -93,10 +115,10 @@ func generate_from(pos: Vector3) -> void:
 		return
 	_generating_or_collapsing = true
 	_generate_time = 0.0
-	material.set_shader_parameter("_relative_origin_generate", false)
-	material.set_shader_parameter("_collapse", false)
-	material.set_shader_parameter("_origin_generate", pos)
-	material.set_shader_parameter("_time_generate", _generate_time)
+	_update_material("_relative_origin_generate", false)
+	_update_material("_collapse", false)
+	_update_material("_origin_generate", pos)
+	_update_material("_time_generate", _generate_time)
 
 
 ## Collapse the shield from the default origin, starting the collapse
@@ -105,7 +127,7 @@ func collapse() -> void:
 	if _generating_or_collapsing or _collapsed:
 		return
 	collapse_from(shield_origin)
-	material.set_shader_parameter("_relative_origin_generate", true)
+	_update_material("_relative_origin_generate", true)
 
 
 ## Collapse the shield from a specific position, starting the collapse
@@ -115,10 +137,10 @@ func collapse_from(pos: Vector3) -> void:
 		return
 	_generating_or_collapsing = true
 	_generate_time = 0.0
-	material.set_shader_parameter("_relative_origin_generate", false)
-	material.set_shader_parameter("_collapse", true)
-	material.set_shader_parameter("_origin_generate", pos)
-	material.set_shader_parameter("_time_generate", _generate_time)
+	_update_material("_relative_origin_generate", false)
+	_update_material("_collapse", true)
+	_update_material("_origin_generate", pos)
+	_update_material("_time_generate", _generate_time)
 
 
 ## Create an impact at the [param pos] position, starting a new impact
@@ -130,7 +152,7 @@ func impact(pos: Vector3):
 	_impact_origin[_current_impact] = pos
 
 	# update the shader with the new impact origins
-	material.set_shader_parameter("_origin_impact", _impact_origin)
+	_update_material("_origin_impact", _impact_origin)
 
 	# update the shader with the new impact times
 	var time_impacts = []
@@ -145,7 +167,7 @@ func impact(pos: Vector3):
 				_animate[impact_id] = false
 		else:
 			time_impacts.append(0.0)
-	material.set_shader_parameter("_time_impact", time_impacts)
+	_update_material("_time_impact", time_impacts)
 
 	# increment the current impact index
 	_current_impact += 1
@@ -156,7 +178,7 @@ func _physics_process(delta: float) -> void:
 	# update the shield generation or collapse animation
 	if _generating_or_collapsing && _generate_time <= 1.0:
 		_generate_time += delta
-		material.set_shader_parameter("_time_generate", _generate_time)
+		_update_material("_time_generate", _generate_time)
 	else:
 		if _generating_or_collapsing:
 			_collapsed = !_collapsed
@@ -179,7 +201,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			time_impacts.append(0.0)
 	if any_update:
-		material.set_shader_parameter("_time_impact", time_impacts)
+		_update_material("_time_impact", time_impacts)
 
 
 func _on_area_3d_input_event(

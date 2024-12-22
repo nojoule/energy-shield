@@ -25,65 +25,7 @@ glow_blend_mode = 4
 [sub_resource type="PlaneMesh" id="PlaneMesh_imm5f"]
 material = SubResource("ShaderMaterial_rnqi4")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_m621f"]
-render_priority = 0
-shader = ExtResource("2_jvb1g")
-shader_parameter/_quantization = true
-shader_parameter/_steps_quantization = 5
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_noise_texture = ExtResource("3_3elpl")
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 3.0
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 0.1
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_border = true
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_show_normals = false
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_bwvxb"]
-resource_local_to_scene = true
-material = SubResource("ShaderMaterial_m621f")
-size = Vector2(1, 1)
-subdivide_width = 128
-subdivide_depth = 128
-
-[sub_resource type="Curve" id="Curve_urt7i"]
-resource_local_to_scene = true
-resource_name = "animation_curve"
-_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_vnyer"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1h67l"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_jvb1g")
@@ -129,13 +71,71 @@ shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_show_normals = false
 
-[sub_resource type="SphereMesh" id="SphereMesh_qgp0q"]
+[sub_resource type="SphereMesh" id="SphereMesh_8f6f0"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_vnyer")
+material = SubResource("ShaderMaterial_1h67l")
 radial_segments = 256
 rings = 256
 
-[sub_resource type="Curve" id="Curve_t4aep"]
+[sub_resource type="Curve" id="Curve_okpmd"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_84whp"]
+render_priority = 0
+shader = ExtResource("2_jvb1g")
+shader_parameter/_quantization = true
+shader_parameter/_steps_quantization = 5
+shader_parameter/_object_scale = 1.0
+shader_parameter/_object_size = 1.0
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_noise_texture = ExtResource("3_3elpl")
+shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
+shader_parameter/_relative_origin_generate = true
+shader_parameter/_time_generate = 1.0
+shader_parameter/_thickness_generate = 0.25
+shader_parameter/_collapse = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/glow_enabled = true
+shader_parameter/glow_strength = 0.1
+shader_parameter/_active_static = false
+shader_parameter/_origin_static = Vector3(0, 0, 0)
+shader_parameter/_speed_static = 0.1
+shader_parameter/_frequency_static = 80.0
+shader_parameter/_amplitude_static = 0.002
+shader_parameter/_normal_amplitude_static = 0.002
+shader_parameter/_effect_radius_static = 1.2
+shader_parameter/_origin_impact = null
+shader_parameter/_time_impact = null
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 0.0
+shader_parameter/_fade_waves_impact = 2.0
+shader_parameter/_amplitude_impact = 0.02
+shader_parameter/_normal_amplitude_impact = 0.05
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_active_border = true
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_active_static_offset_hl = true
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_show_normals = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_8ody6"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_84whp")
+size = Vector2(1, 1)
+subdivide_width = 128
+subdivide_depth = 128
+
+[sub_resource type="Curve" id="Curve_mbvwc"]
 resource_local_to_scene = true
 resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
@@ -160,15 +160,15 @@ mesh = SubResource("PlaneMesh_imm5f")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.648053, 0.60603, -0.461253, 0, 0.605641, 0.795738, 0.761595, -0.515681, 0.392488, -0.595546, 0.949374, 0.516091)
 
-[node name="ShieldPlane" parent="." instance=ExtResource("2_00woi")]
-transform = Transform3D(0.523986, -0.851727, 3.72302e-08, 0, -4.37114e-08, -1, 0.851727, 0.523986, -2.29041e-08, 0.469895, 0.211706, 0.172691)
-mesh = SubResource("PlaneMesh_bwvxb")
-animation_curve = SubResource("Curve_urt7i")
-
 [node name="ShieldSphere" parent="." instance=ExtResource("1_tvbm3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.355191, -1.19209e-07, 0.174721)
-mesh = SubResource("SphereMesh_qgp0q")
-animation_curve = SubResource("Curve_t4aep")
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, -0.355, 0, 0.175)
+mesh = SubResource("SphereMesh_8f6f0")
+animation_curve = SubResource("Curve_okpmd")
+
+[node name="ShieldPlane" parent="." instance=ExtResource("2_00woi")]
+transform = Transform3D(0.523986, -0.851727, 3.72302e-08, 0, -4.37114e-08, -1, 0.851727, 0.523986, -2.29041e-08, 0.47, 0.212, 0.173)
+mesh = SubResource("PlaneMesh_8ody6")
+animation_curve = SubResource("Curve_mbvwc")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.239108, 0, 0.439121, 0, 0.5, 0, -0.439121, 0, 0.239108, -0.859163, -1.19209e-07, 0.441666)

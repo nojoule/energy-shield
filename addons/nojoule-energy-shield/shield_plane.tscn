@@ -1,19 +1,19 @@
 [gd_scene load_steps=8 format=3 uid="uid://bvqb5fugcfm5k"]
 
-[ext_resource type="Shader" path="res://addons/nojoule-energy-shield/shield.gdshader" id="1_lcksv"]
 [ext_resource type="Script" path="res://addons/nojoule-energy-shield/shield.gd" id="1_sja5q"]
+[ext_resource type="Shader" path="res://addons/nojoule-energy-shield/shield.gdshader" id="1_uxet6"]
+[ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="2_0o82n"]
 [ext_resource type="Curve" uid="uid://cv0k0umipiy7n" path="res://addons/nojoule-energy-shield/impact_animation_curve.tres" id="2_6wogk"]
-[ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="2_lw1e0"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_m621f"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_84whp"]
 render_priority = 0
-shader = ExtResource("1_lcksv")
+shader = ExtResource("1_uxet6")
 shader_parameter/_quantization = true
 shader_parameter/_steps_quantization = 5
 shader_parameter/_object_scale = 1.0
 shader_parameter/_object_size = 1.0
 shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_noise_texture = ExtResource("2_lw1e0")
+shader_parameter/_noise_texture = ExtResource("2_0o82n")
 shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
 shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
@@ -31,8 +31,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/_origin_impact = null
+shader_parameter/_time_impact = null
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -52,7 +52,7 @@ shader_parameter/_show_normals = false
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7myad"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_m621f")
+material = SubResource("ShaderMaterial_84whp")
 size = Vector2(1, 1)
 subdivide_width = 128
 subdivide_depth = 128
