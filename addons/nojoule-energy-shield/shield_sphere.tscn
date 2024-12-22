@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="2_g0rh4"]
 [ext_resource type="Curve" uid="uid://cv0k0umipiy7n" path="res://addons/nojoule-energy-shield/impact_animation_curve.tres" id="2_utjra"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_cq5mx"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3q470"]
 render_priority = 0
 shader = ExtResource("1_181ey")
 shader_parameter/_quantization = true
@@ -23,7 +23,7 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 0.1
+shader_parameter/glow_strength = 10.0
 shader_parameter/_active_static = true
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
@@ -52,7 +52,7 @@ shader_parameter/_show_normals = false
 
 [sub_resource type="SphereMesh" id="SphereMesh_wowso"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_cq5mx")
+material = SubResource("ShaderMaterial_3q470")
 radial_segments = 256
 rings = 256
 

@@ -84,7 +84,7 @@ func _ready() -> void:
 		material.shader = back_shader
 		var front_shader = load("res://addons/nojoule-energy-shield/shield_front.gdshader")
 		material.next_pass.shader = front_shader
-	_update_material("object_scale", global_transform.basis.get_scale().x)
+	update_material("object_scale", global_transform.basis.get_scale().x)
 
 	# Connect the input event to the shield
 	if handle_input_events and $Area3D:
@@ -93,7 +93,7 @@ func _ready() -> void:
 
 # Update the shader parameter [param name] with the [param value] and make sure
 # to update the front and back shader if split is enabled.
-func _update_material(name: String, value: Variant) -> void:
+func update_material(name: String, value: Variant) -> void:
 	material.set_shader_parameter(name, value)
 	if split_front_back:
 		material.next_pass.set_shader_parameter(name, value)
@@ -105,7 +105,7 @@ func generate() -> void:
 	if _generating_or_collapsing or !_collapsed:
 		return
 	generate_from(shield_origin)
-	_update_material("_relative_origin_generate", true)
+	update_material("_relative_origin_generate", true)
 
 
 ## Generate the shield from a specific position, starting the generation
@@ -115,10 +115,10 @@ func generate_from(pos: Vector3) -> void:
 		return
 	_generating_or_collapsing = true
 	_generate_time = 0.0
-	_update_material("_relative_origin_generate", false)
-	_update_material("_collapse", false)
-	_update_material("_origin_generate", pos)
-	_update_material("_time_generate", _generate_time)
+	update_material("_relative_origin_generate", false)
+	update_material("_collapse", false)
+	update_material("_origin_generate", pos)
+	update_material("_time_generate", _generate_time)
 
 
 ## Collapse the shield from the default origin, starting the collapse
@@ -127,7 +127,7 @@ func collapse() -> void:
 	if _generating_or_collapsing or _collapsed:
 		return
 	collapse_from(shield_origin)
-	_update_material("_relative_origin_generate", true)
+	update_material("_relative_origin_generate", true)
 
 
 ## Collapse the shield from a specific position, starting the collapse
@@ -137,10 +137,10 @@ func collapse_from(pos: Vector3) -> void:
 		return
 	_generating_or_collapsing = true
 	_generate_time = 0.0
-	_update_material("_relative_origin_generate", false)
-	_update_material("_collapse", true)
-	_update_material("_origin_generate", pos)
-	_update_material("_time_generate", _generate_time)
+	update_material("_relative_origin_generate", false)
+	update_material("_collapse", true)
+	update_material("_origin_generate", pos)
+	update_material("_time_generate", _generate_time)
 
 
 ## Create an impact at the [param pos] position, starting a new impact
@@ -152,7 +152,7 @@ func impact(pos: Vector3):
 	_impact_origin[_current_impact] = pos
 
 	# update the shader with the new impact origins
-	_update_material("_origin_impact", _impact_origin)
+	update_material("_origin_impact", _impact_origin)
 
 	# update the shader with the new impact times
 	var time_impacts = []
@@ -167,7 +167,7 @@ func impact(pos: Vector3):
 				_animate[impact_id] = false
 		else:
 			time_impacts.append(0.0)
-	_update_material("_time_impact", time_impacts)
+	update_material("_time_impact", time_impacts)
 
 	# increment the current impact index
 	_current_impact += 1
@@ -178,7 +178,7 @@ func _physics_process(delta: float) -> void:
 	# update the shield generation or collapse animation
 	if _generating_or_collapsing && _generate_time <= 1.0:
 		_generate_time += delta
-		_update_material("_time_generate", _generate_time)
+		update_material("_time_generate", _generate_time)
 	else:
 		if _generating_or_collapsing:
 			_collapsed = !_collapsed
@@ -201,7 +201,7 @@ func _physics_process(delta: float) -> void:
 		else:
 			time_impacts.append(0.0)
 	if any_update:
-		_update_material("_time_impact", time_impacts)
+		update_material("_time_impact", time_impacts)
 
 
 func _on_area_3d_input_event(
@@ -213,7 +213,7 @@ func _on_area_3d_input_event(
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			if !_collapsed:
 				impact(event_position)
-		if mouse_event.button_index == MOUSE_BUTTON_RIGHT:
+		if mouse_event.button_index == MOUSE_BUTTON_MIDDLE:
 			if _collapsed:
 				generate_from(event_position)
 			else:
