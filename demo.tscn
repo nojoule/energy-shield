@@ -25,7 +25,7 @@ glow_blend_mode = 4
 [sub_resource type="PlaneMesh" id="PlaneMesh_imm5f"]
 material = SubResource("ShaderMaterial_rnqi4")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_amp2c"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_diavr"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_jvb1g")
@@ -73,7 +73,7 @@ shader_parameter/_show_normals = false
 
 [sub_resource type="SphereMesh" id="SphereMesh_8f6f0"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_amp2c")
+material = SubResource("ShaderMaterial_diavr")
 radial_segments = 256
 rings = 256
 

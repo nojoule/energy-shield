@@ -117,9 +117,9 @@ group_uniforms Debug;
 /** @debug Show the normals of the shield, which are used for the normal calculation of the shield. */
 uniform bool _show_normals = false;
 
-varying vec3 world_pos;
-varying float impact_offset;
-varying float static_offset;
+varying smooth vec3 world_pos;
+varying smooth float impact_offset;
+varying smooth float static_offset;
 varying flat vec3 origin_static_world;
 varying flat vec3 origin_generate_world;
 
@@ -166,20 +166,15 @@ float computeImpactOffset(
 	}
 
 	// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
-	if (impact_distance < PI/frequency) {
+	if (impact_distance <= PI/frequency) {
 		float wave_impact_position = (time) * frequency;
 		float blend_surface_offset = -sin(wave_impact_position) * amplitude;
-
-		// -sin(-0.5 * PI) is 1.0, but to not start with an offset from the original vertex position, we modify the displacement for the first part of the wave to only displace inward. This prevents the mesh to be inflated by default.
-		if (wave_position < 0.5 * PI) {
-			blend_surface_offset = blend_surface_offset * 0.5 - 0.5 * amplitude;
-		}
 
 		float blend_t = clamp(impact_distance / (PI/frequency), 0.0, 1.0);
 		//ease-in ease-out function for blending
 		float blend_value =
 			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
-		surface_offset = mix(blend_surface_offset, surface_offset, blend_value);
+		surface_offset = blend_surface_offset * (1.0 - blend_value) + blend_value * surface_offset;
 	}
 
 	// fade out the waves over time after the initial waves are through for the fade_waves
