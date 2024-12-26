@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="2_0o82n"]
 [ext_resource type="Curve" uid="uid://cv0k0umipiy7n" path="res://addons/nojoule-energy-shield/impact_animation_curve.tres" id="2_6wogk"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_84whp"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6mbxq"]
 render_priority = 0
 shader = ExtResource("1_uxet6")
 shader_parameter/_quantization = true
@@ -52,7 +52,7 @@ shader_parameter/_show_normals = false
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_7myad"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_84whp")
+material = SubResource("ShaderMaterial_6mbxq")
 size = Vector2(1, 1)
 subdivide_width = 128
 subdivide_depth = 128

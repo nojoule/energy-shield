@@ -1,7 +1,7 @@
 extends Camera3D
 
 var mouse_sensitivity: float = 0.003
-var move_speed: float = 10.0
+var move_speed: float = 3.0
 var rotation_x: float = 0.0
 var rotation_y: float = 0.0
 var mouse_captured: bool = false

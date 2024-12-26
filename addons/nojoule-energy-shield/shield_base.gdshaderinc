@@ -15,6 +15,7 @@ ambient_light_disabled, unshaded
 
 uniform sampler2D depth_texture : hint_depth_texture;
 
+group_uniforms General;
 /** Use quantization for alpha and color values to get a more pixelated look. */
 uniform bool _quantization = true;
 /** Quantization steps for the alpha and color values. */
@@ -174,7 +175,7 @@ float computeImpactOffset(
 		//ease-in ease-out function for blending
 		float blend_value =
 			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
-		surface_offset = blend_surface_offset * (1.0 - blend_value) + blend_value * surface_offset;
+		surface_offset = mix(blend_surface_offset, surface_offset, blend_value);
 	}
 
 	// fade out the waves over time after the initial waves are through for the fade_waves
@@ -310,12 +311,11 @@ vec3 adjustImpactNormal(
 
 		// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
 		if (distance < PI/frequency) {
-			float blend_slope = 0.0;
 			float blend_t = clamp(distance / (PI/frequency), 0.0, 1.0);
 			//ease-in ease-out function for blending
 			float blend_value =
 				blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
-			slope = (1.0 - blend_value) * blend_slope + blend_value * slope;
+			slope = mix(0.0, slope, blend_value);
 		}
 
 		return adjustNormal(
@@ -356,12 +356,11 @@ vec3 adjustStaticNormal(
 
 	// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
 	if (distance < PI/frequency) {
-		float blend_slope = 0.0;
 		float blend_t = clamp(distance / (PI/frequency), 0.0, 1.0);
 		//ease-in ease-out function for blending
 		float blend_value =
 			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
-		slope = mix(0, slope, blend_value);
+		slope = mix(0.0, slope, blend_value);
 	}
 
 	return adjustNormal(

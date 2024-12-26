@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://b687koijwjkt4"]
+[gd_scene load_steps=58 format=3 uid="uid://b687koijwjkt4"]
 
 [ext_resource type="Script" path="res://camera_movement.gd" id="1_1ksrw"]
 [ext_resource type="PackedScene" uid="uid://bvqb5fugcfm5k" path="res://addons/nojoule-energy-shield/shield_plane.tscn" id="1_uycqw"]
@@ -53,7 +53,7 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
@@ -111,7 +111,7 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
@@ -205,7 +205,7 @@ shader_parameter/_color_shield = Color(0, 0, 0, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
@@ -262,7 +262,7 @@ shader_parameter/_color_shield = Color(0, 0, 0, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0, 0)
 shader_parameter/_speed_static = 0.1
@@ -344,8 +344,8 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = true
+shader_parameter/glow_strength = 1.0
+shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
 shader_parameter/_frequency_static = 80.0
@@ -401,7 +401,7 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0, 0)
 shader_parameter/_speed_static = 0.1
@@ -503,7 +503,7 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
@@ -511,8 +511,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(14.5966, 0.727588, -0.337037), Vector3(13.8144, 0.845163, -0.0115681), Vector3(14.7107, 0.457659, 0.132434), Vector3(14.0448, 1.03029, 0.150845), Vector3(13.949, 0.997567, 0.0367912)])
-shader_parameter/_time_impact = [0.375174, 0.0, 0.997093, 0.933856, 0.74523]
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(13.837, 0.881621, -0.0102998), Vector3(13.9074, 0.237124, -0.0305398), Vector3(13.9029, 0.285353, -0.174766), Vector3(13.7637, 0.491433, -0.0415176), Vector3(14.3225, 0.210227, 0.304672)])
+shader_parameter/_time_impact = [0.925802, 0.726824, 0.34268, 0.0, 0.995655]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -564,7 +564,7 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
@@ -572,8 +572,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(16.0966, 0.727588, -0.337037), Vector3(15.3144, 0.845163, -0.0115681), Vector3(16.2107, 0.457659, 0.132434), Vector3(15.5448, 1.03029, 0.150845), Vector3(15.449, 0.997567, 0.0367912)])
-shader_parameter/_time_impact = [0.375174, 0.0, 0.997093, 0.933856, 0.74523]
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(15.337, 0.881621, -0.0102998), Vector3(15.4074, 0.237124, -0.0305398), Vector3(15.4029, 0.285353, -0.174766), Vector3(15.2637, 0.491433, -0.0415176), Vector3(15.8225, 0.210227, 0.304672)])
+shader_parameter/_time_impact = [0.925802, 0.726824, 0.34268, 0.0, 0.995655]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -660,7 +660,7 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
@@ -668,8 +668,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(19.1648, 0.154625, 0.210668), Vector3(19.2373, 0.74471, 0.478432), Vector3(19.3558, 0.555248, 0.486626), Vector3(19.4002, 0.361259, 0.412853), Vector3(19.6726, 0.827013, 0.140958)])
-shader_parameter/_time_impact = [0.375174, 0.0, 0.997093, 0.933856, 0.74523]
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(19.261, 1.03317, 0.249482), Vector3(19.3543, 0.114258, -0.0563727), Vector3(18.8214, 0.575654, 0.256417), Vector3(19.1872, 0.133815, 0.169499), Vector3(19.4138, 0.450666, 0.44818)])
+shader_parameter/_time_impact = [0.925802, 0.726824, 0.34268, 0.0, 0.995655]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -722,7 +722,7 @@ shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
+shader_parameter/glow_strength = 1.0
 shader_parameter/_active_static = false
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
@@ -730,8 +730,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(20.6648, 0.154625, 0.210668), Vector3(20.7373, 0.74471, 0.478432), Vector3(20.8558, 0.555248, 0.486626), Vector3(20.9002, 0.361259, 0.412853), Vector3(21.1726, 0.827013, 0.140958)])
-shader_parameter/_time_impact = [0.375174, 0.0, 0.997093, 0.933856, 0.74523]
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(20.761, 1.03317, 0.249482), Vector3(20.8543, 0.114258, -0.0563727), Vector3(20.3214, 0.575654, 0.256417), Vector3(20.6872, 0.133815, 0.169499), Vector3(20.9138, 0.450666, 0.44818)])
+shader_parameter/_time_impact = [0.925802, 0.726824, 0.34268, 0.0, 0.995655]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -766,6 +766,135 @@ resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
+[sub_resource type="GDScript" id="GDScript_iiy7r"]
+script/source = "@tool
+extends Node3D
+
+var rotation_speed: float = 45.0
+
+@onready var sphere: MeshInstance3D = $ShieldSphere
+@onready var plane: MeshInstance3D = $ShieldPlane
+
+func _process(delta: float) -> void:
+	sphere.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+	plane.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8qd4a"]
+render_priority = 0
+shader = ExtResource("2_u8gy5")
+shader_parameter/_quantization = true
+shader_parameter/_steps_quantization = 5
+shader_parameter/_object_scale = 1.0
+shader_parameter/_object_size = 1.1
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_noise_texture = ExtResource("4_cgev7")
+shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
+shader_parameter/_relative_origin_generate = true
+shader_parameter/_time_generate = 1.0
+shader_parameter/_thickness_generate = 0.25
+shader_parameter/_collapse = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/glow_enabled = true
+shader_parameter/glow_strength = 1.0
+shader_parameter/_active_static = true
+shader_parameter/_origin_static = Vector3(0.4, 0.4, 0)
+shader_parameter/_speed_static = 0.4
+shader_parameter/_frequency_static = 20.0
+shader_parameter/_amplitude_static = 0.05
+shader_parameter/_normal_amplitude_static = 0.05
+shader_parameter/_effect_radius_static = 2.0
+shader_parameter/_origin_impact = PackedVector3Array(0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 0.0
+shader_parameter/_fade_waves_impact = 2.0
+shader_parameter/_amplitude_impact = 0.05
+shader_parameter/_normal_amplitude_impact = 0.05
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_active_border = false
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_active_static_offset_hl = false
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_show_normals = false
+
+[sub_resource type="SphereMesh" id="SphereMesh_n6kln"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_8qd4a")
+radial_segments = 256
+rings = 256
+
+[sub_resource type="Curve" id="Curve_l06v0"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ycdec"]
+render_priority = 0
+shader = ExtResource("2_u8gy5")
+shader_parameter/_quantization = true
+shader_parameter/_steps_quantization = 5
+shader_parameter/_object_scale = 1.0
+shader_parameter/_object_size = 1.4
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_noise_texture = ExtResource("4_cgev7")
+shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
+shader_parameter/_relative_origin_generate = true
+shader_parameter/_time_generate = 1.0
+shader_parameter/_thickness_generate = 0.25
+shader_parameter/_collapse = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/glow_enabled = true
+shader_parameter/glow_strength = 1.0
+shader_parameter/_active_static = true
+shader_parameter/_origin_static = Vector3(0, 0, 0)
+shader_parameter/_speed_static = 0.4
+shader_parameter/_frequency_static = 20.0
+shader_parameter/_amplitude_static = 0.05
+shader_parameter/_normal_amplitude_static = 0.05
+shader_parameter/_effect_radius_static = 2.0
+shader_parameter/_origin_impact = null
+shader_parameter/_time_impact = null
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 0.0
+shader_parameter/_fade_waves_impact = 2.0
+shader_parameter/_amplitude_impact = 0.05
+shader_parameter/_normal_amplitude_impact = 0.05
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_active_border = true
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_active_static_offset_hl = false
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_show_normals = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_h6f4g"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_ycdec")
+size = Vector2(1, 1)
+subdivide_width = 128
+subdivide_depth = 128
+
+[sub_resource type="Curve" id="Curve_24ojw"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
 [node name="EnergyShieldExamples" type="Node3D"]
 
 [node name="WorldEnv" type="WorldEnvironment" parent="."]
@@ -775,161 +904,162 @@ environment = SubResource("Environment_nl0ma")
 transform = Transform3D(0.925871, -0.32722, 0.18892, 0, 0.5, 0.866025, -0.377841, -0.801827, 0.462935, 0, 10, 0)
 light_energy = 0.2
 
-[node name="Example1" type="Node3D" parent="."]
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.951428, 0.307871, 0, -0.307871, 0.951428, 0, 0.912, 2.027)
+script = ExtResource("1_1ksrw")
+
+[node name="InteractionExample" type="Node3D" parent="."]
 script = SubResource("GDScript_mlkug")
 
-[node name="Heading" type="Label3D" parent="Example1"]
+[node name="Heading" type="Label3D" parent="InteractionExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
 pixel_size = 0.003
 modulate = Color(1, 0.763636, 0, 1)
 text = "ENERGY SHIELD INTERACTION"
 font_size = 40
 
-[node name="Description" type="Label3D" parent="Example1"]
+[node name="Description" type="Label3D" parent="InteractionExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
 pixel_size = 0.003
-text = "Left mouse button to interact. Mid Mouse button to collapse/regenerate the shields."
+text = "Left mouse button to interact. Ctrl + left mouse button to collapse/regenerate the shields."
 vertical_alignment = 0
 autowrap_mode = 3
-width = 640.0
+width = 700.0
 
-[node name="Ground" type="MeshInstance3D" parent="Example1"]
+[node name="Ground" type="MeshInstance3D" parent="InteractionExample"]
 mesh = SubResource("QuadMesh_f5biq")
 
-[node name="ShieldPlane" parent="Example1" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.0108816, -1.00977, 4.41725e-08, 0, -4.37114e-08, -1, 1.00977, 0.0108816, -4.75992e-10, -0.75, 0.6, 0)
+[node name="ShieldPlane" parent="InteractionExample" instance=ExtResource("1_uycqw")]
+transform = Transform3D(0.808994, -0.609764, 2.66803e-08, 0, -4.37114e-08, -1, 0.609764, 0.808994, -3.53969e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_e83g8")
 animation_curve = SubResource("Curve_cwp47")
 
-[node name="ShieldSphere" parent="Example1" instance=ExtResource("3_twgkm")]
+[node name="ShieldSphere" parent="InteractionExample" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_jhkwg")
 animation_curve = SubResource("Curve_8n046")
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.951428, 0.307871, 0, -0.307871, 0.951428, 0, 0.912, 2.027)
-script = ExtResource("1_1ksrw")
-
-[node name="Example2" type="Node3D" parent="."]
+[node name="ColorExample" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, 0)
 script = SubResource("GDScript_1dyov")
 
-[node name="Heading" type="Label3D" parent="Example2"]
+[node name="Heading" type="Label3D" parent="ColorExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
 pixel_size = 0.003
 modulate = Color(1, 0.763636, 0, 1)
 text = "COLOR"
 font_size = 40
 
-[node name="Description" type="Label3D" parent="Example2"]
+[node name="Description" type="Label3D" parent="ColorExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
 pixel_size = 0.003
-text = "You can freely choose the color. Black is Possible as well."
+text = "You can freely choose the color. Black is possible as well."
 vertical_alignment = 0
 autowrap_mode = 3
-width = 640.0
+width = 700.0
 
-[node name="Ground" type="MeshInstance3D" parent="Example2"]
+[node name="Ground" type="MeshInstance3D" parent="ColorExample"]
 mesh = SubResource("QuadMesh_f5biq")
 
-[node name="ShieldSphere" parent="Example2" instance=ExtResource("3_twgkm")]
+[node name="ShieldSphere" parent="ColorExample" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_q2ark")
 skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_ibf8e")
 
-[node name="ShieldPlane" parent="Example2" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.235115, -0.98206, 4.29605e-08, 0, -4.37114e-08, -1, 0.98206, 0.235115, -1.0284e-08, -0.75, 0.6, 0)
+[node name="ShieldPlane" parent="ColorExample" instance=ExtResource("1_uycqw")]
+transform = Transform3D(0.924329, -0.414645, 1.81424e-08, 0, -4.37114e-08, -1, 0.414645, 0.924329, -4.04408e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_tb5o1")
 skeleton = NodePath("../ShieldSphere")
 animation_curve = SubResource("Curve_u31ny")
 
-[node name="Example3" type="Node3D" parent="."]
+[node name="DepthHighlight" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
 script = SubResource("GDScript_r2b7w")
 
-[node name="Heading" type="Label3D" parent="Example3"]
+[node name="Heading" type="Label3D" parent="DepthHighlight"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
 pixel_size = 0.003
 modulate = Color(1, 0.763636, 0, 1)
 text = "HIGHLIGHT INTERSECTION"
 font_size = 40
 
-[node name="Description" type="Label3D" parent="Example3"]
+[node name="Description" type="Label3D" parent="DepthHighlight"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
 pixel_size = 0.003
-text = "You can freely choose the color. Black is Possible as well."
+text = "Using the depth values, close objects will cause a hightlight on the material.
+"
 vertical_alignment = 0
 autowrap_mode = 3
-width = 640.0
+width = 700.0
 
-[node name="Ground" type="MeshInstance3D" parent="Example3"]
+[node name="Ground" type="MeshInstance3D" parent="DepthHighlight"]
 mesh = SubResource("QuadMesh_f5biq")
 
-[node name="ShieldSphere" parent="Example3" instance=ExtResource("3_twgkm")]
+[node name="ShieldSphere" parent="DepthHighlight" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_bycw3")
 animation_curve = SubResource("Curve_t2u8o")
 
-[node name="ShieldPlane" parent="Example3" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-1.00416, 0.0791961, -3.46369e-09, 0, -4.37114e-08, -1, -0.0791961, -1.00416, 4.39128e-08, -0.75, 0.6, 0)
+[node name="ShieldPlane" parent="DepthHighlight" instance=ExtResource("1_uycqw")]
+transform = Transform3D(-0.67798, -0.74952, 3.27796e-08, 0, -4.37114e-08, -1, 0.74952, -0.67798, 2.96527e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_6jtgg")
 animation_curve = SubResource("Curve_wk33k")
 
-[node name="EnvironmentSphere" type="MeshInstance3D" parent="Example3"]
+[node name="EnvironmentSphere" type="MeshInstance3D" parent="DepthHighlight"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.6, -0.126896)
 mesh = SubResource("SphereMesh_7cs7f")
 
-[node name="EnvironmentCube" type="MeshInstance3D" parent="Example3"]
+[node name="EnvironmentCube" type="MeshInstance3D" parent="DepthHighlight"]
 transform = Transform3D(0.999781, -0.013037, -0.0163897, 0, 0.782608, -0.622515, 0.0209424, 0.622378, 0.782436, -1, 0.6, 0)
 mesh = SubResource("BoxMesh_qsywp")
 skeleton = NodePath("../EnvironmentSphere")
 
-[node name="EnvironmentMovingPlatform" type="MeshInstance3D" parent="Example3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1.02768, 0)
+[node name="EnvironmentMovingPlatform" type="MeshInstance3D" parent="DepthHighlight"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.103913, 0)
 mesh = SubResource("BoxMesh_8tyb0")
 
-[node name="Example4" type="Node3D" parent="."]
+[node name="QuantizationExample" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, 0)
 script = SubResource("GDScript_v1qj6")
 
-[node name="Heading" type="Label3D" parent="Example4"]
+[node name="Heading" type="Label3D" parent="QuantizationExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
 pixel_size = 0.003
 modulate = Color(1, 0.763636, 0, 1)
 text = "QUANTIZATION"
 font_size = 40
 
-[node name="Description" type="Label3D" parent="Example4"]
+[node name="Description" type="Label3D" parent="QuantizationExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
 pixel_size = 0.003
-text = "You can turn quantization off (left) or on (right), to match different artstyles."
+text = "You can turn quantization off (left) or on (right), to better match different artstyles."
 vertical_alignment = 0
 autowrap_mode = 3
-width = 640.0
+width = 700.0
 
-[node name="Ground" type="MeshInstance3D" parent="Example4"]
+[node name="Ground" type="MeshInstance3D" parent="QuantizationExample"]
 mesh = SubResource("QuadMesh_f5biq")
 
-[node name="ShieldSphere" parent="Example4" instance=ExtResource("3_twgkm")]
+[node name="ShieldSphere" parent="QuantizationExample" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_yjboh")
 skeleton = NodePath("../..")
 script = SubResource("GDScript_6h0e3")
 animation_curve = SubResource("Curve_7vbqd")
 
-[node name="ShieldSphere2" parent="Example4" instance=ExtResource("3_twgkm")]
+[node name="ShieldSphere2" parent="QuantizationExample" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_bkub6")
 skeleton = NodePath("../ShieldSphere")
 script = SubResource("GDScript_eeeod")
 animation_curve = SubResource("Curve_dggen")
 
-[node name="Example5" type="Node3D" parent="."]
+[node name="NoiseTextureExample" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
 script = SubResource("GDScript_sq7vv")
 
-[node name="Heading" type="Label3D" parent="Example5"]
+[node name="Heading" type="Label3D" parent="NoiseTextureExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
 pixel_size = 0.003
 modulate = Color(1, 0.763636, 0, 1)
@@ -937,28 +1067,63 @@ text = "NOISE TEXTURE
 "
 font_size = 40
 
-[node name="Description" type="Label3D" parent="Example5"]
+[node name="Description" type="Label3D" parent="NoiseTextureExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
 pixel_size = 0.003
 text = "Adding a noise texture can add more details to the shield highlights.
-Left - no texture, Right - texture"
+Left - without texture, Right - with texture"
 vertical_alignment = 0
 autowrap_mode = 3
-width = 640.0
+width = 700.0
 
-[node name="Ground" type="MeshInstance3D" parent="Example5"]
+[node name="Ground" type="MeshInstance3D" parent="NoiseTextureExample"]
 mesh = SubResource("QuadMesh_f5biq")
 
-[node name="ShieldSphere" parent="Example5" instance=ExtResource("3_twgkm")]
+[node name="ShieldSphere" parent="NoiseTextureExample" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_ptlbr")
 skeleton = NodePath("../Description")
 script = SubResource("GDScript_nr1vk")
 animation_curve = SubResource("Curve_rgfh0")
 
-[node name="ShieldSphere2" parent="Example5" instance=ExtResource("3_twgkm")]
+[node name="ShieldSphere2" parent="NoiseTextureExample" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_5y2kl")
 skeleton = NodePath("../ShieldSphere")
 script = SubResource("GDScript_dkdx8")
 animation_curve = SubResource("Curve_envml")
+
+[node name="WaveOptionsExample" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 0)
+script = SubResource("GDScript_iiy7r")
+
+[node name="Heading" type="Label3D" parent="WaveOptionsExample"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
+pixel_size = 0.003
+modulate = Color(1, 0.763636, 0, 1)
+text = "WAVE OPTIONS
+"
+font_size = 40
+
+[node name="Description" type="Label3D" parent="WaveOptionsExample"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
+pixel_size = 0.003
+text = "Adjustable settings for both the static and interaction waves."
+vertical_alignment = 0
+autowrap_mode = 3
+width = 640.0
+
+[node name="Ground" type="MeshInstance3D" parent="WaveOptionsExample"]
+mesh = SubResource("QuadMesh_f5biq")
+
+[node name="ShieldSphere" parent="WaveOptionsExample" instance=ExtResource("3_twgkm")]
+transform = Transform3D(1.00069, 0, 0.0285747, 0, 1, 0, -0.0285747, 0, 1.00069, 0.75, 0.6, 0)
+mesh = SubResource("SphereMesh_n6kln")
+skeleton = NodePath("../..")
+animation_curve = SubResource("Curve_l06v0")
+
+[node name="ShieldPlane" parent="WaveOptionsExample" instance=ExtResource("1_uycqw")]
+transform = Transform3D(1.00069, 0.0202098, 0.0202098, 0, 0.707107, -0.707107, -0.0285747, 0.707972, 0.707972, -0.75, 0.6, 0)
+mesh = SubResource("PlaneMesh_h6f4g")
+skeleton = NodePath("../..")
+animation_curve = SubResource("Curve_24ojw")
