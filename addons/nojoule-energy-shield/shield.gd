@@ -209,12 +209,14 @@ func _on_area_3d_input_event(
 ) -> void:
 	# event handling for interaction with the shield
 	if is_instance_of(event, InputEventMouseButton) and event.is_pressed():
+		var shift_pressed = Input.is_key_pressed(KEY_CTRL)
 		var mouse_event: InputEventMouseButton = event
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
-			if !_collapsed:
-				impact(event_position)
-		if mouse_event.button_index == MOUSE_BUTTON_MIDDLE:
-			if _collapsed:
-				generate_from(event_position)
+			if not shift_pressed:
+				if not _collapsed:
+					impact(event_position)
 			else:
-				collapse_from(event_position)
+				if _collapsed:
+					generate_from(event_position)
+				else:
+					collapse_from(event_position)
