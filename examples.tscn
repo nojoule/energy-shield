@@ -1,12 +1,10 @@
-[gd_scene load_steps=60 format=3 uid="uid://b687koijwjkt4"]
+[gd_scene load_steps=51 format=3 uid="uid://b687koijwjkt4"]
 
 [ext_resource type="Script" path="res://camera_movement.gd" id="1_1ksrw"]
 [ext_resource type="PackedScene" uid="uid://bvqb5fugcfm5k" path="res://addons/nojoule-energy-shield/shield_plane.tscn" id="1_uycqw"]
 [ext_resource type="Shader" path="res://addons/nojoule-energy-shield/shield.gdshader" id="2_u8gy5"]
 [ext_resource type="PackedScene" uid="uid://bqo3es5yd4r70" path="res://addons/nojoule-energy-shield/shield_sphere.tscn" id="3_twgkm"]
 [ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="4_cgev7"]
-[ext_resource type="Shader" path="res://addons/nojoule-energy-shield/shield_front.gdshader" id="6_61nb0"]
-[ext_resource type="Shader" path="res://addons/nojoule-energy-shield/shield_back.gdshader" id="7_mwg61"]
 
 [sub_resource type="Environment" id="Environment_nl0ma"]
 background_mode = 1
@@ -203,7 +201,7 @@ shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
 shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.586997, 0.586997, 0.586997, 1)
+shader_parameter/_color_shield = Color(0, 0, 0, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
@@ -260,7 +258,7 @@ shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
 shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.586997, 0.586997, 0.586997, 1)
+shader_parameter/_color_shield = Color(0, 0, 0, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 3.0
 shader_parameter/glow_enabled = true
@@ -488,9 +486,9 @@ func _process(delta: float):
 		time_passed -= impact_cooldown
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_rx5nu"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6c8gp"]
 render_priority = 0
-shader = ExtResource("6_61nb0")
+shader = ExtResource("2_u8gy5")
 shader_parameter/_quantization = false
 shader_parameter/_steps_quantization = 5
 shader_parameter/_object_scale = 1.0
@@ -513,143 +511,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = null
-shader_parameter/_time_impact = null
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_border = false
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_show_normals = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_excar"]
-render_priority = 0
-next_pass = SubResource("ShaderMaterial_rx5nu")
-shader = ExtResource("6_61nb0")
-shader_parameter/_quantization = false
-shader_parameter/_steps_quantization = 5
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 2.5
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0.5, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(14.0303, 0.245418, -0.275708), Vector3(14.6275, 0.340314, -0.200229), Vector3(13.8964, 0.754943, -0.317698), Vector3(14.5354, 0.892396, -0.28822), Vector3(14.3895, 1.01361, 0.243876)])
-shader_parameter/_time_impact = [0.832495, 0.53547, 0.0215217, 0.0, 0.968638]
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_border = false
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_show_normals = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_g84fr"]
-render_priority = 0
-next_pass = SubResource("ShaderMaterial_excar")
-shader = ExtResource("6_61nb0")
-shader_parameter/_quantization = false
-shader_parameter/_steps_quantization = 5
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 2.5
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0.5, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(13.8084, 0.756148, 0.175032), Vector3(13.8408, 0.879981, -0.0646988), Vector3(13.8484, 0.673534, 0.288682), Vector3(14.6318, 0.342971, 0.195267), Vector3(13.8969, 0.826035, -0.272457)])
-shader_parameter/_time_impact = [0.622117, 0.163797, 0.0, 0.983259, 0.876591]
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_border = false
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_show_normals = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_r1h8q"]
-render_priority = 0
-next_pass = SubResource("ShaderMaterial_g84fr")
-shader = ExtResource("7_mwg61")
-shader_parameter/_quantization = false
-shader_parameter/_steps_quantization = 5
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 2.5
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0.5, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(13.8084, 0.756148, 0.175032), Vector3(13.8408, 0.879981, -0.0646988), Vector3(13.8484, 0.673534, 0.288682), Vector3(14.6318, 0.342971, 0.195267), Vector3(13.8969, 0.826035, -0.272457)])
-shader_parameter/_time_impact = [0.622117, 0.163797, 0.0, 0.983259, 0.876591]
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(14.5966, 0.727588, -0.337037), Vector3(13.8144, 0.845163, -0.0115681), Vector3(14.7107, 0.457659, 0.132434), Vector3(14.0448, 1.03029, 0.150845), Vector3(13.949, 0.997567, 0.0367912)])
+shader_parameter/_time_impact = [0.375174, 0.0, 0.997093, 0.933856, 0.74523]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -669,7 +532,7 @@ shader_parameter/_show_normals = false
 
 [sub_resource type="SphereMesh" id="SphereMesh_yjboh"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_r1h8q")
+material = SubResource("ShaderMaterial_6c8gp")
 radial_segments = 256
 rings = 256
 
@@ -684,9 +547,9 @@ resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_oe7tr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8terc"]
 render_priority = 0
-shader = ExtResource("6_61nb0")
+shader = ExtResource("2_u8gy5")
 shader_parameter/_quantization = true
 shader_parameter/_steps_quantization = 7
 shader_parameter/_object_scale = 1.0
@@ -709,98 +572,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(15.5303, 0.245418, -0.275708), Vector3(16.1275, 0.340314, -0.200229), Vector3(15.3964, 0.754943, -0.317698), Vector3(16.0354, 0.892396, -0.28822), Vector3(15.8895, 1.01361, 0.243876)])
-shader_parameter/_time_impact = [0.832495, 0.53547, 0.0215217, 0.0, 0.968638]
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_border = false
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_show_normals = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_5a3yn"]
-render_priority = 0
-next_pass = SubResource("ShaderMaterial_oe7tr")
-shader = ExtResource("6_61nb0")
-shader_parameter/_quantization = true
-shader_parameter/_steps_quantization = 7
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 2.5
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0.5, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(15.3084, 0.756148, 0.175032), Vector3(15.3408, 0.879981, -0.0646988), Vector3(15.3484, 0.673534, 0.288682), Vector3(16.1318, 0.342971, 0.195267), Vector3(15.3969, 0.826035, -0.272457)])
-shader_parameter/_time_impact = [0.622117, 0.163797, 0.0, 0.983259, 0.876591]
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_border = false
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_show_normals = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_y5lg4"]
-render_priority = 0
-next_pass = SubResource("ShaderMaterial_5a3yn")
-shader = ExtResource("7_mwg61")
-shader_parameter/_quantization = true
-shader_parameter/_steps_quantization = 7
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 2.5
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0.5, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(15.3084, 0.756148, 0.175032), Vector3(15.3408, 0.879981, -0.0646988), Vector3(15.3484, 0.673534, 0.288682), Vector3(16.1318, 0.342971, 0.195267), Vector3(15.3969, 0.826035, -0.272457)])
-shader_parameter/_time_impact = [0.622117, 0.163797, 0.0, 0.983259, 0.876591]
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(16.0966, 0.727588, -0.337037), Vector3(15.3144, 0.845163, -0.0115681), Vector3(16.2107, 0.457659, 0.132434), Vector3(15.5448, 1.03029, 0.150845), Vector3(15.449, 0.997567, 0.0367912)])
+shader_parameter/_time_impact = [0.375174, 0.0, 0.997093, 0.933856, 0.74523]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -820,7 +593,7 @@ shader_parameter/_show_normals = false
 
 [sub_resource type="SphereMesh" id="SphereMesh_bkub6"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_y5lg4")
+material = SubResource("ShaderMaterial_8terc")
 radial_segments = 256
 rings = 256
 
@@ -870,54 +643,9 @@ func _process(delta: float):
 		time_passed -= impact_cooldown
 "
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ax2f"]
-render_priority = 0
-shader = ExtResource("6_61nb0")
-shader_parameter/_quantization = false
-shader_parameter/_steps_quantization = 5
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 2.5
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0.5, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = null
-shader_parameter/_time_impact = null
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_border = false
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_show_normals = false
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_67oo1"]
 render_priority = 0
-next_pass = SubResource("ShaderMaterial_7ax2f")
-shader = ExtResource("7_mwg61")
+shader = ExtResource("2_u8gy5")
 shader_parameter/_quantization = false
 shader_parameter/_steps_quantization = 5
 shader_parameter/_object_scale = 1.0
@@ -940,8 +668,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = null
-shader_parameter/_time_impact = null
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(19.1648, 0.154625, 0.210668), Vector3(19.2373, 0.74471, 0.478432), Vector3(19.3558, 0.555248, 0.486626), Vector3(19.4002, 0.361259, 0.412853), Vector3(19.6726, 0.827013, 0.140958)])
+shader_parameter/_time_impact = [0.375174, 0.0, 0.997093, 0.933856, 0.74523]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -976,9 +704,9 @@ resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_q3ifu"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x0bsn"]
 render_priority = 0
-shader = ExtResource("6_61nb0")
+shader = ExtResource("2_u8gy5")
 shader_parameter/_quantization = false
 shader_parameter/_steps_quantization = 5
 shader_parameter/_object_scale = 1.0
@@ -1002,54 +730,8 @@ shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = null
-shader_parameter/_time_impact = null
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_border = false
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_show_normals = false
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ek00t"]
-render_priority = 0
-next_pass = SubResource("ShaderMaterial_q3ifu")
-shader = ExtResource("7_mwg61")
-shader_parameter/_quantization = false
-shader_parameter/_steps_quantization = 5
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_noise_texture = ExtResource("4_cgev7")
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 2.5
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0.5, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_origin_impact = null
-shader_parameter/_time_impact = null
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(20.6648, 0.154625, 0.210668), Vector3(20.7373, 0.74471, 0.478432), Vector3(20.8558, 0.555248, 0.486626), Vector3(20.9002, 0.361259, 0.412853), Vector3(21.1726, 0.827013, 0.140958)])
+shader_parameter/_time_impact = [0.375174, 0.0, 0.997093, 0.933856, 0.74523]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -1069,7 +751,7 @@ shader_parameter/_show_normals = false
 
 [sub_resource type="SphereMesh" id="SphereMesh_5y2kl"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_ek00t")
+material = SubResource("ShaderMaterial_x0bsn")
 radial_segments = 256
 rings = 256
 
@@ -1115,7 +797,7 @@ width = 640.0
 mesh = SubResource("QuadMesh_f5biq")
 
 [node name="ShieldPlane" parent="Example1" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-0.993341, 0.17804, -7.78886e-09, 0, -4.37114e-08, -1, -0.17804, -0.993341, 4.34543e-08, -0.75, 0.6, 0)
+transform = Transform3D(0.0108816, -1.00977, 4.41725e-08, 0, -4.37114e-08, -1, 1.00977, 0.0108816, -4.75992e-10, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_e83g8")
 animation_curve = SubResource("Curve_cwp47")
 
@@ -1157,7 +839,7 @@ skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_ibf8e")
 
 [node name="ShieldPlane" parent="Example2" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-1.00804, -0.0472755, 2.0671e-09, 0, -4.37114e-08, -1, 0.0472755, -1.00804, 4.40973e-08, -0.75, 0.6, 0)
+transform = Transform3D(0.235115, -0.98206, 4.29605e-08, 0, -4.37114e-08, -1, 0.98206, 0.235115, -1.0284e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_tb5o1")
 skeleton = NodePath("../ShieldSphere")
 animation_curve = SubResource("Curve_u31ny")
@@ -1190,7 +872,7 @@ mesh = SubResource("SphereMesh_bycw3")
 animation_curve = SubResource("Curve_t2u8o")
 
 [node name="ShieldPlane" parent="Example3" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.265426, 0.970997, -4.24635e-08, 0, -4.37114e-08, -1, -0.970997, 0.265426, -1.16073e-08, -0.75, 0.6, 0)
+transform = Transform3D(-1.00416, 0.0791961, -3.46369e-09, 0, -4.37114e-08, -1, -0.0791961, -1.00416, 4.39128e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_6jtgg")
 animation_curve = SubResource("Curve_wk33k")
 
@@ -1204,7 +886,7 @@ mesh = SubResource("BoxMesh_qsywp")
 skeleton = NodePath("../EnvironmentSphere")
 
 [node name="EnvironmentMovingPlatform" type="MeshInstance3D" parent="Example3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.728297, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1.02768, 0)
 mesh = SubResource("BoxMesh_8tyb0")
 
 [node name="Example4" type="Node3D" parent="."]

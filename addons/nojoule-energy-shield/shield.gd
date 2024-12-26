@@ -78,7 +78,10 @@ func _ready() -> void:
 
 	# Set the split front and back shader if enabled, copying all uniform
 	# settings
-	if split_front_back:
+	if not Engine.is_editor_hint() and split_front_back:
+		if material.next_pass:
+			var del_mat = material.next_pass
+			material.next_pass = null
 		material.next_pass = material.duplicate()
 		var back_shader = load("res://addons/nojoule-energy-shield/shield_back.gdshader")
 		material.shader = back_shader
@@ -95,7 +98,7 @@ func _ready() -> void:
 # to update the front and back shader if split is enabled.
 func update_material(name: String, value: Variant) -> void:
 	material.set_shader_parameter(name, value)
-	if split_front_back:
+	if not Engine.is_editor_hint() and split_front_back:
 		material.next_pass.set_shader_parameter(name, value)
 
 
