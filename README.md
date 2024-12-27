@@ -9,8 +9,8 @@ This addon adds an energy shield to Godot you can add it to your scenes. You can
 - [ ] Add chromatic aberration
 
 
-<img src="./docs/showcase_inenvironment.png" alt="sphere and plane energy shield, with the sphere showing an impact reaction" width="400">
-<img src="./docs/showcase_standalone.png" alt="sphere and plane energy shield, each showing a wave" width="400">
+<img src="./docs/showcase_inenvironment.png" alt="sphere and plane energy shield, with the sphere showing an impact reaction" width="300">
+<img src="./docs/showcase_standalone.png" alt="sphere and plane energy shield, each showing a wave" width="300">
 
 ## Interactable
 You can use the `shield.gd` script adding reaction on mouse clicks, or adjust it to your use-cases. Following interactions are available:
