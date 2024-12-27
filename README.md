@@ -28,4 +28,4 @@ Color, wave height/frequency, quantization of the colors are just some of the cu
 
 ## Support me
 
-Follow me on [twitch](https://www.twitch.tv/nojoule) for some live-coding or check out my [youtube](https://www.youtube.com/@nojoule) for content around game dev.
+Follow me on [Twitch](https://www.twitch.tv/nojoule) for some live-coding or check out my [Youtube](https://www.youtube.com/@nojoule) for content around game dev.
