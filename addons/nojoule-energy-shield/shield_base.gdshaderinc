@@ -161,7 +161,7 @@ float computeImpactOffset(
 
 	float surface_offset = -sin(wave_position) * amplitude;
 
-	// -sin(-0.5 * PI) is 1.0, but to not start with an offset from the original vertex position, we modify the displacement for the first part of the wave to only displace inward. This prevents the mesh to be inflated by default.
+	// -sin(-0.5 * PI) is 1.0, but to start with an offset of 0 from the original vertex position, we modify the displacement for the first part of the wave to only displace inward. This prevents the mesh to be inflated by default.
 	if (wave_position < 0.5 * PI) {
 		surface_offset = surface_offset * 0.5 - 0.5 * amplitude;
 	}
@@ -170,7 +170,9 @@ float computeImpactOffset(
 	if (impact_distance <= PI/frequency) {
 		float wave_impact_position = (time) * frequency;
 		float blend_surface_offset = -sin(wave_impact_position) * amplitude;
-
+		if (wave_impact_position < 0.5 * PI) {
+			blend_surface_offset = blend_surface_offset * 0.5 - 0.5 * amplitude;
+		}
 		float blend_t = clamp(impact_distance / (PI/frequency), 0.0, 1.0);
 		//ease-in ease-out function for blending
 		float blend_value =
@@ -248,7 +250,7 @@ float calculateSlope(
 	float frequency,
 	float phase
 ) {
-    return cos(frequency * time + phase) * frequency * amplitude;
+    return -cos(frequency * time + phase) * frequency * amplitude;
 }
 
 /**
@@ -260,14 +262,15 @@ vec3 adjustNormal(
 	vec3 normal,
 	bool backface
 ) {
-	vec3 waveNormal = -calculateNormalFromTangent(normalize(vec3(1.0, -slope, 0.0)));
+	vec3 tangent = vec3(1.0, slope, 0.0);
+	vec3 waveNormal = -calculateNormalFromTangent(tangent);
 	if (!backface) {
 		waveNormal = vec3(-waveNormal.x, waveNormal.y, waveNormal.z);
 	}
-	vec3 wave_normal_binormal = normalize(cross(normal, wave_direction));
-	vec3 wave_tangent = normalize(cross(normal, wave_normal_binormal));
+	vec3 binormal = normalize(cross(normal, wave_direction));
+	vec3 surface_tangent = normalize(cross(normal, binormal));
 	vec3 wave_adjusted_normal =
-		normalize(waveNormal.x * wave_tangent + waveNormal.y * normal);
+		normalize(waveNormal.x * surface_tangent + waveNormal.y * normal);
 	return wave_adjusted_normal;
 }
 
