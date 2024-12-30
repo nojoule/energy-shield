@@ -22,10 +22,10 @@ The energy shield can collapse or regenerated from specified positions. The anim
 **Intersection Highlight**:
 Using the depth texture, the material checks for close objects and highlighting close objects and intersections with other objects.
 
-## Appearance
+## Customizations
 
 Color, wave height/frequency, quantization of the colors are just some of the customizations possible to fit the style of your game. All shader parameters are documented, check the example scene for some of them.
 
 ## Support me
 
-Follow me on [twitch](https://www.twitch.tv/nojoule) for some live-coding or check out my [youtube](https://www.youtube.com/@nojoule) for content around game dev.
+Follow me on [Twitch](https://www.twitch.tv/nojoule) for some live-coding or check out my [Youtube](https://www.youtube.com/@nojoule) for content around game dev.
