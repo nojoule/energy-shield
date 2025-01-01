@@ -258,19 +258,19 @@ float calculateSlope(
  */
 vec3 adjustNormal(
 	vec3 wave_direction,
-	float slope,
-	vec3 normal,
+	float wave_slope,
+	vec3 orig_normal,
 	bool backface
 ) {
-	vec3 tangent = vec3(1.0, slope, 0.0);
-	vec3 waveNormal = -calculateNormalFromTangent(tangent);
+	vec3 wave_tangent = vec3(1.0, wave_slope, 0.0);
+	vec3 wave_normal = -calculateNormalFromTangent(wave_tangent);
 	if (!backface) {
-		waveNormal = vec3(-waveNormal.x, waveNormal.y, waveNormal.z);
+		wave_normal = vec3(-wave_normal.x, wave_normal.y, wave_normal.z);
 	}
-	vec3 binormal = normalize(cross(normal, wave_direction));
-	vec3 surface_tangent = normalize(cross(normal, binormal));
+	vec3 binormal = normalize(cross(orig_normal, wave_direction));
+	vec3 surface_tangent = normalize(cross(orig_normal, binormal));
 	vec3 wave_adjusted_normal =
-		normalize(waveNormal.x * surface_tangent + waveNormal.y * normal);
+		normalize(wave_normal.x * surface_tangent + wave_normal.y * orig_normal);
 	return wave_adjusted_normal;
 }
 
