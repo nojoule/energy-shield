@@ -21,10 +21,24 @@ uniform bool _quantization = true;
 /** Quantization steps for the alpha and color values. */
 uniform int _steps_quantization : hint_range(1, 20, 1) = 5;
 
+
+
 /** The scale of the object, used to adjust the impact radius and frequency, to match the scaling of objects. Using the shield.gd script, the scale is set to the x-axis scale of the global transform automatically. */
 uniform float _object_scale = 1.0;
 /** Expected to be the maximum diameter of an object. If this is shorter the generation or collapse of the shield might not complete and stop early. */
 uniform float _object_size = 1.0;
+
+group_uniforms Visibility;
+uniform bool _only_on_wave_visibility = false;
+uniform float _start_falloff_visibility : hint_range(0, 1, 0.05) = 0.5;
+uniform float _end_falloff_visibility : hint_range(0, 1, 0.05) = 0.3;
+
+group_uniforms Intersection;
+// TODO
+uniform bool _enable_highlight_intersection = true;
+// TODO
+uniform float _width_highlight_intersection = 1.0;
+
 
 group_uniforms Noise;
 /** The noise texture used to add some dynamic to the shield color, which affects the color and alpha values of the shield. Should be seemless, to avoid visible seams. */
@@ -71,6 +85,12 @@ uniform float _amplitude_static = 0.002;
 uniform float _normal_amplitude_static = 0.002;
 /** The effect radius of the static ripple, wich fades out the effect based on the distance from the origin. Increase this value to make the effect visible further away from the origin. */
 uniform float _effect_radius_static = 1.2;
+/** Activates/deactivates the static offset highlighting effect, which highlights the offset of the shield, based on the vertex displacement from static effects. */
+uniform bool _active_static_offset_hl = true;
+/** The strength of the static offset highlighting effect, defines how strong the highlighting is. */
+uniform float _strength_static_offset_hl = 1.0;
+/** The intensity of the static offset highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
+uniform float _intensity_static_offset_hl = 5.0;
 
 group_uniforms Impact_Ripple;
 /** List of impact origins, where the impact ripples will start from. It is expected to be in world space. */
@@ -89,30 +109,20 @@ uniform float _amplitude_impact = 0.02;
 uniform float _normal_amplitude_impact = 0.05;
 /** The effect radius of the impact ripples, wich fades out the effect based on the distance from the origin. Increase this value to make the effect visible further away from the origin. */
 uniform float _radius_impact = 1.0;
-
-group_uniforms Highlights;
-group_uniforms Highlights.BorderHighlight;
-/** Activates/deactivates the border highlighting effect, which highlights the border of the shield, based on the UV coordinates. */
-uniform bool _active_border = false;
-/** The intensity of the border highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
-uniform float _intensity_border: hint_range(0.0, 5.0, 0.05) = 2.0;
-/** Thickness of the border in percentage. 1.0 makes the border stretch to the center of the object. 0.0 makes the border disappear. */
-uniform float _percentage_border: hint_range(0.0, 1.0) = 0.1;
-
-group_uniforms Highlights.OffsetHighlight;
 /** Activates/deactivates the vertex offset highlighting effect, which highlights the offset of the shield, based on the vertex displacement from impact effects. */
 uniform bool _active_impact_offset_hl = true;
 /** The strength of the impact offset highlighting effect, defines how strong the highlighting is. */
 uniform float _strength_impact_offset_hl = 1.0;
 /** The intensity of the impact offset highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_impact_offset_hl = 5.0;
-/** Activates/deactivates the static offset highlighting effect, which highlights the offset of the shield, based on the vertex displacement from static effects. */
-uniform bool _active_static_offset_hl = true;
-/** The strength of the static offset highlighting effect, defines how strong the highlighting is. */
-uniform float _strength_static_offset_hl = 1.0;
-/** The intensity of the static offset highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
-uniform float _intensity_static_offset_hl = 5.0;
-group_uniforms;
+
+group_uniforms Border;
+/** Activates/deactivates the border highlighting effect, which highlights the border of the shield, based on the UV coordinates. */
+uniform bool _active_border = false;
+/** The intensity of the border highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
+uniform float _intensity_border: hint_range(0.0, 5.0, 0.05) = 2.0;
+/** Thickness of the border in percentage. 1.0 makes the border stretch to the center of the object. 0.0 makes the border disappear. */
+uniform float _percentage_border: hint_range(0.0, 1.0) = 0.1;
 
 group_uniforms Debug;
 /** @debug Show the normals of the shield, which are used for the normal calculation of the shield. */
@@ -126,6 +136,10 @@ varying flat vec3 origin_generate_world;
 
 /** Maximum number of impacts, which can be used to generate impact ripples. */
 const int max_impacts = 5;
+
+float easeInEaseOut(float t) {
+	return t * t * 3.0 - 2.0 * t * t * t;
+}
 
 /**
 * Time is expected to be normalized between 0 and 1. Denormalize it to the actual time based on the frequency, desired waves and maximum distance.
@@ -173,11 +187,9 @@ float computeImpactOffset(
 		if (wave_impact_position < 0.5 * PI) {
 			blend_surface_offset = blend_surface_offset * 0.5 - 0.5 * amplitude;
 		}
-		float blend_t = clamp(impact_distance / (PI/frequency), 0.0, 1.0);
-		//ease-in ease-out function for blending
-		float blend_value =
-			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
-		surface_offset = mix(blend_surface_offset, surface_offset, blend_value);
+		float blend = easeInEaseOut(
+			clamp(impact_distance / (PI/frequency), 0.0, 1.0));
+		surface_offset = mix(blend_surface_offset, surface_offset, blend);
 	}
 
 	// fade out the waves over time after the initial waves are through for the fade_waves
@@ -210,11 +222,9 @@ float computeStaticOffset(
 	if (impact_distance < PI/frequency) {
 		float wave_impact_position = (time) * frequency;
 		float blend_surface_offset = -sin(wave_impact_position) * amplitude;
-		float blend_t = clamp(impact_distance / (PI/frequency), 0.0, 1.0);
-		//ease-in ease-out function for blending
-		float blend_value =
-			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
-		surface_offset = mix(blend_surface_offset, surface_offset, blend_value);
+		float blend = easeInEaseOut(
+			clamp(impact_distance / (PI/frequency), 0.0, 1.0));
+		surface_offset = mix(blend_surface_offset, surface_offset, blend);
 	}
 
 	// fade out the waves over distance
@@ -314,11 +324,9 @@ vec3 adjustImpactNormal(
 
 		// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
 		if (distance < PI/frequency) {
-			float blend_t = clamp(distance / (PI/frequency), 0.0, 1.0);
-			//ease-in ease-out function for blending
-			float blend_value =
-				blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
-			slope = mix(0.0, slope, blend_value);
+			float blend = easeInEaseOut(
+				clamp(distance / (PI/frequency), 0.0, 1.0));
+			slope = mix(0.0, slope, blend);
 		}
 
 		return adjustNormal(
@@ -359,11 +367,9 @@ vec3 adjustStaticNormal(
 
 	// to have a smooth surface at the origin of the wave, we blend the surface offset near the origin
 	if (distance < PI/frequency) {
-		float blend_t = clamp(distance / (PI/frequency), 0.0, 1.0);
-		//ease-in ease-out function for blending
-		float blend_value =
-			blend_t * blend_t * 3.0 - 2.0 * blend_t * blend_t * blend_t;
-		slope = mix(0.0, slope, blend_value);
+		float blend = easeInEaseOut(
+			clamp(distance / (PI/frequency), 0.0, 1.0));
+		slope = mix(0.0, slope, blend);
 	}
 
 	return adjustNormal(
@@ -374,6 +380,43 @@ vec3 adjustStaticNormal(
 	) * wave_amplitude * abs(slope);
 }
 
+float getAffectionStrengthStatic(
+	vec3 position,
+	vec3 origin,
+	float radius
+) {
+	float distance = length(origin - position);
+	return smoothstep(radius, 0.0, distance);
+}
+
+float getAffectionStrengthImpact(
+	vec3 position,
+	vec3 origin,
+	float radius,
+	float frequency,
+	float waves,
+	float fade_waves,
+	float time
+) {
+	float distance = length(origin - position);
+	float wave_phase = -distance * frequency;
+	float current_wave_position = (time - distance) * frequency;
+	float current_wave_count = current_wave_position / (2.0 * PI);
+
+	float time_fade = 1.0 - clamp(
+		(time - _start_falloff_visibility) /
+		(1.0 - _start_falloff_visibility - _end_falloff_visibility),
+		0.0,
+		1.0
+	);
+	float distance_fade = smoothstep(radius, 0.0, distance);
+	if (current_wave_count < 0.1) {
+		return mix(0.0, 1.0, clamp((current_wave_count + time) * 10.0, 0.0, 1.0)) * distance_fade * time_fade;
+	} else {
+		return distance_fade * time_fade;
+	}
+}
+
 /**
  * Compute the highlight effect, based on the distance to any object behing the shield-surface.
  */
@@ -381,10 +424,11 @@ float computeDepthDifference(
 	vec2 screen_uv,
 	vec3 vertex,
 	mat4 inv_projection,
-	float intensity
+	float intensity,
+	float width
 ) {
 	// calculate a value representing the distance to any object behind the shield
-	float depth_offset = 1.0/_intensity_shield * _object_scale;
+	float depth_offset = width/_intensity_shield * _object_scale;
 	float depth_tex = texture(depth_texture, screen_uv).r;
 	vec4 proj_depth_pos = vec4(screen_uv * 2.0 - 1.0, depth_tex, 1.0);
 	vec4 depth_world_pos = inv_projection * proj_depth_pos;
@@ -472,9 +516,12 @@ void fragment() {
 	// discard backfacing fragments when the debug option for showing normals is active
 	if (_show_normals && !FRONT_FACING) discard;
 
+	float effect_visibility = 0.0;
+
 	// calculate the modified normal based on static wave traveling across the shield surface
 	vec3 static_normal = vec3(0.0);
 	if (_active_static) {
+
 		static_normal = adjustStaticNormal(
 			world_pos,
 			origin_static_world,
@@ -486,6 +533,14 @@ void fragment() {
 			VIEW_MATRIX,
 			FRONT_FACING
 		);
+		if (_only_on_wave_visibility) {
+			float static_affection = getAffectionStrengthStatic(
+				world_pos,
+				origin_static_world,
+				_effect_radius_static * _object_scale
+			);
+			effect_visibility = max(effect_visibility, static_affection);
+		}
 	}
 
 	// calculate the modified normal based on impact waves traveling across the shield surface
@@ -513,16 +568,29 @@ void fragment() {
 				VIEW_MATRIX,
 				FRONT_FACING
 			);
+			if (_only_on_wave_visibility) {
+				float impact_affection = getAffectionStrengthImpact(
+					world_pos,
+					_origin_impact[i],
+					_radius_impact * _object_scale,
+					_frequency_impact / _object_scale,
+					_waves_impact,
+					_fade_waves_impact,
+					_time_impact[i]
+				);
+				effect_visibility = max(effect_visibility, impact_affection);
+			}
 		}
 	}
 
+
 	// combine the normals and normalize the result, this is the new surface normal at this fragment
-	NORMAL = normalize(static_normal + impact_normal  + 0.001 * NORMAL);
+	vec3 new_normal = normalize(static_normal + impact_normal  + 0.001 * NORMAL);
+	NORMAL = new_normal;
 
 	// calculate the shield visibility, which determines the color and transparency of the shield.
 	float shield_visibility = 0.0;
 
-	// apply fresnel highlight
 	shield_visibility = computeFresnel(NORMAL, VIEW, _intensity_shield);
 
 	// apply surface displacement highlight for impacts
@@ -543,10 +611,17 @@ void fragment() {
 		shield_visibility = max(shield_visibility, static_offset_hl);
 	}
 
-	// apply depth difference highlight for objects behind the shield
-	float depth_diff =
-		computeDepthDifference(SCREEN_UV, VERTEX, INV_PROJECTION_MATRIX, _intensity_shield);
-	shield_visibility = max(shield_visibility, depth_diff);
+	if (_enable_highlight_intersection) {
+		// apply depth difference highlight for objects behind the shield
+		float depth_diff = computeDepthDifference(
+			SCREEN_UV,
+			VERTEX,
+			INV_PROJECTION_MATRIX,
+			_intensity_shield,
+			_width_highlight_intersection
+		);
+		shield_visibility = max(shield_visibility, depth_diff);
+	}
 
 	// apply border highlighting
 	if (_active_border) {
@@ -589,7 +664,10 @@ void fragment() {
 	}
 
 	// modify value by noise texture to the shield visibility
-	shield_visibility = shield_visibility * (texture(_noise_texture, vec2(UV.x + TIME * _speed_noise.x, UV.y - TIME * _speed_noise.y)).r + 0.5);
+	shield_visibility = shield_visibility * (texture(
+		_noise_texture,
+		vec2(UV.x + TIME * _speed_noise.x, UV.y - TIME * _speed_noise.y)
+	).r + 0.5);
 
 	// apply quantization for the value
 	if (_quantization) {
@@ -620,6 +698,9 @@ void fragment() {
 		} else {
 			ALBEDO = clamped_color;
 		}
-		ALPHA = clamp(shield_visibility, 0.0, 1.0);
+		if (!_only_on_wave_visibility) effect_visibility = 1.0;
+		else effect_visibility = mix(
+			0.0, 1.0, easeInEaseOut(effect_visibility));
+		ALPHA = clamp(shield_visibility, 0.0, 1.0) * effect_visibility;
 	}
 }

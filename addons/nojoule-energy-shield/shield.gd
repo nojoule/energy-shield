@@ -1,4 +1,10 @@
 extends MeshInstance3D
+
+signal body_entered(body: Node)
+signal body_shape_entered(
+	body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int
+)
+
 ## Interactive Energy Shield, working with the energy shield shader.
 ##
 ## This script is used to control the energy shield shader, it can be used to
@@ -27,6 +33,10 @@ const _MAX_IMPACTS: int = 5
 
 ## Make shield interactable by mouse-clicks.
 @export var handle_input_events: bool = true
+
+#TODO
+@export var body_entered_impact: bool = false
+@export var body_shape_entered_impact: bool = false
 
 # The current impact index, used to keep track of the impacts and overwrite the
 # oldest impact if the maximum number of impacts is reached.
@@ -92,6 +102,10 @@ func _ready() -> void:
 	# Connect the input event to the shield
 	if handle_input_events and $Area3D:
 		$Area3D.input_event.connect(_on_area_3d_input_event)
+
+	if $Area3D:
+		$Area3D.area_entered.connect(_on_area_3d_body_entered)
+		$Area3D.body_shape_entered.connect(_on_area_3d_body_shape_entered)
 
 
 # Update the shader parameter [param name] with the [param value] and make sure
@@ -223,3 +237,17 @@ func _on_area_3d_input_event(
 					generate_from(event_position)
 				else:
 					collapse_from(event_position)
+
+
+func _on_area_3d_body_entered(body: Node3D) -> void:
+	if body_entered_impact:
+		impact(body.global_position)
+	body_entered.emit(body)
+
+
+func _on_area_3d_body_shape_entered(
+	body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int
+) -> void:
+	if body_shape_entered_impact:
+		impact(body.global_position)
+	body_shape_entered.emit(body_rid, body, body_shape_index, local_shape_index)
