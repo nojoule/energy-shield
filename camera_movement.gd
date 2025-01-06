@@ -5,6 +5,7 @@ var move_speed: float = 3.0
 var rotation_x: float = 0.0
 var rotation_y: float = 0.0
 var mouse_captured: bool = false
+var sticky_move_count: float = 0.0
 
 
 func _ready():
@@ -55,3 +56,14 @@ func handle_movement(delta: float):
 		direction = direction.normalized()
 
 	position += direction * move_speed * delta
+
+	# var position_mod = int(position.x) % 5
+	# var moved_position_mod = int(position.x + direction.x * move_speed * delta) % 5
+
+	# if moved_position_mod < position_mod:
+	# 	sticky_move_count += delta
+	# 	if sticky_move_count > 0.5:
+	# 		position += direction * move_speed * delta
+	# 		sticky_move_count = 0
+	# else:
+	# 	position += direction * move_speed * delta

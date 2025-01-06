@@ -1,6 +1,9 @@
 extends MeshInstance3D
 
+## Relay the body_entered signal from the Area3D to the shield.
 signal body_entered(body: Node)
+
+## Relay the body_shape_entered signal from the Area3D to the shield.
 signal body_shape_entered(
 	body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int
 )
@@ -34,8 +37,10 @@ const _MAX_IMPACTS: int = 5
 ## Make shield interactable by mouse-clicks.
 @export var handle_input_events: bool = true
 
-#TODO
+## Trigger an impact when a body enters the shield.
 @export var body_entered_impact: bool = false
+
+## Trigger an impact when a body shape enters the shield.
 @export var body_shape_entered_impact: bool = false
 
 # The current impact index, used to keep track of the impacts and overwrite the
@@ -92,6 +97,8 @@ func _ready() -> void:
 		if material.next_pass:
 			var del_mat = material.next_pass
 			material.next_pass = null
+		set_surface_override_material(0, material.duplicate())
+		material = get_active_material(0)
 		material.next_pass = material.duplicate()
 		var back_shader = load("res://addons/nojoule-energy-shield/shield_back.gdshader")
 		material.shader = back_shader
@@ -103,6 +110,7 @@ func _ready() -> void:
 	if handle_input_events and $Area3D:
 		$Area3D.input_event.connect(_on_area_3d_input_event)
 
+	# Connect relay signals for area 3d child
 	if $Area3D:
 		$Area3D.area_entered.connect(_on_area_3d_body_entered)
 		$Area3D.body_shape_entered.connect(_on_area_3d_body_shape_entered)
@@ -224,7 +232,7 @@ func _physics_process(delta: float) -> void:
 func _on_area_3d_input_event(
 	_camera: Node, event: InputEvent, event_position: Vector3, _normal: Vector3, _shape_idx: int
 ) -> void:
-	# event handling for interaction with the shield
+	# event handling for mouse interaction with the shield
 	if is_instance_of(event, InputEventMouseButton) and event.is_pressed():
 		var shift_pressed = Input.is_key_pressed(KEY_CTRL)
 		var mouse_event: InputEventMouseButton = event
