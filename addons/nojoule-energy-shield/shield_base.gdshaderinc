@@ -309,7 +309,7 @@ float getAffectionStrengthImpact(
 }
 
 /**
- * Compute the highlight effect, based on the distance to any object behing the shield-surface.
+ * Compute the highlight effect, based on the distance to any object behind the shield-surface.
  */
 float computeDepthDifference(
 	vec2 screen_uv,

@@ -36,7 +36,7 @@ uniform float _width_highlight_intersection = 1.0;
 
 
 group_uniforms Noise;
-/** The noise texture used to add some dynamic to the shield color, which affects the color and alpha values of the shield. Should be seemless, to avoid visible seams. */
+/** The noise texture used to add some dynamic to the shield color, which affects the color and alpha values of the shield. Should be seamless, to avoid visible seams. */
 uniform sampler2D _noise_texture;
 /** Defines the rate at which the noise texture is displaced in the x and y direction. */
 uniform vec2 _speed_noise = vec2(0.02, 0.02);
@@ -58,7 +58,7 @@ group_uniforms Shield_Color;
 uniform vec3 _color_shield : source_color = vec3(0.26, 0.975, 1);
 /** The brightness of the shield color, which is multiplied with the shield visibility. */
 uniform float _color_brightness_shield : hint_range(0.1, 100.0, 0.05) = 15.0;
-/** The intensity of the shield, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
+/** The intensity of the shield, defining how narrow the highlighting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_shield : hint_range(0.0, 5.0, 0.05) = 3.0;
 /** Is glow effect enabled for the shield. */
 uniform bool glow_enabled = true;
@@ -78,13 +78,13 @@ uniform float _frequency_static = 80.0;
 uniform float _amplitude_static = 0.002;
 /** The amplitude of the static ripple effect used for the normal calculation, which can be different from the displacement amplitude, to exaggerate visual effects based on the normal (fresnel). */
 uniform float _normal_amplitude_static = 0.002;
-/** The effect radius of the static ripple, wich fades out the effect based on the distance from the origin. Increase this value to make the effect visible further away from the origin. */
+/** The effect radius of the static ripple, which fades out the effect based on the distance from the origin. Increase this value to make the effect visible further away from the origin. */
 uniform float _effect_radius_static = 1.2;
 /** Activates/deactivates the static offset highlighting effect, which highlights the offset of the shield, based on the vertex displacement from static effects. */
 uniform bool _active_static_offset_hl = true;
 /** The strength of the static offset highlighting effect, defines how strong the highlighting is. */
 uniform float _strength_static_offset_hl = 1.0;
-/** The intensity of the static offset highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
+/** The intensity of the static offset highlighting effect, defining how narrow the highlighting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_static_offset_hl = 5.0;
 
 group_uniforms Impact_Ripple;
@@ -102,19 +102,19 @@ uniform float _fade_waves_impact = 2.0;
 uniform float _amplitude_impact = 0.02;
 /** The amplitude of the impact ripples used for the normal calculation, which can be different from the displacement amplitude, to exaggerate visual effects based on the normal (fresnel). */
 uniform float _normal_amplitude_impact = 0.05;
-/** The effect radius of the impact ripples, wich fades out the effect based on the distance from the origin. Increase this value to make the effect visible further away from the origin. */
+/** The effect radius of the impact ripples, which fades out the effect based on the distance from the origin. Increase this value to make the effect visible further away from the origin. */
 uniform float _radius_impact = 1.0;
 /** Activates/deactivates the vertex offset highlighting effect, which highlights the offset of the shield, based on the vertex displacement from impact effects. */
 uniform bool _active_impact_offset_hl = true;
 /** The strength of the impact offset highlighting effect, defines how strong the highlighting is. */
 uniform float _strength_impact_offset_hl = 1.0;
-/** The intensity of the impact offset highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
+/** The intensity of the impact offset highlighting effect, defining how narrow the highlighting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_impact_offset_hl = 5.0;
 
 group_uniforms Border;
 /** Activates/deactivates the border highlighting effect, which highlights the border of the shield, based on the UV coordinates. */
 uniform bool _active_border = false;
-/** The intensity of the border highlighting effect, defining how narrow the highligting is. 0 is spread out, 5 is very narrow. */
+/** The intensity of the border highlighting effect, defining how narrow the highlighting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_border: hint_range(0.0, 5.0, 0.05) = 2.0;
 /** Thickness of the border in percentage. 1.0 makes the border stretch to the center of the object. 0.0 makes the border disappear. */
 uniform float _percentage_border: hint_range(0.0, 1.0) = 0.1;
