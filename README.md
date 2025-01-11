@@ -1,30 +1,31 @@
 # Energy Shield
-This addon adds an energy shield to Godot you can add it to your scenes. You can either use the `shield_plane.tscn` or `shield_sphere.tscn` or add the shader in other materials, although you might have to tweak it slightly to work properly on other meshes than plane and spheres.
+This addon for Godot provides an energy shield that can be easily integrated into your scenes. You can use either the `shield_plane.tscn` or `shield_sphere.tscn` directly, or apply the shader to other materials. Note that some adjustments may be needed to ensure proper functionality on meshes other than planes and spheres.
 
 ## Updates
 - [ ] Release 1.0
 - [ ] create Youtube Tutorial
 - [ ] Port asset for Unity
+- [ ] Support more types of meshes (e.g. Cube)
 - [ ] Add refraction
 - [ ] Add chromatic aberration
 
 <img src="./docs/showcase_inenvironment.png" alt="sphere and plane energy shield, with the sphere showing an impact reaction" height="200"> <img src="./docs/showcase_standalone.png" alt="sphere and plane energy shield, each showing a wave" height="200">
 
 ## Interactable
-You can use the `shield.gd` script adding reaction on mouse clicks, or adjust it to your use-cases. Following interactions are available:
+You can use the `shield.gd` script to add mouse click interactions or modify it to suit your specific needs. The following interactions are available:
 
 **Impact**:
-Impacts can be dynamically added with up to 5 at a time via modifying shader uniform variables. An impact causes a wave, traveling through the object over time causing a wave originating from a specified position. The intensity and how fast it travels through the object can be adjusted.
+Impacts can be dynamically added, with up to five active at a time, by adjusting the shader’s uniform variables. Each impact generates a wave that propagates across the shield from a specified position. The wave’s intensity and speed can be customized to your preference.
 
 **Generate/Collapse**:
-The energy shield can collapse or regenerated from specified positions. The animation and highlight effect can be freely adjusted.
+The energy shield can be animated to collapse or regenerate from specified positions. Both the animation and the highlight effects are fully adjustable.
 
 **Intersection Highlight**:
-Using the depth texture, the material checks for close objects and highlighting close objects and intersections with other objects.
+Leveraging the depth texture, the material detects and highlights nearby objects or intersections with other objects.
 
 ## Customizations
 
-Color, wave height/frequency, quantization of the colors are just some of the customizations possible to fit the style of your game. All shader parameters are documented, check the example scene for some of them.
+You can customize parameters such as color, wave height, frequency, and color quantization to match your game’s style. All shader parameters are thoroughly documented — refer to the example scene for demonstrations.
 
 ## Support me
 
