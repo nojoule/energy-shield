@@ -2,7 +2,7 @@
 This addon for Godot provides an energy shield that can be easily integrated into your scenes. You can use either the `shield_plane.tscn` or `shield_sphere.tscn` directly, or apply the shader to other materials. Note that some adjustments may be needed to ensure proper functionality on meshes other than planes and spheres.
 
 ## Updates
-- [ ] Release 1.0
+- [x] Release 1.0
 - [ ] create Youtube Tutorial
 - [ ] Port asset for Unity
 - [ ] Support more types of meshes (e.g. Cube)
