@@ -3,11 +3,12 @@ This addon for Godot provides an energy shield that can be easily integrated int
 
 ## Updates
 - [x] Release 1.0
-- [ ] create Youtube Tutorial
-- [ ] Port asset for Unity
+- [x] create Youtube explaining the Shader https://youtu.be/0YiZSrtxtcg
+- [ ] Dynamic number of Impacts
+- [ ] Asset for Unity
 - [ ] Support more types of meshes (e.g. Cube)
-- [ ] Add refraction
-- [ ] Add chromatic aberration
+- [ ] Add refraction effect
+- [ ] Add chromatic aberration effect
 
 <img src="./docs/showcase_inenvironment.png" alt="sphere and plane energy shield, with the sphere showing an impact reaction" height="200"> <img src="./docs/showcase_standalone.png" alt="sphere and plane energy shield, each showing a wave" height="200">
 
