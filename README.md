@@ -29,5 +29,6 @@ Leveraging the depth texture, the material detects and highlights nearby objects
 You can customize parameters such as color, wave height, frequency, and color quantization to match your game’s style. All shader parameters are thoroughly documented — refer to the example scene for demonstrations.
 
 ## Support me
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Y8Y01BSU6N)
 
 Follow me on [Twitch](https://www.twitch.tv/nojoule) for some live-coding or check out my [Youtube](https://www.youtube.com/@nojoule) for content around game dev.
