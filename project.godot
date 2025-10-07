@@ -11,8 +11,10 @@ config_version=5
 [application]
 
 config/name="Energy-Shield-Demo"
-run/main_scene="res://examples.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+run/main_scene="uid://bl8u8bcaa4sax"
+config/features=PackedStringArray("4.5", "Forward Plus")
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/show_image=false
 config/icon="res://icon.png"
 
 [debug]
@@ -61,3 +63,7 @@ toggle_mouse_capture={
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":2,"canceled":false,"pressed":false,"double_click":false,"script":null)
 ]
 }
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.103743516, 0.10374353, 0.103743516, 1)

@@ -1,6 +1,7 @@
 shader_type spatial;
 
-uniform sampler2D depth_texture : hint_depth_texture;
+// Define WEB for conditional compilation
+#define WEB
 
 group_uniforms General;
 /** Use quantization for alpha and color values to get a more pixelated look. */
@@ -123,5 +124,6 @@ group_uniforms Debug;
 /** @debug Show the normals of the shield, which are used for the normal calculation of the shield. */
 uniform bool _show_normals = false;
 
+#define SHIELD_FRONT
 
 #include "shield_base.gdshaderinc"

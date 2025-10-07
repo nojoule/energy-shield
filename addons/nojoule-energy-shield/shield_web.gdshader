@@ -1,6 +1,7 @@
 shader_type spatial;
 
-uniform sampler2D depth_texture : hint_depth_texture;
+// Define WEB for conditional compilation
+#define WEB
 
 group_uniforms General;
 /** Use quantization for alpha and color values to get a more pixelated look. */
@@ -31,6 +32,7 @@ uniform float _width_time_activation = 0.2;
 group_uniforms Intersection;
 /** Enable/Disable the effect of highlighting the intersection of the shield with other objects. */
 uniform bool _enable_highlight_intersection = true;
+
 /** The width of the intersection highlight effect. */
 uniform float _width_highlight_intersection = 1.0;
 

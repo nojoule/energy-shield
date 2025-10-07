@@ -308,6 +308,7 @@ float getAffectionStrengthImpact(
 	}
 }
 
+#ifndef WEB
 /**
  * Compute the highlight effect, based on the distance to any object behind the shield-surface.
  */
@@ -334,6 +335,7 @@ float computeDepthDifference(
 	depth_diff = pow(depth_diff, intensity);
 	return depth_diff;
 }
+#endif
 
 /**
  * Compute the progression of the shield generation or collapse, normalized between 0.0 and 1.0, based on the distance to the origin and the time.
@@ -501,6 +503,7 @@ void fragment() {
 		shield_visibility = max(shield_visibility, static_offset_hl);
 	}
 
+#ifndef WEB
 	if (_enable_highlight_intersection) {
 		// apply depth difference highlight for objects behind the shield
 		float depth_diff = computeDepthDifference(
@@ -512,6 +515,7 @@ void fragment() {
 		);
 		shield_visibility = max(shield_visibility, depth_diff);
 	}
+#endif
 
 	// apply border highlighting
 	if (_active_border) {

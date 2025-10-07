@@ -8,13 +8,6 @@ signal body_shape_entered(
 	body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int
 )
 
-## Interactive Energy Shield, working with the energy shield shader.
-##
-## This script is used to control the energy shield shader, it can be used to
-## generate, collapse and impact the shield making it react to outside influences.
-##
-## @tutorial:             TODO
-
 ## The fixed number of Impacts, the shader can handle at a time.
 const _MAX_IMPACTS: int = 5
 
@@ -91,6 +84,11 @@ func _ready() -> void:
 	# Get the material and set the initial scale
 	material = get_active_material(0)
 
+	# Load web-optimized shader if running on web platform or compatibility mode
+	var renderer = ProjectSettings.get_setting("rendering/renderer/rendering_method")
+	if OS.has_feature("web") or renderer == "gl_compatibility":
+		_load_web_shader()
+
 	# Set the split front and back shader if enabled, copying all uniform
 	# settings
 	if not Engine.is_editor_hint() and split_front_back:
@@ -100,10 +98,17 @@ func _ready() -> void:
 		set_surface_override_material(0, material.duplicate())
 		material = get_active_material(0)
 		material.next_pass = material.duplicate()
-		var back_shader = load("res://addons/nojoule-energy-shield/shield_back.gdshader")
-		material.shader = back_shader
-		var front_shader = load("res://addons/nojoule-energy-shield/shield_front.gdshader")
-		material.next_pass.shader = front_shader
+		if OS.has_feature("web") or renderer == "gl_compatibility":
+			var back_shader = load("res://addons/nojoule-energy-shield/shield_web_back.gdshader")
+			material.shader = back_shader
+			var front_shader = load("res://addons/nojoule-energy-shield/shield_web_front.gdshader")
+			material.next_pass.shader = front_shader
+		else:
+			var back_shader = load("res://addons/nojoule-energy-shield/shield_back.gdshader")
+			material.shader = back_shader
+			var front_shader = load("res://addons/nojoule-energy-shield/shield_front.gdshader")
+			material.next_pass.shader = front_shader
+
 	update_material("object_scale", global_transform.basis.get_scale().x)
 
 	# Connect the input event to the shield
@@ -259,3 +264,13 @@ func _on_area_3d_body_shape_entered(
 	if body_shape_entered_impact:
 		impact(body.global_position)
 	body_shape_entered.emit(body_rid, body, body_shape_index, local_shape_index)
+
+
+# Load web-optimized shader that defines WEB preprocessor directive
+func _load_web_shader() -> void:
+	# Check if web shader exists, otherwise create it dynamically
+	var web_shader_path = "res://addons/nojoule-energy-shield/shield_web.gdshader"
+	if ResourceLoader.exists(web_shader_path):
+		var web_shader = load(web_shader_path)
+		material.shader = web_shader
+		print("Loaded web-optimized shader")

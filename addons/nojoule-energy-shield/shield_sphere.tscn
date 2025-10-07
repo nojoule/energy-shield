@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://bqo3es5yd4r70"]
 
-[ext_resource type="Shader" path="res://addons/nojoule-energy-shield/shield.gdshader" id="1_181ey"]
-[ext_resource type="Script" path="res://addons/nojoule-energy-shield/shield.gd" id="1_k7nhx"]
+[ext_resource type="Shader" uid="uid://dcko35tc4k343" path="res://addons/nojoule-energy-shield/shield.gdshader" id="1_181ey"]
+[ext_resource type="Script" uid="uid://sgldwin4tbiv" path="res://addons/nojoule-energy-shield/shield.gd" id="1_k7nhx"]
 [ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="2_g0rh4"]
 [ext_resource type="Curve" uid="uid://cv0k0umipiy7n" path="res://addons/nojoule-energy-shield/impact_animation_curve.tres" id="2_utjra"]
 
@@ -20,8 +20,8 @@ shader_parameter/_distance_multiplier_activation = 1.0
 shader_parameter/_width_time_activation = 1.0
 shader_parameter/_enable_highlight_intersection = true
 shader_parameter/_width_highlight_intersection = 1.0
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
 shader_parameter/_noise_texture = ExtResource("2_g0rh4")
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
 shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
 shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0

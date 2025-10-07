@@ -2,8 +2,8 @@
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_g4f1n"]
 noise_type = 3
-seed = 265
-frequency = 0.03
+seed = 475
+frequency = 0.0175
 fractal_type = 3
 fractal_gain = 0.0
 fractal_ping_pong_strength = 1.0
@@ -12,5 +12,5 @@ cellular_jitter = 0.0
 cellular_return_type = 4
 
 [resource]
-seamless = true
 noise = SubResource("FastNoiseLite_g4f1n")
+seamless = true

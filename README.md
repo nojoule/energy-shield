@@ -1,7 +1,10 @@
 # Energy Shield
 This addon for Godot provides an energy shield that can be easily integrated into your scenes. You can use either the `shield_plane.tscn` or `shield_sphere.tscn` directly, or apply the shader to other materials. Note that some adjustments may be needed to ensure proper functionality on meshes other than planes and spheres.
 
-## Updates
+## Changes
+- 1.0.1: Web build compatibility
+
+## Roadmap
 - [x] Release 1.0
 - [x] create Youtube explaining the Shader https://youtu.be/0YiZSrtxtcg
 - [ ] Dynamic number of Impacts
@@ -10,7 +13,7 @@ This addon for Godot provides an energy shield that can be easily integrated int
 - [ ] Add refraction effect
 - [ ] Add chromatic aberration effect
 
-<img src="./docs/showcase_inenvironment.png" alt="sphere and plane energy shield, with the sphere showing an impact reaction" height="200"> <img src="./docs/showcase_standalone.png" alt="sphere and plane energy shield, each showing a wave" height="200">
+<img src="./docs/showcase_inenvironment.webp" alt="sphere and plane energy shield, with the sphere showing an impact reaction" height="200"> <img src="./docs/showcase_standalone.webp" alt="sphere and plane energy shield, each showing a wave" height="200">
 
 ## Interactable
 You can use the `shield.gd` script to add mouse click interactions or modify it to suit your specific needs. The following interactions are available:
