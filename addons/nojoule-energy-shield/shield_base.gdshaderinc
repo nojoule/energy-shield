@@ -359,6 +359,11 @@ void vertex() {
 	impact_offset = 0.0;
 	for(int i=0;i<max_impacts;++i)
 	{
+		// transform the generation origin to world space
+		vec3 origin_impact = _origin_impact[i];
+		if (_relative_origin_impact) {
+			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
+		}
 		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
 			float denormalized_time = denormalizeTime(
 				_time_impact[i],
@@ -369,7 +374,7 @@ void vertex() {
 
 			impact_offset += computeImpactOffset(
 				world_pos,
-				_origin_impact[i],
+				origin_impact,
 				_radius_impact * _object_scale,
 				_frequency_impact / _object_scale,
 				_waves_impact,
@@ -382,7 +387,12 @@ void vertex() {
 
 	// calculate the vertex displacement from the static wave effect
 	if (_active_static) {
-		origin_static_world = (MODEL_MATRIX * vec4(_origin_static, 1.0)).xyz;
+		// transform the static origin to world space
+		if (_relative_origin_static) {
+			origin_static_world = (MODEL_MATRIX * vec4(_origin_static, 1.0)).xyz;
+		} else {
+			origin_static_world = _origin_static;
+		}
 		static_offset = computeStaticOffset(
 			world_pos,
 			origin_static_world,
@@ -440,6 +450,11 @@ void fragment() {
 	vec3 impact_normal = vec3(0.0);
 	for(int i=0;i<max_impacts;++i)
 	{
+		// transform the generation origin to world space
+		vec3 origin_impact = _origin_impact[i];
+		if (_relative_origin_impact) {
+			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
+		}
 		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
 			float denormalized_time = denormalizeTime(
 				_time_impact[i],
@@ -450,7 +465,7 @@ void fragment() {
 
 			impact_normal += adjustImpactNormal(
 				world_pos,
-				_origin_impact[i],
+				origin_impact,
 				_radius_impact * _object_scale,
 				_frequency_impact / _object_scale,
 				_waves_impact,
@@ -464,7 +479,7 @@ void fragment() {
 			if (_only_on_wave_visibility) {
 				float impact_affection = getAffectionStrengthImpact(
 					world_pos,
-					_origin_impact[i],
+					origin_impact,
 					_radius_impact * _object_scale,
 					_frequency_impact / _object_scale,
 					_waves_impact,

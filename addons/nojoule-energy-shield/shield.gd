@@ -36,6 +36,9 @@ const _MAX_IMPACTS: int = 5
 ## Trigger an impact when a body shape enters the shield.
 @export var body_shape_entered_impact: bool = false
 
+## Defines if the coordinates of the origin is relative to the object position
+@export var relative_impact_position: bool = false
+
 # The current impact index, used to keep track of the impacts and overwrite the
 # oldest impact if the maximum number of impacts is reached.
 var _current_impact: int = 0
@@ -176,13 +179,18 @@ func collapse_from(pos: Vector3) -> void:
 ## Create an impact at the [param pos] position, starting a new impact
 ## animation.
 func impact(pos: Vector3):
+	var impact_pos: Vector3 = pos
+	if relative_impact_position:
+		impact_pos = to_local(pos)
+
 	# setup the next free impact, or overwrite the oldest impact
 	_animate[_current_impact] = true
 	_elapsed_time[_current_impact] = 0.0
-	_impact_origin[_current_impact] = pos
+	_impact_origin[_current_impact] = impact_pos
 
 	# update the shader with the new impact origins
 	update_material("_origin_impact", _impact_origin)
+	update_material("_relative_origin_impact", relative_impact_position)
 
 	# update the shader with the new impact times
 	var time_impacts = []
