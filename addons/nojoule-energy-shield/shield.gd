@@ -37,8 +37,12 @@ const _MAX_IMPACTS: int = 5
 ## Trigger an impact when a body shape enters the shield.
 @export var body_shape_entered_impact: bool = false
 
+
 ## Defines if the coordinates of the origin is relative to the object position
 @export var relative_impact_position: bool = false
+
+# Use an image to store positions and elapsed_time.
+var _data_image := Image.create_empty(1,1, false, Image.FORMAT_RGBAF)
 
 # The current impact index, used to keep track of the impacts and overwrite the
 # oldest impact if the maximum number of impacts is reached.
@@ -64,6 +68,11 @@ var _collapsed: bool = false
 # Defines if the shield is currently generating or collapsing, to prevent
 # multiple actions at the same time.
 var _generating_or_collapsing: bool = false
+
+
+var last_process_exection := 0.0
+var interval := 500.0
+
 
 ## The material used for the shield, to set the shader parameters. It is
 ## expected to be the specific energy shield shader.
@@ -190,7 +199,23 @@ func impact(pos: Vector3):
 	var impact_pos: Vector3 = pos
 	if relative_impact_position:
 		impact_pos = to_local(pos)
+	
+	# When resizing texture use crop.
+	#_data_image.crop()
+	
+	# Will need to create a method of cleaning up the image.
+	# Create a max of 5,000? Max image size is: 
+					#● MAX_WIDTH = 16777216
+					#The maximal width allowed for Image resources.
+					#● MAX_HEIGHT = 16777216
+					#The maximal height allowed for Image resources.
 
+	if _current_impact + 1 > _data_image.get_size().x:
+		_data_image.crop(_current_impact + 1, _data_image.get_size().y)
+	
+	var color = Color(pos.x, pos.y, pos.z, 0.0)
+	_data_image.set_pixel(_current_impact, 0, color)
+	
 	# setup the next free impact, or overwrite the oldest impact
 	_animate[_current_impact] = true
 	_elapsed_time[_current_impact] = 0.0
@@ -204,6 +229,21 @@ func impact(pos: Vector3):
 	var time_impacts = []
 	for impact_id in _animate.size():
 		if _animate[impact_id]:
+			if impact_id + 1 > _data_image.get_size().x:
+				_data_image.crop(impact_id + 1, _data_image.get_size().y)
+			if _data_image.get_pixel(impact_id, 0).a < anim_time:
+				var old_pixel_value: Color = _data_image.get_pixel(impact_id, 0)
+				var normalized_time: float = old_pixel_value.a / anim_time
+				var curve_sample: float = animation_curve.sample(normalized_time)
+				var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
+				_data_image.set_pixel(impact_id, 0, new_pixel_value)
+			else:
+				var old_pixel_value: Color = _data_image.get_pixel(impact_id, 0)
+				var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, 0.0)
+				_data_image.set_pixel(impact_id, 0, new_pixel_value)
+				_animate[impact_id] = false
+			
+			
 			if _elapsed_time[impact_id] < anim_time:
 				var normalized_time = _elapsed_time[impact_id] / anim_time
 				time_impacts.append(animation_curve.sample(normalized_time))
@@ -215,9 +255,34 @@ func impact(pos: Vector3):
 			time_impacts.append(0.0)
 	update_material("_time_impact", time_impacts)
 
+	var impact_texture := ImageTexture.new()
+	impact_texture.create_from_image(_data_image)
+	
+	#update_material("_impact_texture", impact_texture)
+	
 	# increment the current impact index
 	_current_impact += 1
-	_current_impact = _current_impact % _MAX_IMPACTS
+	_current_impact = _current_impact % _MAX_IMPACTS #_data_image.get_size().x
+	
+	# Simple way of cleaning up data. Could only have this be processed every 10 frames
+			# and/or in batches?
+	var raw_data: PackedColorArray = _data_image.get_data().to_color_array()
+	
+	# Print debug info before trimming finished pixels.
+	var current = Time.get_ticks_msec()
+	if current - last_process_exection >= interval:
+		last_process_exection = current
+		#print(self.angular_velocity.length())
+		print_debug("Image: ", raw_data)
+	
+	var counter: int = 0
+	while counter < raw_data.size() - 1:
+		if raw_data.get(counter).a == 0.0:
+			raw_data.remove_at(counter)
+		else:
+			counter += 1
+	_data_image.set_data(raw_data.size(), 1, false, Image.FORMAT_RGBAF, raw_data.to_byte_array())
+	
 
 
 func _physics_process(delta: float) -> void:
