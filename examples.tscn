@@ -1,19 +1,14 @@
-[gd_scene load_steps=71 format=3 uid="uid://b687koijwjkt4"]
+[gd_scene load_steps=58 format=3 uid="uid://bl8u8bcaa4sax"]
 
 [ext_resource type="Script" uid="uid://f1263sbcv8qy" path="res://addons/nojoule-energy-shield/camera_movement.gd" id="1_1ksrw"]
 [ext_resource type="PackedScene" uid="uid://bvqb5fugcfm5k" path="res://addons/nojoule-energy-shield/shield_plane.tscn" id="1_uycqw"]
 [ext_resource type="Shader" uid="uid://dcko35tc4k343" path="res://addons/nojoule-energy-shield/shield.gdshader" id="2_u8gy5"]
 [ext_resource type="PackedScene" uid="uid://bqo3es5yd4r70" path="res://addons/nojoule-energy-shield/shield_sphere.tscn" id="3_twgkm"]
 [ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="4_cgev7"]
-[ext_resource type="PackedScene" uid="uid://dd146l0thx0ep" path="res://addons/nojoule-energy-shield/shield_large_plane.tscn" id="6_7wpux"]
-[ext_resource type="Script" uid="uid://elxwg3d4hkmt" path="res://addons/nojoule-energy-shield/rain_creator.gd" id="7_1v2vh"]
 
 [sub_resource type="Environment" id="Environment_nl0ma"]
-background_mode = 1
-background_color = Color(0.0863636, 0.0863636, 0.0863636, 1)
-ambient_light_source = 2
-ambient_light_color = Color(0.2, 0.2, 0.2, 1)
 glow_enabled = true
+glow_strength = 0.1
 glow_mix = 0.01
 glow_blend_mode = 4
 
@@ -74,7 +69,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -84,6 +81,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = true
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.2
@@ -129,17 +127,19 @@ shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
 shader_parameter/glow_strength = 1.0
-shader_parameter/_active_static = false
+shader_parameter/_active_static = true
 shader_parameter/_origin_static = Vector3(0, 0.5, 0)
 shader_parameter/_speed_static = 0.1
 shader_parameter/_frequency_static = 80.0
 shader_parameter/_amplitude_static = 0.002
 shader_parameter/_normal_amplitude_static = 0.002
 shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_active_static_offset_hl = true
+shader_parameter/_active_static_offset_hl = false
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -149,6 +149,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -225,7 +226,7 @@ shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
 shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.3, 1, 0.6397878, 1)
+shader_parameter/_color_shield = Color(0.39955252, 1, 0.3, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
@@ -240,7 +241,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -250,6 +253,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -289,7 +293,7 @@ shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
 shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.3, 0.6397878, 1, 1)
+shader_parameter/_color_shield = Color(0.39955235, 0.3, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
@@ -304,7 +308,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -314,6 +320,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = true
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.2
@@ -393,7 +400,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -403,6 +412,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -457,7 +467,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -467,6 +479,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = true
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.2
@@ -530,18 +543,6 @@ func _process(delta: float):
 		time_passed -= impact_cooldown
 "
 
-[sub_resource type="Image" id="Image_1v2vh"]
-data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 193, 144, 103, 65, 117, 64, 39, 63, 116, 137, 227, 190, 0, 0, 128, 63, 129, 175, 94, 65, 22, 61, 219, 62, 60, 239, 169, 190, 0, 0, 128, 63, 35, 191, 106, 65, 91, 209, 219, 62, 196, 132, 84, 62, 100, 190, 121, 63, 177, 35, 92, 65, 105, 57, 19, 63, 208, 95, 183, 189, 121, 56, 90, 63, 175, 158, 92, 65, 196, 9, 63, 63, 70, 238, 0, 62, 68, 242, 18, 63, 193, 129, 101, 65, 86, 233, 39, 63, 126, 200, 249, 190, 120, 152, 172, 61),
-"format": "RGBAFloat",
-"height": 1,
-"mipmaps": false,
-"width": 7
-}
-
-[sub_resource type="ImageTexture" id="ImageTexture_uqd61"]
-image = SubResource("Image_1v2vh")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6c8gp"]
 render_priority = 0
 shader = ExtResource("2_u8gy5")
@@ -578,8 +579,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_impact_texture = SubResource("ImageTexture_uqd61")
-shader_parameter/max_impacts = 7
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(14.029361, 1.0486741, -0.0031508803), Vector3(14.116005, 1.057034, 0.15220135), Vector3(14.450467, 0.71548975, 0.4432551), Vector3(14.589874, 0.9425334, 0.13098124), Vector3(13.951329, 0.21136057, 0.09876725)])
+shader_parameter/_time_impact = [0.99339813, 0.9149255, 0.70265734, 0.3005528, 0.0]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -589,6 +591,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -610,18 +613,6 @@ resource_local_to_scene = true
 resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
-
-[sub_resource type="Image" id="Image_p05bc"]
-data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 193, 144, 127, 65, 117, 64, 39, 63, 116, 137, 227, 190, 0, 0, 128, 63, 129, 175, 118, 65, 22, 61, 219, 62, 60, 239, 169, 190, 0, 0, 128, 63, 145, 95, 129, 65, 91, 209, 219, 62, 196, 132, 84, 62, 100, 190, 121, 63, 177, 35, 116, 65, 105, 57, 19, 63, 208, 95, 183, 189, 121, 56, 90, 63, 175, 158, 116, 65, 196, 9, 63, 63, 70, 238, 0, 62, 68, 242, 18, 63, 193, 129, 125, 65, 86, 233, 39, 63, 126, 200, 249, 190, 120, 152, 172, 61),
-"format": "RGBAFloat",
-"height": 1,
-"mipmaps": false,
-"width": 7
-}
-
-[sub_resource type="ImageTexture" id="ImageTexture_be0g3"]
-image = SubResource("Image_p05bc")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8terc"]
 render_priority = 0
@@ -659,8 +650,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_impact_texture = SubResource("ImageTexture_be0g3")
-shader_parameter/max_impacts = 7
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(15.529361, 1.0486741, -0.0031508803), Vector3(15.616005, 1.057034, 0.15220135), Vector3(15.950467, 0.71548975, 0.4432551), Vector3(16.089874, 0.9425334, 0.13098124), Vector3(15.451329, 0.21136057, 0.09876725)])
+shader_parameter/_time_impact = [0.99339813, 0.9149255, 0.70265734, 0.3005528, 0.0]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -670,6 +662,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -727,18 +720,6 @@ func _process(delta: float):
 		time_passed -= impact_cooldown
 "
 
-[sub_resource type="Image" id="Image_0hl5u"]
-data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 6, 156, 65, 22, 93, 85, 63, 182, 167, 185, 190, 0, 0, 128, 63, 188, 101, 153, 65, 6, 138, 128, 63, 162, 169, 145, 190, 0, 0, 128, 63, 221, 15, 157, 65, 63, 174, 35, 63, 178, 123, 163, 190, 100, 190, 121, 63, 37, 34, 155, 65, 139, 212, 116, 63, 162, 67, 164, 62, 121, 56, 90, 63, 128, 0, 153, 65, 62, 131, 1, 62, 128, 245, 206, 189, 68, 242, 18, 63, 73, 140, 151, 65, 67, 242, 124, 63, 168, 76, 151, 189, 120, 152, 172, 61),
-"format": "RGBAFloat",
-"height": 1,
-"mipmaps": false,
-"width": 7
-}
-
-[sub_resource type="ImageTexture" id="ImageTexture_o6kf4"]
-image = SubResource("Image_0hl5u")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_67oo1"]
 render_priority = 0
 shader = ExtResource("2_u8gy5")
@@ -775,8 +756,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_impact_texture = SubResource("ImageTexture_o6kf4")
-shader_parameter/max_impacts = 7
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(19.0653, 0.69395256, 0.45503747), Vector3(19.491186, 0.4895103, -0.42381698), Vector3(19.702892, 0.38851964, -0.012841642), Vector3(19.428976, 0.20777881, -0.2532392), Vector3(19.113714, 0.67647403, 0.47495037)])
+shader_parameter/_time_impact = [0.99339813, 0.9149255, 0.70265734, 0.3005528, 0.0]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -786,6 +768,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -807,18 +790,6 @@ resource_local_to_scene = true
 resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
-
-[sub_resource type="Image" id="Image_d2qpy"]
-data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 44, 6, 168, 65, 22, 93, 85, 63, 182, 167, 185, 190, 0, 0, 128, 63, 188, 101, 165, 65, 6, 138, 128, 63, 162, 169, 145, 190, 0, 0, 128, 63, 221, 15, 169, 65, 63, 174, 35, 63, 178, 123, 163, 190, 100, 190, 121, 63, 37, 34, 167, 65, 139, 212, 116, 63, 162, 67, 164, 62, 121, 56, 90, 63, 128, 0, 165, 65, 62, 131, 1, 62, 128, 245, 206, 189, 68, 242, 18, 63, 73, 140, 163, 65, 67, 242, 124, 63, 168, 76, 151, 189, 120, 152, 172, 61),
-"format": "RGBAFloat",
-"height": 1,
-"mipmaps": false,
-"width": 7
-}
-
-[sub_resource type="ImageTexture" id="ImageTexture_ebi6u"]
-image = SubResource("Image_d2qpy")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_x0bsn"]
 render_priority = 0
@@ -857,8 +828,9 @@ shader_parameter/_effect_radius_static = 1.2
 shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/_impact_texture = SubResource("ImageTexture_ebi6u")
-shader_parameter/max_impacts = 7
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = Array[Vector3]([Vector3(20.5653, 0.69395256, 0.45503747), Vector3(20.991186, 0.4895103, -0.42381698), Vector3(21.202892, 0.38851964, -0.012841642), Vector3(20.928976, 0.20777881, -0.2532392), Vector3(20.613714, 0.67647403, 0.47495037)])
+shader_parameter/_time_impact = [0.99339813, 0.9149255, 0.70265734, 0.3005528, 0.0]
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -868,6 +840,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -896,13 +869,12 @@ extends Node3D
 
 var rotation_speed: float = 45.0
 
-#@onready var sphere: MeshInstance3D = $ShieldSphere
-#@onready var plane: MeshInstance3D = $ShieldPlane
+@onready var sphere: MeshInstance3D = $ShieldSphere
+@onready var plane: MeshInstance3D = $ShieldPlane
 
 func _process(delta: float) -> void:
-	pass
-	#sphere.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
-	#plane.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+	sphere.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+	plane.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
 "
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8qd4a"]
@@ -942,7 +914,9 @@ shader_parameter/_effect_radius_static = 2.0
 shader_parameter/_active_static_offset_hl = false
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = PackedVector3Array(0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -952,6 +926,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = false
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -1006,7 +981,9 @@ shader_parameter/_effect_radius_static = 2.0
 shader_parameter/_active_static_offset_hl = false
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
+shader_parameter/_relative_origin_static = true
+shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -1016,6 +993,7 @@ shader_parameter/_radius_impact = 1.0
 shader_parameter/_active_impact_offset_hl = true
 shader_parameter/_strength_impact_offset_hl = 1.0
 shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
 shader_parameter/_active_border = true
 shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
@@ -1029,71 +1007,6 @@ subdivide_width = 128
 subdivide_depth = 128
 
 [sub_resource type="Curve" id="Curve_24ojw"]
-resource_local_to_scene = true
-resource_name = "animation_curve"
-_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
-point_count = 2
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6mbxq"]
-render_priority = 0
-shader = ExtResource("2_u8gy5")
-shader_parameter/_quantization = true
-shader_parameter/_steps_quantization = 5
-shader_parameter/_object_scale = 1.0
-shader_parameter/_object_size = 4.0
-shader_parameter/_only_on_wave_visibility = false
-shader_parameter/_start_falloff_visibility = 0.5
-shader_parameter/_end_falloff_visibility = 0.3
-shader_parameter/_time_multiplier_activation = 1.0
-shader_parameter/_distance_multiplier_activation = 1.0
-shader_parameter/_width_time_activation = 1.0
-shader_parameter/_enable_highlight_intersection = true
-shader_parameter/_width_highlight_intersection = 1.0
-shader_parameter/_noise_texture = ExtResource("4_cgev7")
-shader_parameter/_speed_noise = Vector2(0.02, 0.02)
-shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
-shader_parameter/_relative_origin_generate = true
-shader_parameter/_time_generate = 1.0
-shader_parameter/_thickness_generate = 0.25
-shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
-shader_parameter/_color_brightness_shield = 15.0
-shader_parameter/_intensity_shield = 3.0
-shader_parameter/glow_enabled = true
-shader_parameter/glow_strength = 10.0
-shader_parameter/_active_static = false
-shader_parameter/_origin_static = Vector3(0, 0, 0)
-shader_parameter/_speed_static = 0.1
-shader_parameter/_frequency_static = 80.0
-shader_parameter/_amplitude_static = 0.002
-shader_parameter/_normal_amplitude_static = 0.002
-shader_parameter/_effect_radius_static = 1.2
-shader_parameter/_active_static_offset_hl = true
-shader_parameter/_strength_static_offset_hl = 1.0
-shader_parameter/_intensity_static_offset_hl = 5.0
-shader_parameter/max_impacts = 1
-shader_parameter/_frequency_impact = 20.0
-shader_parameter/_waves_impact = 0.0
-shader_parameter/_fade_waves_impact = 2.0
-shader_parameter/_amplitude_impact = 0.02
-shader_parameter/_normal_amplitude_impact = 0.05
-shader_parameter/_radius_impact = 1.0
-shader_parameter/_active_impact_offset_hl = true
-shader_parameter/_strength_impact_offset_hl = 1.0
-shader_parameter/_intensity_impact_offset_hl = 5.0
-shader_parameter/_active_border = true
-shader_parameter/_intensity_border = 2.0
-shader_parameter/_percentage_border = 0.1
-shader_parameter/_show_normals = false
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_ok5g2"]
-resource_local_to_scene = true
-material = SubResource("ShaderMaterial_6mbxq")
-size = Vector2(1, 1)
-subdivide_width = 1024
-subdivide_depth = 1024
-
-[sub_resource type="Curve" id="Curve_ftut7"]
 resource_local_to_scene = true
 resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
@@ -1134,7 +1047,7 @@ width = 700.0
 mesh = SubResource("QuadMesh_f5biq")
 
 [node name="ShieldPlane" parent="InteractionExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-1.007314, 0.22103354, -9.681016e-09, 0, -4.37114e-08, -1, -0.22103354, -1.007314, 4.410454e-08, -0.75, 0.6, 0)
+transform = Transform3D(0.8684557, -0.52691805, 2.3064894e-08, 0, -4.37114e-08, -1, 0.52691805, 0.8684557, -3.8011656e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_e83g8")
 animation_curve = SubResource("Curve_cwp47")
 
@@ -1172,7 +1085,7 @@ skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_ibf8e")
 
 [node name="ShieldPlane" parent="ColorExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-1.031298, -0.008454574, 3.6805742e-10, 0, -4.37114e-08, -1, 0.008454574, -1.031298, 4.5147452e-08, -0.75, 0.6, 0)
+transform = Transform3D(0.96117514, -0.32889938, 1.4397549e-08, 0, -4.37114e-08, -1, 0.32889938, 0.96117514, -4.2068326e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_tb5o1")
 skeleton = NodePath("../ShieldSphere")
 animation_curve = SubResource("Curve_u31ny")
@@ -1206,7 +1119,7 @@ mesh = SubResource("SphereMesh_bycw3")
 animation_curve = SubResource("Curve_t2u8o")
 
 [node name="ShieldPlane" parent="DepthHighlight" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.30952406, 0.98157144, -4.294461e-08, 0, -4.37114e-08, -1, -0.98157144, 0.30952406, -1.3542503e-08, -0.75, 0.6, 0)
+transform = Transform3D(-0.60806745, -0.81097907, 3.547427e-08, 0, -4.37114e-08, -1, 0.81097907, -0.60806745, 2.6598494e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_6jtgg")
 animation_curve = SubResource("Curve_wk33k")
 
@@ -1220,7 +1133,7 @@ mesh = SubResource("BoxMesh_qsywp")
 skeleton = NodePath("../EnvironmentSphere")
 
 [node name="EnvironmentMovingPlatform" type="MeshInstance3D" parent="DepthHighlight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.16195166, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.3311069, 0)
 mesh = SubResource("BoxMesh_8tyb0")
 
 [node name="QuantizationExample" type="Node3D" parent="."]
@@ -1321,48 +1234,13 @@ width = 640.0
 mesh = SubResource("QuadMesh_f5biq")
 
 [node name="ShieldSphere" parent="WaveOptionsExample" instance=ExtResource("3_twgkm")]
-transform = Transform3D(0.18849385, 0, -0.99438745, 0, 1, 0, 0.99438745, 0, 0.18849385, 0.75, 0.6, 0)
+transform = Transform3D(0.9962704, 0, 0.12068705, 0, 1, 0, -0.12068705, 0, 0.9962704, 0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_n6kln")
 skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_l06v0")
 
 [node name="ShieldPlane" parent="WaveOptionsExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.18849385, -0.70405525, -0.70405525, 0, 0.707107, -0.707107, 0.99438745, 0.13346137, 0.13346137, -0.75, 0.6, 0)
+transform = Transform3D(0.9962704, 0.0854309, 0.0854309, 0, 0.707107, -0.707107, -0.12068705, 0.7052775, 0.7052775, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_h6f4g")
 skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_24ojw")
-
-[node name="WaveOptionsExample2" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 0)
-script = SubResource("GDScript_iiy7r")
-
-[node name="Heading" type="Label3D" parent="WaveOptionsExample2"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
-pixel_size = 0.003
-modulate = Color(1, 0.763636, 0, 1)
-text = "Number of Ripples
-"
-font_size = 40
-
-[node name="Description" type="Label3D" parent="WaveOptionsExample2"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
-pixel_size = 0.003
-text = "The amount of ripples being processed is Dynamic."
-vertical_alignment = 0
-autowrap_mode = 3
-width = 640.0
-
-[node name="Ground" type="MeshInstance3D" parent="WaveOptionsExample2"]
-mesh = SubResource("QuadMesh_f5biq")
-
-[node name="ShieldPlane" parent="WaveOptionsExample2" instance=ExtResource("6_7wpux")]
-transform = Transform3D(4, 0, 0, 0, -1.7484555e-07, -4, 0, 4, -1.7484555e-07, -0.06220627, 2.0562174, -0.32653594)
-mesh = SubResource("PlaneMesh_ok5g2")
-animation_curve = SubResource("Curve_ftut7")
-shield_origin = Vector3(0, 0.5, 0)
-body_shape_entered_impact = true
-
-[node name="Rain Creator" type="Node3D" parent="WaveOptionsExample2" node_paths=PackedStringArray("plane_node")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1667295, 2.15959)
-script = ExtResource("7_1v2vh")
-plane_node = NodePath("../ShieldPlane")

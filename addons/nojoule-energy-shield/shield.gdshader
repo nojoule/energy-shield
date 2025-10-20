@@ -110,6 +110,8 @@ uniform bool _active_impact_offset_hl = true;
 uniform float _strength_impact_offset_hl = 1.0;
 /** The intensity of the impact offset highlighting effect, defining how narrow the highlighting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_impact_offset_hl = 5.0;
+/** Defines if the coordinates of the origin is relative to the object position or in world space. */
+uniform bool _relative_origin_impact = false;
 
 group_uniforms Border;
 /** Activates/deactivates the border highlighting effect, which highlights the border of the shield, based on the UV coordinates. */

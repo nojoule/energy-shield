@@ -358,6 +358,9 @@ void vertex() {
 	{
 		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0); //texture(_impact_texture, vec2(float(i), 0.0));
 		vec3 origin_impact = full.rgb;
+		if (_relative_origin_impact) {
+			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
+		}
 		float time = full.a;
 		if (time > 0.0 && time < 1.0) {
 			float denormalized_time = denormalizeTime(
@@ -382,7 +385,12 @@ void vertex() {
 
 	// calculate the vertex displacement from the static wave effect
 	if (_active_static) {
-		origin_static_world = (MODEL_MATRIX * vec4(_origin_static, 1.0)).xyz;
+		// transform the static origin to world space
+		if (_relative_origin_static) {
+			origin_static_world = (MODEL_MATRIX * vec4(_origin_static, 1.0)).xyz;
+		} else {
+			origin_static_world = _origin_static;
+		}
 		static_offset = computeStaticOffset(
 			world_pos,
 			origin_static_world,
@@ -442,6 +450,9 @@ void fragment() {
 	{
 		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0);
 		vec3 origin_impact = full.rgb;
+		if (_relative_origin_impact) {
+			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
+		}
 		float time = full.a;
 		if (time > 0.0 && time < 1.0) {
 			float denormalized_time = denormalizeTime(
