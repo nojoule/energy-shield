@@ -86,6 +86,8 @@ uniform bool _active_static_offset_hl = true;
 uniform float _strength_static_offset_hl = 1.0;
 /** The intensity of the static offset highlighting effect, defining how narrow the highlighting is. 0 is spread out, 5 is very narrow. */
 uniform float _intensity_static_offset_hl = 5.0;
+/** Defines if the coordinates of the origin is relative to the object position or in world space. */
+uniform bool _relative_origin_static = true;
 
 group_uniforms Impact_Ripple;
 /** Image Testure to store impact origins in the RGB channels and stores _time_impacts in the alpha channel. */
