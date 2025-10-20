@@ -9,9 +9,6 @@ signal body_shape_entered(
 	body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int
 )
 
-## The fixed number of Impacts, the shader can handle at a time.
-const _MAX_IMPACTS: int = 5
-
 ## The curve used to _animate the impacts. The curve should start at 0.0 and end
 ## at 1.0 and defines the current progressing of the impact throughout the
 ## object.
@@ -69,9 +66,11 @@ var _collapsed: bool = false
 # multiple actions at the same time.
 var _generating_or_collapsing: bool = false
 
-
+# Last time the _data_image was cleaned of finished animations.
 var last_cleanup_exection := 0.0
-var data_cleanup_interval := 3000.0
+
+# The Frequancy of _data_image cleanup in milliseconds.
+var data_cleanup_interval := 1500.0
 
 
 ## The material used for the shield, to set the shader parameters. It is
@@ -85,14 +84,6 @@ func _ready() -> void:
 	filled_elapse_time.resize(1)
 	filled_elapse_time.fill(0.0)
 	_elapsed_time.assign(filled_elapse_time)
-	var filled_animate = [false]
-	filled_animate.resize(_MAX_IMPACTS)
-	filled_animate.fill(false)
-	_animate.assign(filled_animate)
-	var filled_impact_origins = [Vector3.ZERO]
-	filled_impact_origins.resize(_MAX_IMPACTS)
-	filled_impact_origins.fill(Vector3.ZERO)
-	_impact_origin.assign(filled_impact_origins)
 
 	# Get the material and set the initial scale
 	material = get_active_material(0)
@@ -201,79 +192,36 @@ func impact(pos: Vector3):
 	var impact_pos: Vector3 = pos
 	if relative_impact_position:
 		impact_pos = to_local(pos)
-	
-	# When resizing texture use crop.
-	#_data_image.crop()
-	
-	# Will need to create a method of cleaning up the image.
-	# Create a max of 5,000? Max image size is: 
-					#● MAX_WIDTH = 16777216
-					#The maximal width allowed for Image resources.
-					#● MAX_HEIGHT = 16777216
-					#The maximal height allowed for Image resources.
 
-	#if _current_impact + 1 > _data_image.get_size().x:
-	_data_image.crop(_data_image.get_size().x + 1, _data_image.get_size().y)
-	
-	var color = Color(pos.x, pos.y, pos.z, 0.0)
-	_data_image.set_pixel(_data_image.get_size().x - 1, 0, color)
-	
-	# setup the next free impact, or overwrite the oldest impact
-	_animate[_current_impact] = true
-	_elapsed_time[_current_impact] = 0.0
-	_impact_origin[_current_impact] = impact_pos
+	# Max image size is: ● MAX_WIDTH = 16777216 ● MAX_HEIGHT = 16777216
+	# Could set a variable or lower sane max?
+	var color = Color(impact_pos.x, impact_pos.y, impact_pos.z, 0.0)
+	if _data_image.get_size() < Vector2i(Image.MAX_WIDTH, Image.MAX_HEIGHT):
+		_data_image.crop(_data_image.get_size().x + 1, _data_image.get_size().y)
+		_data_image.set_pixel(_data_image.get_size().x - 1, 0, color)
+		_elapsed_time.append(0.0)
+	else:
+		# If max has been reached add impact to beginning of image.
+		_data_image.set_pixel(1,0, color)
+		_elapsed_time.set(1, 0.0)
 
-	# update the shader with the new impact origins
-	update_material("_origin_impact", _impact_origin)
-	update_material("_relative_origin_impact", relative_impact_position)
-
-	# update the shader with the new impact times
-	#var time_impacts = []
 	var x_size = _data_image.get_size().x
 	var counter := 1
 	while counter < x_size:
-	#for impact_id in _animate.size():
-		#if _animate[impact_id]:
-		#if impact_id + 1 > _data_image.get_size().x:
-			#_data_image.crop(impact_id + 1, _data_image.get_size().y)
 		if _elapsed_time[counter] < anim_time:
 			var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
 			var normalized_time: float = _elapsed_time[counter] / anim_time
 			var curve_sample: float = animation_curve.sample(normalized_time)
 			var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
 			_data_image.set_pixel(counter, 0, new_pixel_value)
-		#else:
-			## This can be deleted so nothing needs to be done?
-			#var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
-			#var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, 0.0)
-			#_data_image.set_pixel(counter, 0, new_pixel_value)
 		counter += 1
-			#_animate[impact_id] = false
-			
-			
-			#if _elapsed_time[impact_id] < anim_time:
-				#var normalized_time = _elapsed_time[impact_id] / anim_time
-				#time_impacts.append(animation_curve.sample(normalized_time))
-			#else:
-				#time_impacts.append(0.0)
-				#_elapsed_time[impact_id] = 0.0
-				#_animate[impact_id] = false
-		#else:
-			#time_impacts.append(0.0)
-	#update_material("_time_impact", time_impacts)
 
 	var impact_texture := ImageTexture.new()
-	impact_texture.create_from_image(_data_image)
-	
-	update_material("_impact_texture", impact_texture)
+	impact_texture = impact_texture.create_from_image(_data_image)
 
+	update_material("_impact_texture", impact_texture)
 	update_material("max_impacts", _elapsed_time.size())
-	# increment the current impact index
-	#_current_impact += 1
-	#_current_impact = _current_impact % _MAX_IMPACTS #_data_image.get_size().x
-	
-	
-	
+	update_material("_relative_origin_impact", relative_impact_position)
 
 
 func _physics_process(delta: float) -> void:
@@ -285,34 +233,10 @@ func _physics_process(delta: float) -> void:
 		if _generating_or_collapsing:
 			_collapsed = !_collapsed
 			_generating_or_collapsing = false
-
-	# update the impact animations if active
-	#var any_update = false
-	#var time_impacts = []
-	#for impact_id in _animate.size():
-		#if _animate[impact_id]:
-			#any_update = true
-			#if _elapsed_time[impact_id] < anim_time:
-				#var normalized_time = _elapsed_time[impact_id] / anim_time
-				#time_impacts.append(animation_curve.sample(normalized_time))
-				#_elapsed_time[impact_id] += delta
-			#else:
-				#time_impacts.append(0.0)
-				#_elapsed_time[impact_id] = 0.0
-				#_animate[impact_id] = false
-		#else:
-			#time_impacts.append(0.0)
-	#if any_update:
-		#update_material("_time_impact", time_impacts)
-	#
 	
 	var x_size = _data_image.get_size().x
 	var counter := 1
 	while counter < x_size:
-	#for impact_id in _animate.size():
-		#if _animate[impact_id]:
-		#if impact_id + 1 > _data_image.get_size().x:
-			#_data_image.crop(impact_id + 1, _data_image.get_size().y)
 		if _elapsed_time[counter] < anim_time:
 			var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
 			var normalized_time: float = _elapsed_time[counter] / anim_time
@@ -320,15 +244,10 @@ func _physics_process(delta: float) -> void:
 			var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
 			_data_image.set_pixel(counter, 0, new_pixel_value)
 			_elapsed_time[counter] += delta
-		# Deletion of pixels gets done later.
-		#else:
-			#var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
-			#var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, 0.0)
-			#_data_image.set_pixel(counter, 0, new_pixel_value)
 		counter += 1
 	
 	var impact_texture := ImageTexture.new()
-	impact_texture.create_from_image(_data_image)
+	impact_texture = impact_texture.create_from_image(_data_image)
 
 	update_material("_impact_texture", impact_texture)
 
@@ -340,20 +259,11 @@ func _physics_process(delta: float) -> void:
 		# Simple way of cleaning up data. Could only have this be processed every 10 frames
 				# and/or in batches?
 		var raw_data: PackedColorArray = _data_image.get_data().to_color_array()
-		
-		# Print debug info before trimming finished pixels.
-		
-		
-		#print(self.angular_velocity.length())
-		print_debug("Raw Data: ", raw_data)
-		#print_debug("Image: ", _data_image)
-		#print_debug("Texture: ", impact_texture)
-		print()
-		
 		# Test to see if the arrays are the same length.
 		assert(_elapsed_time.size() == raw_data.size(), "Arrays are not the size same size. Something is wrong.")
-		
-		# Process both arrays at the same time.
+
+		# Remove unneeded indexes
+		# TODO -- Should a faster method be used here?
 		counter = 0
 		while counter < raw_data.size() - 1:
 			if _elapsed_time[counter] > anim_time:
