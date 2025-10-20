@@ -88,6 +88,9 @@ uniform float _strength_static_offset_hl = 1.0;
 uniform float _intensity_static_offset_hl = 5.0;
 
 group_uniforms Impact_Ripple;
+/** Image Testure to store impact origins in the RGB channels and stores _time_impacts in the alpha channel. */
+uniform sampler2D _impact_texture: filter_nearest;
+
 /** List of impact origins, where the impact ripples will start from. It is expected to be in world space. */
 uniform vec3[5] _origin_impact;
 /** List of impact times, which defines the time of the impact ripples, normalized between 0 and 1. */

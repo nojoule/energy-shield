@@ -19,7 +19,7 @@ varying flat vec3 origin_static_world;
 varying flat vec3 origin_generate_world;
 
 /** Maximum number of impacts, which can be used to generate impact ripples. */
-const int max_impacts = 5;
+uniform int max_impacts = 1;
 
 float easeInEaseOut(float t) {
 	return t * t * 3.0 - 2.0 * t * t * t;
@@ -359,9 +359,12 @@ void vertex() {
 	impact_offset = 0.0;
 	for(int i=0;i<max_impacts;++i)
 	{
-		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
+		vec4 full = texture(_impact_texture, vec2(float(i), 0.0));
+		vec3 origin_impact = full.rgb;
+		float time = full.a;
+		if (time > 0.0 && time < 1.0) {
 			float denormalized_time = denormalizeTime(
-				_time_impact[i],
+				time,
 				_frequency_impact / _object_scale,
 				_waves_impact + _fade_waves_impact,
 				_radius_impact * _object_scale
@@ -369,7 +372,8 @@ void vertex() {
 
 			impact_offset += computeImpactOffset(
 				world_pos,
-				_origin_impact[i],
+				origin_impact,
+				//_origin_impact[i],
 				_radius_impact * _object_scale,
 				_frequency_impact / _object_scale,
 				_waves_impact,
@@ -440,9 +444,12 @@ void fragment() {
 	vec3 impact_normal = vec3(0.0);
 	for(int i=0;i<max_impacts;++i)
 	{
-		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
+		vec4 full = texture(_impact_texture, vec2(float(i), 0.0));
+		vec3 origin_impact = full.rgb;
+		float time = full.a;
+		if (time > 0.0 && time < 1.0) {
 			float denormalized_time = denormalizeTime(
-				_time_impact[i],
+				time,
 				_frequency_impact / _object_scale,
 				_waves_impact + _fade_waves_impact,
 				_radius_impact * _object_scale
@@ -450,7 +457,7 @@ void fragment() {
 
 			impact_normal += adjustImpactNormal(
 				world_pos,
-				_origin_impact[i],
+				origin_impact,
 				_radius_impact * _object_scale,
 				_frequency_impact / _object_scale,
 				_waves_impact,
@@ -464,12 +471,12 @@ void fragment() {
 			if (_only_on_wave_visibility) {
 				float impact_affection = getAffectionStrengthImpact(
 					world_pos,
-					_origin_impact[i],
+					origin_impact,
 					_radius_impact * _object_scale,
 					_frequency_impact / _object_scale,
 					_waves_impact,
 					_fade_waves_impact,
-					_time_impact[i]
+					time
 				);
 				effect_visibility = max(effect_visibility, impact_affection);
 			}
