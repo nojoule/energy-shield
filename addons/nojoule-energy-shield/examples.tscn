@@ -544,11 +544,11 @@ func _process(delta: float):
 
 [sub_resource type="Image" id="Image_1v2vh"]
 data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 122, 29, 95, 65, 219, 227, 54, 63, 74, 22, 194, 190, 0, 0, 128, 63, 212, 91, 96, 65, 36, 160, 35, 63, 165, 15, 227, 62, 0, 0, 128, 63, 252, 219, 106, 65, 155, 208, 179, 62, 112, 111, 134, 61, 0, 71, 122, 63, 18, 177, 98, 65, 71, 179, 136, 63, 58, 174, 31, 62, 12, 213, 91, 63, 96, 74, 92, 65, 231, 216, 40, 63, 88, 189, 244, 189, 54, 29, 22, 63, 223, 61, 104, 65, 228, 12, 122, 63, 132, 3, 71, 62, 126, 54, 214, 61),
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 250, 98, 65, 62, 69, 139, 63, 56, 242, 179, 189, 0, 0, 128, 63, 218, 80, 103, 65, 237, 62, 132, 63, 12, 175, 14, 62, 22, 67, 123, 63, 32, 43, 98, 65, 27, 152, 128, 63, 204, 124, 138, 62, 206, 236, 94, 63, 68, 180, 103, 65, 38, 38, 48, 62, 8, 159, 235, 189, 127, 69, 28, 63, 141, 221, 106, 65, 78, 22, 38, 63, 202, 5, 129, 62, 211, 209, 19, 62),
 "format": "RGBAFloat",
 "height": 1,
 "mipmaps": false,
-"width": 7
+"width": 6
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_uqd61"]
@@ -592,7 +592,7 @@ shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
 shader_parameter/_impact_texture = SubResource("ImageTexture_uqd61")
-shader_parameter/max_impacts = 7
+shader_parameter/max_impacts = 6
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -627,11 +627,11 @@ point_count = 2
 
 [sub_resource type="Image" id="Image_p05bc"]
 data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 122, 29, 119, 65, 219, 227, 54, 63, 74, 22, 194, 190, 0, 0, 128, 63, 212, 91, 120, 65, 36, 160, 35, 63, 165, 15, 227, 62, 0, 0, 128, 63, 254, 109, 129, 65, 155, 208, 179, 62, 112, 111, 134, 61, 0, 71, 122, 63, 18, 177, 122, 65, 71, 179, 136, 63, 58, 174, 31, 62, 12, 213, 91, 63, 96, 74, 116, 65, 231, 216, 40, 63, 88, 189, 244, 189, 54, 29, 22, 63, 240, 30, 128, 65, 228, 12, 122, 63, 132, 3, 71, 62, 126, 54, 214, 61),
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 250, 122, 65, 62, 69, 139, 63, 56, 242, 179, 189, 0, 0, 128, 63, 218, 80, 127, 65, 237, 62, 132, 63, 12, 175, 14, 62, 22, 67, 123, 63, 32, 43, 122, 65, 27, 152, 128, 63, 204, 124, 138, 62, 206, 236, 94, 63, 68, 180, 127, 65, 38, 38, 48, 62, 8, 159, 235, 189, 127, 69, 28, 63, 199, 110, 129, 65, 78, 22, 38, 63, 202, 5, 129, 62, 211, 209, 19, 62),
 "format": "RGBAFloat",
 "height": 1,
 "mipmaps": false,
-"width": 7
+"width": 6
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_be0g3"]
@@ -675,7 +675,7 @@ shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
 shader_parameter/_impact_texture = SubResource("ImageTexture_be0g3")
-shader_parameter/max_impacts = 7
+shader_parameter/max_impacts = 6
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -745,11 +745,11 @@ func _process(delta: float):
 
 [sub_resource type="Image" id="Image_0hl5u"]
 data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 134, 109, 151, 65, 132, 239, 61, 63, 54, 22, 182, 190, 0, 0, 128, 63, 129, 248, 154, 65, 76, 27, 33, 63, 162, 228, 247, 190, 0, 0, 128, 63, 73, 149, 154, 65, 92, 245, 201, 62, 8, 93, 230, 190, 0, 71, 122, 63, 147, 154, 151, 65, 44, 118, 122, 63, 44, 0, 6, 62, 12, 213, 91, 63, 126, 26, 154, 65, 180, 113, 79, 63, 92, 39, 232, 190, 54, 29, 22, 63, 136, 90, 150, 65, 111, 0, 41, 63, 70, 68, 73, 62, 126, 54, 214, 61),
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 231, 170, 157, 65, 159, 149, 15, 63, 38, 99, 72, 62, 0, 0, 128, 63, 42, 64, 152, 65, 118, 248, 187, 62, 204, 240, 196, 190, 22, 67, 123, 63, 56, 152, 157, 65, 236, 63, 28, 63, 128, 88, 96, 190, 206, 236, 94, 63, 161, 208, 156, 65, 244, 119, 231, 62, 78, 92, 165, 190, 127, 69, 28, 63, 153, 133, 154, 65, 170, 79, 232, 62, 32, 131, 242, 190, 211, 209, 19, 62),
 "format": "RGBAFloat",
 "height": 1,
 "mipmaps": false,
-"width": 7
+"width": 6
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_o6kf4"]
@@ -793,7 +793,7 @@ shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
 shader_parameter/_impact_texture = SubResource("ImageTexture_o6kf4")
-shader_parameter/max_impacts = 7
+shader_parameter/max_impacts = 6
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -828,11 +828,11 @@ point_count = 2
 
 [sub_resource type="Image" id="Image_d2qpy"]
 data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 134, 109, 163, 65, 132, 239, 61, 63, 54, 22, 182, 190, 0, 0, 128, 63, 129, 248, 166, 65, 76, 27, 33, 63, 162, 228, 247, 190, 0, 0, 128, 63, 73, 149, 166, 65, 92, 245, 201, 62, 8, 93, 230, 190, 0, 71, 122, 63, 147, 154, 163, 65, 44, 118, 122, 63, 44, 0, 6, 62, 12, 213, 91, 63, 126, 26, 166, 65, 180, 113, 79, 63, 92, 39, 232, 190, 54, 29, 22, 63, 136, 90, 162, 65, 111, 0, 41, 63, 70, 68, 73, 62, 126, 54, 214, 61),
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 231, 170, 169, 65, 159, 149, 15, 63, 38, 99, 72, 62, 0, 0, 128, 63, 42, 64, 164, 65, 118, 248, 187, 62, 204, 240, 196, 190, 22, 67, 123, 63, 56, 152, 169, 65, 236, 63, 28, 63, 128, 88, 96, 190, 206, 236, 94, 63, 161, 208, 168, 65, 244, 119, 231, 62, 78, 92, 165, 190, 127, 69, 28, 63, 153, 133, 166, 65, 170, 79, 232, 62, 32, 131, 242, 190, 211, 209, 19, 62),
 "format": "RGBAFloat",
 "height": 1,
 "mipmaps": false,
-"width": 7
+"width": 6
 }
 
 [sub_resource type="ImageTexture" id="ImageTexture_ebi6u"]
@@ -877,7 +877,7 @@ shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
 shader_parameter/_impact_texture = SubResource("ImageTexture_ebi6u")
-shader_parameter/max_impacts = 7
+shader_parameter/max_impacts = 6
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -1160,7 +1160,7 @@ width = 700.0
 mesh = SubResource("QuadMesh_f5biq")
 
 [node name="ShieldPlane" parent="InteractionExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(1.0287794, -0.07496057, 3.2857042e-09, 0, -4.37114e-08, -1, 0.07496057, 1.0287794, -4.504467e-08, -0.75, 0.6, 0)
+transform = Transform3D(-1.0319442, 0.012967169, -5.713022e-10, 0, -4.37114e-08, -1, -0.012967169, -1.0319442, 4.518321e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_e83g8")
 animation_curve = SubResource("Curve_cwp47")
 
@@ -1198,7 +1198,7 @@ skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_ibf8e")
 
 [node name="ShieldPlane" parent="ColorExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(1.0197556, 0.15565223, -6.8119856e-09, 0, -4.37114e-08, -1, -0.15565223, 1.0197556, -4.464222e-08, -0.75, 0.6, 0)
+transform = Transform3D(-1.0090486, -0.2168028, 9.488842e-09, 0, -4.37114e-08, -1, 0.2168028, -1.0090486, 4.4173113e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_tb5o1")
 skeleton = NodePath("../ShieldSphere")
 animation_curve = SubResource("Curve_u31ny")
@@ -1232,7 +1232,7 @@ mesh = SubResource("SphereMesh_bycw3")
 animation_curve = SubResource("Curve_t2u8o")
 
 [node name="ShieldPlane" parent="DepthHighlight" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-0.16623709, -1.0159134, 4.4448555e-08, 0, -4.37114e-08, -1, 1.0159134, -0.16623709, 7.273952e-09, -0.75, 0.6, 0)
+transform = Transform3D(0.104887955, 1.0245414, -4.4828408e-08, 0, -4.37114e-08, -1, -1.0245414, 0.104887955, -4.5903064e-09, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_6jtgg")
 animation_curve = SubResource("Curve_wk33k")
 
@@ -1246,7 +1246,7 @@ mesh = SubResource("BoxMesh_qsywp")
 skeleton = NodePath("../EnvironmentSphere")
 
 [node name="EnvironmentMovingPlatform" type="MeshInstance3D" parent="DepthHighlight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.22188172, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.74911195, 0)
 mesh = SubResource("BoxMesh_8tyb0")
 
 [node name="QuantizationExample" type="Node3D" parent="."]
