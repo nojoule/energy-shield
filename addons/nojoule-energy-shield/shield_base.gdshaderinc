@@ -18,9 +18,6 @@ varying smooth float static_offset;
 varying flat vec3 origin_static_world;
 varying flat vec3 origin_generate_world;
 
-/** Maximum number of impacts, which can be used to generate impact ripples. */
-const int max_impacts = 5;
-
 float easeInEaseOut(float t) {
 	return t * t * 3.0 - 2.0 * t * t * t;
 }
@@ -359,14 +356,15 @@ void vertex() {
 	impact_offset = 0.0;
 	for(int i=0;i<max_impacts;++i)
 	{
-		// transform the generation origin to world space
-		vec3 origin_impact = _origin_impact[i];
+		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0); //texture(_impact_texture, vec2(float(i), 0.0));
+		vec3 origin_impact = full.rgb;
 		if (_relative_origin_impact) {
 			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
 		}
-		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
+		float time = full.a;
+		if (time > 0.0 && time < 1.0) {
 			float denormalized_time = denormalizeTime(
-				_time_impact[i],
+				time,
 				_frequency_impact / _object_scale,
 				_waves_impact + _fade_waves_impact,
 				_radius_impact * _object_scale
@@ -450,14 +448,15 @@ void fragment() {
 	vec3 impact_normal = vec3(0.0);
 	for(int i=0;i<max_impacts;++i)
 	{
-		// transform the generation origin to world space
-		vec3 origin_impact = _origin_impact[i];
+		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0);
+		vec3 origin_impact = full.rgb;
 		if (_relative_origin_impact) {
 			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
 		}
-		if (_time_impact[i] > 0.0 && _time_impact[i] < 1.0) {
+		float time = full.a;
+		if (time > 0.0 && time < 1.0) {
 			float denormalized_time = denormalizeTime(
-				_time_impact[i],
+				time,
 				_frequency_impact / _object_scale,
 				_waves_impact + _fade_waves_impact,
 				_radius_impact * _object_scale
@@ -484,7 +483,7 @@ void fragment() {
 					_frequency_impact / _object_scale,
 					_waves_impact,
 					_fade_waves_impact,
-					_time_impact[i]
+					time
 				);
 				effect_visibility = max(effect_visibility, impact_affection);
 			}
