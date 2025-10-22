@@ -215,8 +215,14 @@ func impact(pos: Vector3):
 		_elapsed_time.append(0.0)
 	else:
 		# If max has been reached add impact to beginning of image.
-		_data_image.set_pixel(1,0, color)
-		_elapsed_time.set(1, 0.0)
+		var index: int = _elapsed_time.max()
+		if index != null:
+			_data_image.set_pixel(index,0, color)
+			_elapsed_time.set(index, 0.0)
+		else:
+			push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
+			_data_image.set_pixel(1, 0, color)
+			_elapsed_time.set(1, 0.0)
 
 	var x_size = _data_image.get_size().x
 	var counter := 1
