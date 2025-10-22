@@ -34,11 +34,19 @@ signal body_shape_entered(
 ## Trigger an impact when a body shape enters the shield.
 @export var body_shape_entered_impact: bool = false
 
-
 ## Defines if the coordinates of the origin is relative to the object position
 @export var relative_impact_position: bool = false
 
-# Use an image to store positions and elapsed_time.
+## Max number of waves processed at one time. If set below 0 sets itself to 
+## technical max of 16777216 waves.
+@export var impact_max: int = Image.MAX_HEIGHT:
+	set(input):
+		if input < 0 or input > Image.MAX_HEIGHT:
+			impact_max = Image.MAX_HEIGHT
+		else:
+			impact_max = input
+
+# Use an image to store ripple impact positions and elapsed_time.
 var _data_image := Image.create_empty(1,1, false, Image.FORMAT_RGBAF)
 
 # The current impact index, used to keep track of the impacts and overwrite the
@@ -69,8 +77,11 @@ var _generating_or_collapsing: bool = false
 # Last time the _data_image was cleaned of finished animations.
 var last_cleanup_exection := 0.0
 
-# The Frequancy of _data_image cleanup in milliseconds.
-var data_cleanup_interval := 1500.0
+# The frequancy of _data_image cleanup in physcis frames. A random number will be
+# added to this to a max of 25% of this value. So not all cleanups happen in the
+# same frame.
+var data_cleanup_interval := 250
+var current_physcis_frame_count := 0
 
 
 ## The material used for the shield, to set the shader parameters. It is
@@ -79,6 +90,10 @@ var data_cleanup_interval := 1500.0
 
 
 func _ready() -> void:
+	# Add a random amount to the cleanup interval so all shields don't cleanup
+	# in the same frame.
+	data_cleanup_interval += randi() % int(250 * 0.25)
+
 	# Initialize the arrays with the default values
 	var filled_elapse_time = [0.0]
 	filled_elapse_time.resize(1)
@@ -193,10 +208,8 @@ func impact(pos: Vector3):
 	if relative_impact_position:
 		impact_pos = to_local(pos)
 
-	# Max image size is: ● MAX_WIDTH = 16777216 ● MAX_HEIGHT = 16777216
-	# Could set a variable or lower sane max?
 	var color = Color(impact_pos.x, impact_pos.y, impact_pos.z, 0.0)
-	if _data_image.get_size() < Vector2i(Image.MAX_WIDTH, Image.MAX_HEIGHT):
+	if _data_image.get_size() < Vector2i(impact_max, impact_max):
 		_data_image.crop(_data_image.get_size().x + 1, _data_image.get_size().y)
 		_data_image.set_pixel(_data_image.get_size().x - 1, 0, color)
 		_elapsed_time.append(0.0)
@@ -253,9 +266,8 @@ func _physics_process(delta: float) -> void:
 
 	update_material("max_impacts", _elapsed_time.size())
 
-	var current = Time.get_ticks_msec()
-	if current - last_cleanup_exection >= data_cleanup_interval:
-		last_cleanup_exection = current
+	current_physcis_frame_count += 1
+	if current_physcis_frame_count % data_cleanup_interval == 0:
 		# Simple way of cleaning up data. Could only have this be processed every 10 frames
 				# and/or in batches?
 		var raw_data: PackedColorArray = _data_image.get_data().to_color_array()
