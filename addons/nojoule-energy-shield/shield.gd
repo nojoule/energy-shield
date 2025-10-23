@@ -81,7 +81,13 @@ var last_cleanup_exection := 0.0
 # added to this to a max of 25% of this value. So not all cleanups happen in the
 # same frame.
 var data_cleanup_interval := 250
+
+# Current physcis frame. This variable gets incremented in _physcis_process().
 var current_physcis_frame_count := 0
+
+# Objects detected causing an impact. Needs to have a null entry so it is the same size
+# as the other arrays needed in wave processing.
+var _objects_detected : Array = [null]
 
 
 ## The material used for the shield, to set the shader parameters. It is
@@ -203,44 +209,51 @@ func collapse_from(pos: Vector3) -> void:
 
 ## Create an impact at the [param pos] position, starting a new impact
 ## animation.
-func impact(pos: Vector3):
-	var impact_pos: Vector3 = pos
-	if relative_impact_position:
-		impact_pos = to_local(pos)
+func impact(pos: Vector3, object: PhysicsBody3D):
+	if not _objects_detected.has(object) or object == null:
+		var impact_pos: Vector3 = pos
+		if relative_impact_position:
+			impact_pos = to_local(pos)
 
-	var color = Color(impact_pos.x, impact_pos.y, impact_pos.z, 0.0)
-	if _data_image.get_size() < Vector2i(impact_max, impact_max):
-		_data_image.crop(_data_image.get_size().x + 1, _data_image.get_size().y)
-		_data_image.set_pixel(_data_image.get_size().x - 1, 0, color)
-		_elapsed_time.append(0.0)
-	else:
-		# If max has been reached add impact to beginning of image.
-		var index: int = _elapsed_time.max()
-		if index != null:
-			_data_image.set_pixel(index,0, color)
-			_elapsed_time.set(index, 0.0)
+		var color = Color(impact_pos.x, impact_pos.y, impact_pos.z, 0.0)
+		if _data_image.get_size() < Vector2i(impact_max, impact_max):
+			_data_image.crop(_data_image.get_size().x + 1, _data_image.get_size().y)
+			_data_image.set_pixel(_data_image.get_size().x - 1, 0, color)
+			_elapsed_time.append(0.0)
 		else:
-			push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
-			_data_image.set_pixel(1, 0, color)
-			_elapsed_time.set(1, 0.0)
+			# If max has been reached add impact to beginning of image.
+			var index: int = _elapsed_time.max()
+			if index != null:
+				_data_image.set_pixel(index,0, color)
+				_elapsed_time.set(index, 0.0)
+			else:
+				push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
+				_data_image.set_pixel(1, 0, color)
+				_elapsed_time.set(1, 0.0)
 
-	var x_size = _data_image.get_size().x
-	var counter := 1
-	while counter < x_size:
-		if _elapsed_time[counter] < anim_time:
-			var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
-			var normalized_time: float = _elapsed_time[counter] / anim_time
-			var curve_sample: float = animation_curve.sample(normalized_time)
-			var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
-			_data_image.set_pixel(counter, 0, new_pixel_value)
-		counter += 1
+		# Updating times after each impact seems to create a slight time imbalance.
+		# Runs much smoother without this.
+		#var x_size = _data_image.get_size().x
+		#var counter := 1
+		#while counter < x_size:
+			#if _elapsed_time[counter] < anim_time:
+				#var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
+				#var normalized_time: float = _elapsed_time[counter] / anim_time
+				#var curve_sample: float = animation_curve.sample(normalized_time)
+				#var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
+				#_data_image.set_pixel(counter, 0, new_pixel_value)
+			#counter += 1
 
-	var impact_texture := ImageTexture.new()
-	impact_texture = impact_texture.create_from_image(_data_image)
+		# Create a new texture for the shader to use.
+		var impact_texture := ImageTexture.new()
+		impact_texture = impact_texture.create_from_image(_data_image)
 
-	update_material("_impact_texture", impact_texture)
-	update_material("max_impacts", _elapsed_time.size())
-	update_material("_relative_origin_impact", relative_impact_position)
+		_objects_detected.append(object)
+
+		# Update shader variables.
+		update_material("_impact_texture", impact_texture)
+		update_material("max_impacts", _elapsed_time.size())
+		update_material("_relative_origin_impact", relative_impact_position)
 
 
 func _physics_process(delta: float) -> void:
@@ -252,41 +265,92 @@ func _physics_process(delta: float) -> void:
 		if _generating_or_collapsing:
 			_collapsed = !_collapsed
 			_generating_or_collapsing = false
-	
+
+	# Process _elapsed_times for each wave.
 	var x_size = _data_image.get_size().x
 	var counter := 1
 	while counter < x_size:
 		if _elapsed_time[counter] < anim_time:
 			var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
 			var normalized_time: float = _elapsed_time[counter] / anim_time
-			var curve_sample: float = animation_curve.sample(normalized_time)
-			var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
-			_data_image.set_pixel(counter, 0, new_pixel_value)
-			_elapsed_time[counter] += delta
+			# If animation is finished see if the body that triggered the wave
+			# is still touching the shield.
+			if normalized_time > 0.9 and _objects_detected[counter] != null:
+				var space_state = get_world_3d().direct_space_state
+				var start = self.global_position
+				var end = _objects_detected[counter].global_position
+
+				var query = PhysicsRayQueryParameters3D.create(start, end)
+				#query.collide_with_areas = true
+				query.hit_from_inside = false
+				var result_1 = space_state.intersect_ray(query)
+
+				query = PhysicsRayQueryParameters3D.create(end, start)
+				query.hit_from_inside = false
+				var result_2 = space_state.intersect_ray(query)
+
+				if result_1 != {} and result_2 != {}:
+					print_debug("Using raycast data.")
+					var dis_to_1: float = self.global_position.distance_squared_to(result_1.position)
+					var dis_to_2: float = self.global_position.distance_squared_to(result_2.position)
+					var differance: float = dis_to_2 - dis_to_1
+					print_debug("Differance: ", differance)
+					# Below zero should mean that the object is touching the shield.
+					if differance < 0:
+						# Update pixel data and reset _elapsed_time.
+						_elapsed_time[counter] = 0.0
+						var pos: Vector3 = result_2.position - result_1.position
+						var new_pixel_value: Color = Color(pos.x, pos.y, pos.z, 0.0)
+						_data_image.set_pixel(counter, 0, new_pixel_value)
+				else:
+					print_debug("Results of raycasts were empty. Using area overlap.")
+					if $Area3D.get_overlapping_bodies().has(_objects_detected[counter]):
+						# Update pixel data and reset _elapsed_time.
+						_elapsed_time[counter] = 0.0
+						var pos := Vector3.ZERO
+						if result_1 != {}:
+							pos = result_1.position
+						else:
+							# What to do?
+							print_debug("What now?")
+							pass
+						var new_pixel_value: Color = Color(pos.x, pos.y, pos.z, 0.0)
+						_data_image.set_pixel(counter, 0, new_pixel_value)
+			else:
+				var curve_sample: float = animation_curve.sample(normalized_time)
+				var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
+				_data_image.set_pixel(counter, 0, new_pixel_value)
+				_elapsed_time[counter] += delta
 		counter += 1
-	
+
+	# Create texture for shader.
 	var impact_texture := ImageTexture.new()
 	impact_texture = impact_texture.create_from_image(_data_image)
 
+	# Update shader variables.
 	update_material("_impact_texture", impact_texture)
-
 	update_material("max_impacts", _elapsed_time.size())
 
+	# Simple way of cleaning up data. Runs after "data_cleanup_interval" physics frames.
 	current_physcis_frame_count += 1
 	if current_physcis_frame_count % data_cleanup_interval == 0:
-		# Simple way of cleaning up data. Could only have this be processed every 10 frames
-				# and/or in batches?
+		# Convert the image data into an array that can be processed.
 		var raw_data: PackedColorArray = _data_image.get_data().to_color_array()
-		# Test to see if the arrays are the same length.
-		assert(_elapsed_time.size() == raw_data.size(), "Arrays are not the size same size. Something is wrong.")
 
-		# Remove unneeded indexes
+		# Test to see if the arrays are the same length.
+		assert(_elapsed_time.size() == raw_data.size(), "_elapsed_time and raw_data are not the size 
+				same size. Something is wrong.")
+		assert(_objects_detected.size() == _elapsed_time.size(), "_objects_detected and _elapsed_time arrays
+				are not the same size. Something is wrong.")
+
+		# Remove entries were the animations have finished.
 		# TODO -- Should a faster method be used here?
 		counter = 0
 		while counter < raw_data.size() - 1:
 			if _elapsed_time[counter] > anim_time:
 				raw_data.remove_at(counter)
 				_elapsed_time.remove_at(counter)
+				_objects_detected.remove_at(counter)
 			else:
 				counter += 1
 		_data_image.set_data(raw_data.size(), 1, false, Image.FORMAT_RGBAF, raw_data.to_byte_array())
@@ -309,7 +373,7 @@ func _on_area_3d_input_event(
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			if not shift_pressed:
 				if not _collapsed:
-					impact(event_position)
+					impact(event_position, null)
 			else:
 				if _collapsed:
 					generate_from(event_position)
@@ -319,7 +383,7 @@ func _on_area_3d_input_event(
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body_entered_impact:
-		impact(body.global_position)
+		impact(body.global_position, body)
 	body_entered.emit(body)
 
 
@@ -327,7 +391,7 @@ func _on_area_3d_body_shape_entered(
 	body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int
 ) -> void:
 	if body_shape_entered_impact:
-		impact(body.global_position)
+		impact(body.global_position, body)
 	body_shape_entered.emit(body_rid, body, body_shape_index, local_shape_index)
 
 
