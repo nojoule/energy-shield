@@ -275,35 +275,41 @@ func _physics_process(delta: float) -> void:
 			var normalized_time: float = _elapsed_time[counter] / anim_time
 			# If animation is finished see if the body that triggered the wave
 			# is still touching the shield.
-			if normalized_time > 0.9 and _objects_detected[counter] != null:
+			if normalized_time > 0.3 and _objects_detected[counter] != null:
 				var space_state = get_world_3d().direct_space_state
 				var start = self.global_position
 				var end = _objects_detected[counter].global_position
 
 				var query = PhysicsRayQueryParameters3D.create(start, end)
 				#query.collide_with_areas = true
+				for child in self.get_children():
+					if child.is_class("PhysicsBody3D"):
+						query.exclude.append(child)
 				query.hit_from_inside = false
 				var result_1 = space_state.intersect_ray(query)
 
-				query = PhysicsRayQueryParameters3D.create(end, start)
-				query.hit_from_inside = false
-				var result_2 = space_state.intersect_ray(query)
+				var query_2 = PhysicsRayQueryParameters3D.create(end, start)
+				query.collide_with_areas = true
+				query_2.exclude = [_objects_detected[counter]]
+				query_2.hit_from_inside = false
+				var result_2 = space_state.intersect_ray(query_2)
 
 				if result_1 != {} and result_2 != {}:
-					print_debug("Using raycast data.")
-					var dis_to_1: float = self.global_position.distance_squared_to(result_1.position)
-					var dis_to_2: float = self.global_position.distance_squared_to(result_2.position)
-					var differance: float = dis_to_2 - dis_to_1
-					print_debug("Differance: ", differance)
-					# Below zero should mean that the object is touching the shield.
-					if differance < 0:
-						# Update pixel data and reset _elapsed_time.
-						_elapsed_time[counter] = 0.0
-						var pos: Vector3 = result_2.position - result_1.position
-						var new_pixel_value: Color = Color(pos.x, pos.y, pos.z, 0.0)
-						_data_image.set_pixel(counter, 0, new_pixel_value)
+					if result_1.collider == _objects_detected[counter] and result_2.collider == self:
+						#print_debug("Using raycast data.")
+						var dis_to_1: float = self.global_position.distance_squared_to(result_1.position)
+						var dis_to_2: float = self.global_position.distance_squared_to(result_2.position)
+						var differance: float = dis_to_2 - dis_to_1
+						print_debug("Differance: ", differance)
+						# Below zero should mean that the object is touching the shield.
+						if differance < 0:
+							# Update pixel data and reset _elapsed_time.
+							_elapsed_time[counter] = 0.0
+							var pos: Vector3 = result_2.position - result_1.position
+							var new_pixel_value: Color = Color(pos.x, pos.y, pos.z, 0.0)
+							_data_image.set_pixel(counter, 0, new_pixel_value)
 				else:
-					print_debug("Results of raycasts were empty. Using area overlap.")
+					#print_debug("Results of raycasts were empty. Using area overlap.")
 					if $Area3D.get_overlapping_bodies().has(_objects_detected[counter]):
 						# Update pixel data and reset _elapsed_time.
 						_elapsed_time[counter] = 0.0
@@ -316,6 +322,7 @@ func _physics_process(delta: float) -> void:
 							pass
 						var new_pixel_value: Color = Color(pos.x, pos.y, pos.z, 0.0)
 						_data_image.set_pixel(counter, 0, new_pixel_value)
+				print_debug("Results: 1 - ", result_1 != {}, ", 2 - ", result_2 != {})
 			else:
 				var curve_sample: float = animation_curve.sample(normalized_time)
 				var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
