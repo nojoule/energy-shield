@@ -495,7 +495,7 @@ void fragment() {
 	}
 
 	// combine the normals and normalize the result, this is the new surface normal at this fragment
-	vec3 new_normal = normalize(static_normal + impact_normal  + 0.001 * NORMAL);
+	vec3 new_normal = normalize(static_normal + impact_normal + 0.001 * NORMAL);
 	NORMAL = new_normal;
 
 	// calculate the shield visibility, which determines the color and transparency of the shield.

@@ -82,9 +82,6 @@ var last_cleanup_exection := 0.0
 # same frame.
 var data_cleanup_interval := 250
 
-# Current physcis frame. This variable gets incremented in _physcis_process().
-var current_physcis_frame_count := 0
-
 # Objects detected causing an impact. Needs to have a null entry so it is the same size
 # as the other arrays needed in wave processing.
 var _objects_detected : Array = [null]
@@ -209,8 +206,13 @@ func collapse_from(pos: Vector3) -> void:
 
 ## Create an impact at the [param pos] position, starting a new impact
 ## animation.
-func impact(pos: Vector3, object: PhysicsBody3D):
-	if not _objects_detected.has(object) or object == null:
+func impact(pos: Vector3, object: PhysicsBody3D, override: bool = false):
+	# In game only process impact right before physics frame. So impact data does not
+	# get overriden by processing code in _physcis_process().
+	if not Engine.is_editor_hint():
+		await get_tree().physics_frame
+
+	if (override or not _objects_detected.has(object) or object == null):
 		var impact_pos: Vector3 = pos
 		if relative_impact_position:
 			impact_pos = to_local(pos)
@@ -224,7 +226,7 @@ func impact(pos: Vector3, object: PhysicsBody3D):
 			# If max has been reached add impact to beginning of image.
 			var index: int = _elapsed_time.max()
 			if index != null:
-				_data_image.set_pixel(index,0, color)
+				_data_image.set_pixel(index, 0, color)
 				_elapsed_time.set(index, 0.0)
 			else:
 				push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
@@ -256,6 +258,26 @@ func impact(pos: Vector3, object: PhysicsBody3D):
 		update_material("_relative_origin_impact", relative_impact_position)
 
 
+func is_approx_equal_by(float_1: float, float_2: float, variance: float) -> bool:
+	var first_float: float = 0.0
+	var second_float: float = 0.0
+	# If a input float is negative then find the absolute value and double it so 
+	# the two float can be subtracted correctly.
+	if float_1 < 0:
+		first_float = absf(float_1 + float_1)
+	else:
+		first_float = float_1
+	if float_2 < 0:
+		second_float = absf(float_2 + float_2)
+	else:
+		second_float = float_2
+	var differance: float = abs(first_float - second_float)
+	if differance < variance and differance > -variance:
+		return true
+	else:
+		return false
+
+
 func _physics_process(delta: float) -> void:
 	# update the shield generation or collapse animation
 	if _generating_or_collapsing && _generate_time <= 1.0:
@@ -266,20 +288,42 @@ func _physics_process(delta: float) -> void:
 			_collapsed = !_collapsed
 			_generating_or_collapsing = false
 
+	# Objects that need to be checked to see if they need a ripple effect.
+	# TODO -- How to process them?
+	var objects_to_be_processed: Array = []
+	for body in $Area3D.get_overlapping_bodies():
+		if not _objects_detected.has(body):
+			objects_to_be_processed.append(body)
+	for area in $Area3D.get_overlapping_areas():
+		if not _objects_detected.has(area):
+			objects_to_be_processed.append(area)
+	if not objects_to_be_processed.is_empty():
+		print(objects_to_be_processed.size())
+
 	# Process _elapsed_times for each wave.
-	var x_size = _data_image.get_size().x
 	var counter := 1
-	while counter < x_size:
+	while counter < _data_image.get_size().x:
 		if _elapsed_time[counter] < anim_time:
 			var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
 			var normalized_time: float = _elapsed_time[counter] / anim_time
 			# If animation is finished see if the body that triggered the wave
 			# is still touching the shield.
-			if normalized_time > 0.3 and _objects_detected[counter] != null:
+	
+			# Factor best between 0.1 and up.
+			# TODO -- have this value be based on shader variables for impact ripple.
+			var factor: float = 0.15
+			# This is the best value for variance that I've found. Smaller values can miss
+			# sometime and result in a ending in the waves. Bigger values can lead to infinity
+			# loops of ever larger amounts of waves.
+			var variance: float = 0.0017
+			# Need to use custom equal function so factor can be more precise then 0.1
+			if _objects_detected[counter] != null and is_approx_equal_by(normalized_time, factor, variance):
+			#if _objects_detected[counter] != null and is_equal_approx(normalized_time, factor):# is_approx_equal_by(normalized_time, factor, variance):
 				var space_state = get_world_3d().direct_space_state
 				var start = self.global_position
 				var end = _objects_detected[counter].global_position
 
+				# Raycaste to the object from self.
 				var query = PhysicsRayQueryParameters3D.create(start, end)
 				#query.collide_with_areas = true
 				for child in self.get_children():
@@ -288,46 +332,47 @@ func _physics_process(delta: float) -> void:
 				query.hit_from_inside = false
 				var result_1 = space_state.intersect_ray(query)
 
+				# Raycaste to self from object.
 				var query_2 = PhysicsRayQueryParameters3D.create(end, start)
-				query.collide_with_areas = true
+				query_2.collide_with_areas = true
 				query_2.exclude = [_objects_detected[counter]]
 				query_2.hit_from_inside = false
 				var result_2 = space_state.intersect_ray(query_2)
 
-				if result_1 != {} and result_2 != {}:
-					if result_1.collider == _objects_detected[counter] and result_2.collider == self:
-						#print_debug("Using raycast data.")
-						var dis_to_1: float = self.global_position.distance_squared_to(result_1.position)
-						var dis_to_2: float = self.global_position.distance_squared_to(result_2.position)
-						var differance: float = dis_to_2 - dis_to_1
-						print_debug("Differance: ", differance)
-						# Below zero should mean that the object is touching the shield.
-						if differance < 0:
-							# Update pixel data and reset _elapsed_time.
-							_elapsed_time[counter] = 0.0
-							var pos: Vector3 = result_2.position - result_1.position
-							var new_pixel_value: Color = Color(pos.x, pos.y, pos.z, 0.0)
-							_data_image.set_pixel(counter, 0, new_pixel_value)
+				if result_1 != {} and result_2 != {} and result_1.collider == _objects_detected[counter] \
+						and result_2.collider == $Area3D:
+					var dis_to_1: float = self.global_position.distance_squared_to(result_1.position)
+
+					# The distance from the center of self to the boundary of self's collision shape.
+					var dis_to_edge: float = 0.0
+					dis_to_edge = self.global_position.distance_squared_to(result_2.position)
+
+					# The distance from the center of detected object's center and the edge of its collision shape.
+					var obj_dis_to_edge: float = _objects_detected[counter].global_position.distance_squared_to(result_2.position)
+					var differance: float = dis_to_1 - dis_to_edge
+
+					# A value below zero means that the object is touching the shield. And if the
+					# differance is greater then the negative value of the distance to the objects edge
+					# then the object isn't fully inside the shield. 
+					if differance < 0 and differance > -obj_dis_to_edge:
+						# Create a new ripple effect.
+						impact(result_2.position, _objects_detected[counter], true)
 				else:
-					#print_debug("Results of raycasts were empty. Using area overlap.")
-					if $Area3D.get_overlapping_bodies().has(_objects_detected[counter]):
-						# Update pixel data and reset _elapsed_time.
-						_elapsed_time[counter] = 0.0
+					if $Area3D.overlaps_body(_objects_detected[counter]):
+						# Find origin for new ripple.
 						var pos := Vector3.ZERO
 						if result_1 != {}:
 							pos = result_1.position
 						else:
-							# What to do?
-							print_debug("What now?")
-							pass
-						var new_pixel_value: Color = Color(pos.x, pos.y, pos.z, 0.0)
-						_data_image.set_pixel(counter, 0, new_pixel_value)
-				print_debug("Results: 1 - ", result_1 != {}, ", 2 - ", result_2 != {})
-			else:
-				var curve_sample: float = animation_curve.sample(normalized_time)
-				var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
-				_data_image.set_pixel(counter, 0, new_pixel_value)
-				_elapsed_time[counter] += delta
+							# Default to the detected object's origin?
+							pos = _objects_detected[counter].global_position
+						# Create new ripple.
+						impact(pos, _objects_detected[counter], true)
+			# Process _elapsed_time.
+			var curve_sample: float = animation_curve.sample(normalized_time)
+			var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
+			_data_image.set_pixel(counter, 0, new_pixel_value)
+			_elapsed_time[counter] += delta
 		counter += 1
 
 	# Create texture for shader.
@@ -339,8 +384,7 @@ func _physics_process(delta: float) -> void:
 	update_material("max_impacts", _elapsed_time.size())
 
 	# Simple way of cleaning up data. Runs after "data_cleanup_interval" physics frames.
-	current_physcis_frame_count += 1
-	if current_physcis_frame_count % data_cleanup_interval == 0:
+	if Engine.get_physics_frames() % data_cleanup_interval == 0:
 		# Convert the image data into an array that can be processed.
 		var raw_data: PackedColorArray = _data_image.get_data().to_color_array()
 
