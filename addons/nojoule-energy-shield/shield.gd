@@ -39,15 +39,28 @@ signal body_shape_entered(
 
 ## Max number of waves processed at one time. If set below 0 sets itself to 
 ## technical max of 16777216 waves.
-@export var impact_max: int = Image.MAX_HEIGHT:
+@export var impact_max: int = Image.MAX_WIDTH:
 	set(input):
-		if input < 0 or input > Image.MAX_HEIGHT:
-			impact_max = Image.MAX_HEIGHT
+		if input < 0 or input > Image.MAX_WIDTH:
+			impact_max = Image.MAX_WIDTH
 		else:
 			impact_max = input
 
+
+# To automatically assign velocity_parent if the parent is a RigidBody3D.
+# This setting is checked before velocity_parent.
+@export var is_parent_rigid_body: bool = false
+
+
+# To have impact ripple's size and intensity incorporate the velocity of the
+# parent rigid body.
+@export var velocity_parent: RigidBody3D = null
+
+
 # Use an image to store ripple impact positions and elapsed_time.
-var _data_image := Image.create_empty(1,1, false, Image.FORMAT_RGBAF)
+# Y-1 is used for origin of ripple and timing
+# Y-2 is used for ripple customization based on the object that triggered the ripple.
+var _data_image := Image.create_empty(1,2, false, Image.FORMAT_RGBAF)
 
 # The current impact index, used to keep track of the impacts and overwrite the
 # oldest impact if the maximum number of impacts is reached.
@@ -206,25 +219,31 @@ func collapse_from(pos: Vector3) -> void:
 
 ## Create an impact at the [param pos] position, starting a new impact
 ## animation.
-func impact(pos: Vector3, object: PhysicsBody3D, override: bool = false):
+func impact(pos: Vector3, object: PhysicsBody3D = null, double_override: bool = false, impact_force := Vector3.ZERO):
 	# In game only process impact right before physics frame. So impact data does not
 	# get overriden by processing code in _physcis_process().
-	if not Engine.is_editor_hint():
-		await get_tree().physics_frame
+	await get_tree().physics_frame
 
-	if (override or not _objects_detected.has(object) or object == null):
+	# Don't process if the object has already in process or if the double_override has
+	# been set.
+	#if (double_override or not _objects_detected.has(object) or object == null):
+	if true:
 		var impact_pos: Vector3 = pos
 		if relative_impact_position:
 			impact_pos = to_local(pos)
 
 		var color = Color(impact_pos.x, impact_pos.y, impact_pos.z, 0.0)
+		var index: int = -1
 		if _data_image.get_size() < Vector2i(impact_max, impact_max):
-			_data_image.crop(_data_image.get_size().x + 1, _data_image.get_size().y)
+			_data_image.crop(_data_image.get_width() + 1, _data_image.get_height())
 			_data_image.set_pixel(_data_image.get_size().x - 1, 0, color)
+			var color_2 := Color(1.0, 1.0, 1.0, 1.0)
+			_data_image.set_pixel(_data_image.get_size().x - 1, 1, color_2)
 			_elapsed_time.append(0.0)
+			index = _data_image.get_width() - 1
 		else:
 			# If max has been reached add impact to beginning of image.
-			var index: int = _elapsed_time.max()
+			index = _elapsed_time.max()
 			if index != null:
 				_data_image.set_pixel(index, 0, color)
 				_elapsed_time.set(index, 0.0)
@@ -232,6 +251,116 @@ func impact(pos: Vector3, object: PhysicsBody3D, override: bool = false):
 				push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
 				_data_image.set_pixel(1, 0, color)
 				_elapsed_time.set(1, 0.0)
+				index = 1
+		
+		if object != null:
+			var self_volume: float = 1.0
+			var aabb_size: Vector3 = self.mesh.get_aabb().size
+			if absf(aabb_size.x) > 0.0:
+				self_volume *= aabb_size.x
+			if absf(aabb_size.y) > 0.0:
+				self_volume *= aabb_size.y
+			if absf(aabb_size.z) > 0.0:
+				self_volume *= aabb_size.z
+
+			var object_volume: float = 0.0
+			var size := Vector3()
+			var sizes := PackedVector3Array()
+			var collision_shapes: Array = []
+			var bodies := []
+			var owner_ids = object.get_shape_owners()
+			for id in owner_ids:
+				var shape_count: int = object.shape_owner_get_shape_count(id)
+				var curr := 0
+				while curr < shape_count:
+					collision_shapes.append(object.shape_owner_get_shape(id, curr))
+					curr += 1
+			if collision_shapes.is_empty():
+				push_warning("No Collision Shapes found that are owned by: ", object)
+			
+			assert(not collision_shapes.is_empty(), "No collision shapes found.")
+			
+			for col_shape in collision_shapes:
+				if col_shape.is_class("SphereShape3D"):
+					var radius: float = col_shape.radius * 2.0
+					sizes.append(Vector3(radius, radius, radius))
+				elif col_shape.is_class("BoxShape3D"):
+					sizes.append(col_shape.size)
+				else:
+					# Else use the collision debug shape's aabb.
+					var arraymesh : ArrayMesh = col_shape.get_debug_mesh()
+					var aabb: AABB = arraymesh.get_aabb()
+					# If the aabb was a sphere size.x would the the radius of the sphere
+					var vec := Vector3()
+					# AABB position is the origin of the box relative to the host_body.
+					#print_debug("AABB position: ", aabb.position, " AABB size: ", aabb.size)
+					vec = aabb.size.abs() #aabb.position.abs() + aabb.size.abs()
+					#vec2.z = aabb.end.z
+					#offsets.append(col_shape.position)
+					sizes.append(vec)
+				
+				if sizes.size() == 1:
+					size = sizes[0]
+				else:
+					for s in sizes:
+						# Add offset of the collision shape
+						#s += offsets[i]
+						#s.x += offsets[i].x
+						#s.y += offsets[i].y
+						#s.z += offsets[i].z
+						# Compare
+						if s.x > size.x:
+							size.x = s.x
+						if s.y > size.y:
+							size.y = s.y
+						if s.z > size.z:
+							size.z = s.z
+								#i += 1
+				object_volume = size.x * size.y * size.z
+			# TODO -- Now I have the size differance . . . how to use it?
+			#var differance_in_volume: float = self_volume - object_volume
+			# TODO -- what is the best max to clamp to?
+			# They need to be clamped differantly depending on if the shield is a 
+			# plane or a sphere.
+			var normalized_volume: float = 0.0
+			if self.mesh.is_class("PlaneMesh"):
+				normalized_volume =  remap(object_volume / self_volume * 2.0, 0.0, 2.0, 0.3, 4.0)
+			else:
+				normalized_volume =  remap(object_volume / self_volume, 0.0, 2.0, 0.6, 7.0)
+			#print("Object volume: ", object_volume, " Self volume: ", self_volume, " Normalized: ", normalized_volume)
+			
+			# Size, force, touch area, if this node is a child of rigidbody could use its
+			# linear_velocity and current movement force to change ripple intensity.
+			# TODO -- how to have an area3D based projectile be processed correctly?
+				# Create a custome area3D script that approximates speed and passes
+				# that data to this when it impacts the shield?
+			var normalized_force: float = 1.0
+			if is_parent_rigid_body and self.get_parent().is_class("RigidBody3D"):
+				normalized_force = _get_impact_force(impact_force, self.get_parent())
+			elif velocity_parent != null:
+				normalized_force = _get_impact_force(impact_force, velocity_parent)
+			else:
+				var max_axis: float = 0.0
+				match self.mesh.get_aabb().size.max_axis_index():
+					Vector3.AXIS_X:
+						max_axis = self.mesh.get_aabb().size.x
+					Vector3.AXIS_Y:
+						max_axis = self.mesh.get_aabb().size.y
+					Vector3.AXIS_Z:
+						max_axis = self.mesh.get_aabb().size.z
+				normalized_force = impact_force.length() / max_axis
+			
+			
+			# What to assign to each channel?
+			var x: float = normalized_volume # Scale
+			var y: float = normalized_force # Force: How to normalize it?
+			var z: float = 1.0 # Number of secondary ripples?
+			var a: float = 1.0
+			color = Color(x, y, z, a)
+			_data_image.set_pixel(index, 1, color)
+			
+			# Shader variables to be affected by these numbers:
+				# 1) Radius Impact -- how big the wave is. Min 0.3. Max would between 3.0 and 5.0
 
 		# Updating times after each impact seems to create a slight time imbalance.
 		# Runs much smoother without this.
@@ -290,19 +419,21 @@ func _physics_process(delta: float) -> void:
 
 	# Objects that need to be checked to see if they need a ripple effect.
 	# TODO -- How to process them?
-	var objects_to_be_processed: Array = []
+	#var objects_to_be_processed: Array = []
 	for body in $Area3D.get_overlapping_bodies():
 		if not _objects_detected.has(body):
-			objects_to_be_processed.append(body)
+			_process_object(body)
+			#objects_to_be_processed.append(body)
 	for area in $Area3D.get_overlapping_areas():
 		if not _objects_detected.has(area):
-			objects_to_be_processed.append(area)
-	if not objects_to_be_processed.is_empty():
-		print(objects_to_be_processed.size())
+			_process_object(area)
+			#objects_to_be_processed.append(area)
+	#if not objects_to_be_processed.is_empty():
+		#print(objects_to_be_processed.size())
 
 	# Process _elapsed_times for each wave.
 	var counter := 1
-	while counter < _data_image.get_size().x:
+	while counter < _elapsed_time.size():
 		if _elapsed_time[counter] < anim_time:
 			var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
 			var normalized_time: float = _elapsed_time[counter] / anim_time
@@ -311,63 +442,15 @@ func _physics_process(delta: float) -> void:
 	
 			# Factor best between 0.1 and up.
 			# TODO -- have this value be based on shader variables for impact ripple.
-			var factor: float = 0.15
+			var factor: float = 0.1
 			# This is the best value for variance that I've found. Smaller values can miss
-			# sometime and result in a ending in the waves. Bigger values can lead to infinity
+			# sometime and result in a missing wave. Bigger values can lead to infinity
 			# loops of ever larger amounts of waves.
 			var variance: float = 0.0017
 			# Need to use custom equal function so factor can be more precise then 0.1
 			if _objects_detected[counter] != null and is_approx_equal_by(normalized_time, factor, variance):
 			#if _objects_detected[counter] != null and is_equal_approx(normalized_time, factor):# is_approx_equal_by(normalized_time, factor, variance):
-				var space_state = get_world_3d().direct_space_state
-				var start = self.global_position
-				var end = _objects_detected[counter].global_position
-
-				# Raycaste to the object from self.
-				var query = PhysicsRayQueryParameters3D.create(start, end)
-				#query.collide_with_areas = true
-				for child in self.get_children():
-					if child.is_class("PhysicsBody3D"):
-						query.exclude.append(child)
-				query.hit_from_inside = false
-				var result_1 = space_state.intersect_ray(query)
-
-				# Raycaste to self from object.
-				var query_2 = PhysicsRayQueryParameters3D.create(end, start)
-				query_2.collide_with_areas = true
-				query_2.exclude = [_objects_detected[counter]]
-				query_2.hit_from_inside = false
-				var result_2 = space_state.intersect_ray(query_2)
-
-				if result_1 != {} and result_2 != {} and result_1.collider == _objects_detected[counter] \
-						and result_2.collider == $Area3D:
-					var dis_to_1: float = self.global_position.distance_squared_to(result_1.position)
-
-					# The distance from the center of self to the boundary of self's collision shape.
-					var dis_to_edge: float = 0.0
-					dis_to_edge = self.global_position.distance_squared_to(result_2.position)
-
-					# The distance from the center of detected object's center and the edge of its collision shape.
-					var obj_dis_to_edge: float = _objects_detected[counter].global_position.distance_squared_to(result_2.position)
-					var differance: float = dis_to_1 - dis_to_edge
-
-					# A value below zero means that the object is touching the shield. And if the
-					# differance is greater then the negative value of the distance to the objects edge
-					# then the object isn't fully inside the shield. 
-					if differance < 0 and differance > -obj_dis_to_edge:
-						# Create a new ripple effect.
-						impact(result_2.position, _objects_detected[counter], true)
-				else:
-					if $Area3D.overlaps_body(_objects_detected[counter]):
-						# Find origin for new ripple.
-						var pos := Vector3.ZERO
-						if result_1 != {}:
-							pos = result_1.position
-						else:
-							# Default to the detected object's origin?
-							pos = _objects_detected[counter].global_position
-						# Create new ripple.
-						impact(pos, _objects_detected[counter], true)
+				_process_object(_objects_detected[counter])
 			# Process _elapsed_time.
 			var curve_sample: float = animation_curve.sample(normalized_time)
 			var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
@@ -383,28 +466,82 @@ func _physics_process(delta: float) -> void:
 	update_material("_impact_texture", impact_texture)
 	update_material("max_impacts", _elapsed_time.size())
 
-	# Simple way of cleaning up data. Runs after "data_cleanup_interval" physics frames.
+	# Simple way of cleaning up data. Runs after "data_cleanup_interval" of physics frames.
 	if Engine.get_physics_frames() % data_cleanup_interval == 0:
 		# Convert the image data into an array that can be processed.
 		var raw_data: PackedColorArray = _data_image.get_data().to_color_array()
 
 		# Test to see if the arrays are the same length.
-		assert(_elapsed_time.size() == raw_data.size(), "_elapsed_time and raw_data are not the size 
-				same size. Something is wrong.")
+		assert(_elapsed_time.size() * 2 == raw_data.size(), "_elapsed_time and raw_data are not the size 
+				same size. Something is wrong." + str(_elapsed_time.size()) + ", " + str(raw_data.size()))
 		assert(_objects_detected.size() == _elapsed_time.size(), "_objects_detected and _elapsed_time arrays
 				are not the same size. Something is wrong.")
 
 		# Remove entries were the animations have finished.
 		# TODO -- Should a faster method be used here?
 		counter = 0
-		while counter < raw_data.size() - 1:
+		while counter < _elapsed_time.size() - 1:
 			if _elapsed_time[counter] > anim_time:
+				raw_data.remove_at(_elapsed_time.size() + counter)
 				raw_data.remove_at(counter)
 				_elapsed_time.remove_at(counter)
 				_objects_detected.remove_at(counter)
 			else:
 				counter += 1
-		_data_image.set_data(raw_data.size(), 1, false, Image.FORMAT_RGBAF, raw_data.to_byte_array())
+		_data_image.set_data(_elapsed_time.size(), _data_image.get_height(), false, Image.FORMAT_RGBAF, raw_data.to_byte_array())
+
+
+func _process_object(object: Node3D) -> void:
+	# TODO -- make this able to process collisions between shields?
+	var space_state = get_world_3d().direct_space_state
+	var start = self.global_position
+	var end = object.global_position
+
+	# Raycaste to the object from self.
+	var query = PhysicsRayQueryParameters3D.create(start, end)
+	#query.collide_with_areas = true
+	for child in self.get_children():
+		if child.is_class("PhysicsBody3D"):
+			query.exclude.append(child)
+	query.hit_from_inside = false
+	var result_1 = space_state.intersect_ray(query)
+
+	# Raycaste to self from object.
+	var query_2 = PhysicsRayQueryParameters3D.create(end, start)
+	query_2.collide_with_areas = true
+	query_2.exclude = [object]
+	query_2.hit_from_inside = false
+	var result_2 = space_state.intersect_ray(query_2)
+
+	if result_1 != {} and result_2 != {} and result_1.collider == object \
+			and result_2.collider == $Area3D:
+		var dis_to_1: float = self.global_position.distance_squared_to(result_1.position)
+
+		# The distance from the center of self to the boundary of self's collision shape.
+		var dis_to_edge: float = 0.0
+		dis_to_edge = self.global_position.distance_squared_to(result_2.position)
+
+		# The distance from the center of detected object's center and the edge of its collision shape.
+		var obj_dis_to_edge: float = object.global_position.distance_squared_to(result_2.position)
+		var differance: float = dis_to_1 - dis_to_edge
+
+		# A value below zero means that the object is touching the shield. And if the
+		# differance is greater then the negative value of the distance to the objects edge
+		# then the object isn't fully inside the shield. 
+		if differance < 0 and differance > -obj_dis_to_edge:
+			# Create a new ripple effect.
+			impact(result_2.position, object, true)
+	else:
+		if $Area3D.overlaps_body(object):
+			# Find origin for new ripple.
+			var pos := Vector3.ZERO
+			if result_1 != {}:
+				pos = result_1.position
+			else:
+				# Default to the detected object's origin?
+				pos = object.global_position
+			# Create new ripple.
+			impact(pos, object, true)
 
 	var new_scale = max(
 		global_transform.basis.get_scale().x,
@@ -424,7 +561,7 @@ func _on_area_3d_input_event(
 		if mouse_event.button_index == MOUSE_BUTTON_LEFT:
 			if not shift_pressed:
 				if not _collapsed:
-					impact(event_position, null)
+					impact(event_position)
 			else:
 				if _collapsed:
 					generate_from(event_position)
@@ -434,7 +571,10 @@ func _on_area_3d_input_event(
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body_entered_impact:
-		impact(body.global_position, body)
+		var body_force := Vector3.ZERO
+		if body.is_class("RigidBody3D"):
+			body_force = body.linear_velosity
+		impact(body.global_position, body, false, body_force)
 	body_entered.emit(body)
 
 
@@ -442,7 +582,10 @@ func _on_area_3d_body_shape_entered(
 	body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int
 ) -> void:
 	if body_shape_entered_impact:
-		impact(body.global_position, body)
+		var body_force := Vector3.ZERO
+		if body.is_class("RigidBody3D"):
+			body_force = body.linear_velosity
+		impact(body.global_position, body, false, body_force)
 	body_shape_entered.emit(body_rid, body, body_shape_index, local_shape_index)
 
 
@@ -454,3 +597,12 @@ func _load_web_shader() -> void:
 		var web_shader = load(web_shader_path)
 		material.shader = web_shader
 		print("Loaded web-optimized shader")
+
+
+func _get_impact_force(impact_force: Vector3, rigid_body: RigidBody3D) -> float:
+	# Use parent's linear_velocity and incorperate impact_force
+	# Combine forces to get a collision force?
+	var force_tmp: Vector3 = rigid_body.linear_velocity + impact_force
+	# Get length but how to normalized it? What is the max/base value?
+	var max_force: float = rigid_body.mass * 1.0 # How to find the max force that can be exerted on the body?
+	return force_tmp.length() / max_force

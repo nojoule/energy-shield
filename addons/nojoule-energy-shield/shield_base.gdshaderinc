@@ -351,7 +351,7 @@ void vertex() {
 	for(int i=0;i<max_impacts;++i)
 	{
 		// transform the generation origin to world space
-		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0); //texture(_impact_texture, vec2(float(i), 0.0));
+		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0);
 		vec3 origin_impact = full.rgb;
 		float time = full.a;
 		if (_relative_origin_impact) {
@@ -362,16 +362,19 @@ void vertex() {
 			origin_impact_offset = origin_impact_offset / _object_scale;
 		}
 		if (time > 0.0 && time < 1.0) {
+			// Get impact scale and other information.
+			vec4 impact_data = texelFetch(_impact_texture, ivec2(i, 1), 0);
+
 			float denormalized_time = denormalizeTime(
 				time,
 				_frequency_impact,
 				_waves_impact + _fade_waves_impact,
-				_radius_impact
+				_radius_impact * impact_data.x
 			);
 
 			impact_offset += computeImpactOffset(
 				origin_impact_offset,
-				_radius_impact,
+				_radius_impact * impact_data.x,
 				_frequency_impact,
 				_waves_impact,
 				_fade_waves_impact,
@@ -451,10 +454,14 @@ void fragment() {
 	vec3 impact_normal = vec3(0.0);
 	for(int i=0;i<max_impacts;++i)
 	{
-		// transform the generation origin to world space
+		// Get impact scale and other information.
+		vec4 impact_data = texelFetch(_impact_texture, ivec2(i, 1), 0);
+
+		// Get impact location and time
 		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0);
 		vec3 origin_impact = full.rgb;
 		float time = full.a;
+		// transform the generation origin to world space
 		vec3 origin_impact_offset = (origin_impact - world_pos);
 		if (_relative_origin_impact) {
 			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
@@ -465,12 +472,12 @@ void fragment() {
 				time,
 				_frequency_impact,
 				_waves_impact + _fade_waves_impact,
-				_radius_impact
+				_radius_impact * impact_data.x
 			);
 
 			impact_normal += adjustImpactNormal(
 				origin_impact_offset,
-				_radius_impact,
+				_radius_impact * impact_data.x,
 				_frequency_impact,
 				_waves_impact,
 				_fade_waves_impact,
@@ -483,7 +490,7 @@ void fragment() {
 			if (_only_on_wave_visibility) {
 				float impact_affection = getAffectionStrengthImpact(
 					origin_impact_offset,
-					_radius_impact,
+					_radius_impact * impact_data.x,
 					_frequency_impact,
 					_waves_impact,
 					_fade_waves_impact,
