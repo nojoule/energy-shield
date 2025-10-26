@@ -367,7 +367,7 @@ void vertex() {
 
 			float denormalized_time = denormalizeTime(
 				time,
-				_frequency_impact,
+				_frequency_impact * impact_data.z,
 				_waves_impact + _fade_waves_impact,
 				_radius_impact * impact_data.x
 			);
@@ -375,10 +375,10 @@ void vertex() {
 			impact_offset += computeImpactOffset(
 				origin_impact_offset,
 				_radius_impact * impact_data.x,
-				_frequency_impact,
+				_frequency_impact * impact_data.z,
 				_waves_impact,
 				_fade_waves_impact,
-				_amplitude_impact,
+				_amplitude_impact * impact_data.a,
 				denormalized_time
 			);
 		}
@@ -470,7 +470,7 @@ void fragment() {
 		if (time > 0.0 && time < 1.0) {
 			float denormalized_time = denormalizeTime(
 				time,
-				_frequency_impact,
+				_frequency_impact * impact_data.z,
 				_waves_impact + _fade_waves_impact,
 				_radius_impact * impact_data.x
 			);
@@ -478,7 +478,7 @@ void fragment() {
 			impact_normal += adjustImpactNormal(
 				origin_impact_offset,
 				_radius_impact * impact_data.x,
-				_frequency_impact,
+				_frequency_impact * impact_data.z,
 				_waves_impact,
 				_fade_waves_impact,
 				_normal_amplitude_impact,
@@ -491,7 +491,7 @@ void fragment() {
 				float impact_affection = getAffectionStrengthImpact(
 					origin_impact_offset,
 					_radius_impact * impact_data.x,
-					_frequency_impact,
+					_frequency_impact * impact_data.z,
 					_waves_impact,
 					_fade_waves_impact,
 					time

@@ -93,7 +93,7 @@ var last_cleanup_exection := 0.0
 # The frequancy of _data_image cleanup in physcis frames. A random number will be
 # added to this to a max of 25% of this value. So not all cleanups happen in the
 # same frame.
-var data_cleanup_interval := 250
+var data_cleanup_interval := 155
 
 # Objects detected causing an impact. Needs to have a null entry so it is the same size
 # as the other arrays needed in wave processing.
@@ -323,10 +323,19 @@ func impact(pos: Vector3, object: PhysicsBody3D = null, double_override: bool = 
 			# They need to be clamped differantly depending on if the shield is a 
 			# plane or a sphere.
 			var normalized_volume: float = 0.0
+			var frequency_multi: float = 0.0
+			var amplitude_multi: float = 0.0
 			if self.mesh.is_class("PlaneMesh"):
-				normalized_volume =  remap(object_volume / self_volume * 2.0, 0.0, 2.0, 0.3, 4.0)
+				var dividend: float = object_volume / self_volume * 2.0
+				normalized_volume =  remap(dividend, 0.0, 2.0, 0.1, 4.0)
+				frequency_multi = clampf(remap(dividend, 0.0, 2.0, 7.5, 0.01), 0.01, 7.5)
+				amplitude_multi = clampf(remap(dividend, 0.0, 2.0, 0.05, 2.5), 0.05, 2.5)
 			else:
-				normalized_volume =  remap(object_volume / self_volume, 0.0, 2.0, 0.6, 7.0)
+				var dividend: float = object_volume / self_volume
+				normalized_volume =  remap(dividend, 0.0, 2.0, 0.2, 7.0)
+				frequency_multi = clampf(remap(dividend, 0.0, 2.0, 7.5, 0.01), 0.01, 7.5)
+				amplitude_multi = clampf(remap(dividend, 0.0, 2.0, 0.05, 2.5), 0.05, 2.5)
+				#amplitude_multi = clampf(remap(dividend, 0.0, 2.0, 0.001, .05), 0.001, 0.05)
 			#print("Object volume: ", object_volume, " Self volume: ", self_volume, " Normalized: ", normalized_volume)
 			
 			# Size, force, touch area, if this node is a child of rigidbody could use its
@@ -354,13 +363,15 @@ func impact(pos: Vector3, object: PhysicsBody3D = null, double_override: bool = 
 			# What to assign to each channel?
 			var x: float = normalized_volume # Scale
 			var y: float = normalized_force # Force: How to normalize it?
-			var z: float = 1.0 # Number of secondary ripples?
-			var a: float = 1.0
+			var z: float = frequency_multi # Ripple frequency
+			var a: float = amplitude_multi # Ripple amplitude
 			color = Color(x, y, z, a)
 			_data_image.set_pixel(index, 1, color)
 			
 			# Shader variables to be affected by these numbers:
-				# 1) Radius Impact -- how big the wave is. Min 0.3. Max would between 3.0 and 5.0
+				# 1) Radius Impact -- how big the wave is. Min 0.3. Max would between 3.0 and 5.0 (0.1, 5.0)
+				# 2) _frequency_impact -- Default 20.0 (150.0, 5)
+				# 3) _amplitude_impact -- Default 0.02 (0.001, .05)
 
 		# Updating times after each impact seems to create a slight time imbalance.
 		# Runs much smoother without this.
@@ -442,7 +453,7 @@ func _physics_process(delta: float) -> void:
 	
 			# Factor best between 0.1 and up.
 			# TODO -- have this value be based on shader variables for impact ripple.
-			var factor: float = 0.1
+			var factor: float = 0.15
 			# This is the best value for variance that I've found. Smaller values can miss
 			# sometime and result in a missing wave. Bigger values can lead to infinity
 			# loops of ever larger amounts of waves.
