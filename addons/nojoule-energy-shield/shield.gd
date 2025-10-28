@@ -106,7 +106,7 @@ var data_cleanup_interval := 155
 var _objects_detected : Array = [null]
 
 
-# Objest that are being processed by _impact function.
+# Objects that are being processed by _impact function.
 var objects_to_process: Dictionary = {}
 
 
@@ -346,9 +346,9 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 			# TODO -- what is the best max to clamp to?
 			# They need to be clamped differantly depending on if the shield is a 
 			# plane or a sphere.
-			var normalized_volume: float = 0.0
-			var frequency_multi: float = 0.0
-			var amplitude_multi: float = 0.0
+			var normalized_volume: float = 1.0
+			var frequency_multi: float = 1.0
+			var amplitude_multi: float = 1.0
 			#print(" Object: ", object, " Object volume: ", object_volume, " Self: ", self_volume, " Dividend: ", object_volume / self_volume * self.scale.x)
 			if self.mesh.is_class("PlaneMesh"):
 				if size != Vector3.ZERO:
@@ -362,6 +362,7 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 				normalized_volume = remap(dividend, 0.0, 2.0, 0.2, 7.0)
 				frequency_multi = clampf(remap(dividend, 0.0, 2.0, 7.5, 0.01), 0.01, 7.5)
 				amplitude_multi = clampf(remap(dividend, 0.0, 2.0, 0.05, 2.5), 0.05, 2.5)
+				
 				#amplitude_multi = clampf(remap(dividend, 0.0, 2.0, 0.001, .05), 0.001, 0.05)
 			#print("Object volume: ", object_volume, " Self volume: ", self_volume, " Normalized: ", normalized_volume)
 			
@@ -483,7 +484,7 @@ func _physics_process(delta: float) -> void:
 	
 			# Factor best between 0.1 and up.
 			# TODO -- should this value be based on shader variables for impact ripple?
-			var factor: float = 0.3 #0.2985 # 0.12 * 3.25
+			var factor: float = 0.5 #0.2985 # 0.12 * 3.25
 			# This is the best value for variance that I've found. Smaller values can miss
 			# sometime and result in a missing wave. Bigger values can lead to infinity
 			# loops of ever larger amounts of waves.
