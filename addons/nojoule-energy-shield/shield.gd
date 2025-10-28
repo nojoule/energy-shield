@@ -72,16 +72,6 @@ var _data_image := Image.create_empty(1,2, false, Image.FORMAT_RGBAF)
 # oldest impact if the maximum number of impacts is reached.
 var _current_impact: int = 0
 
-# The current state of the impacts, if they are currently animating or not.
-var _animate: Array[bool]
-
-# The elapsed time of the impacts, used to calculate the current progress of the
-# impact animation.
-var _elapsed_time: Array[float]
-
-## The origins, or the points of the impacts
-var _impact_origin: Array[Vector3]
-
 # The current progression of the shield generation, used to animate the process
 # of building up the shield, 0.0 is collapsed, 1.0 is fully generated.
 var _generate_time: float = 1.0
@@ -101,13 +91,29 @@ var last_cleanup_exection := 0.0
 # same frame.
 var data_cleanup_interval := 155
 
+
+# TODO combine _objects_detected, _elpapsed_time, and checked_ripples into one dictionary.
+var _dictionary_next_key = 0
+# Each entry being a dictionary with the following Keys: "object", "_elapsed_time", "Image_Pixel_Value" 
+# In every cleanup create a new image based on the pixel value?
+var _ripple_process_dict: Dictionary = {}
+
 # Objects detected causing an impact. Needs to have a null entry so it is the same size
 # as the other arrays needed in wave processing.
 var _objects_detected : Array = [null]
 
 
+# The elapsed time of the impacts, used to calculate the current progress of the
+# impact animation.
+var _elapsed_time: Array[float]
+
+
 # Objects that are being processed by _impact function.
 var objects_to_process: Dictionary = {}
+
+# Ripples that have been checked for if the object that created it is still colliding
+# with the shield and another ripple has been created.
+var checked_ripples: Array = [false]
 
 
 ## The material used for the shield, to set the shader parameters. It is
@@ -256,6 +262,7 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 			var color_2 := Color(1.0, 1.0, 1.0, 1.0)
 			_data_image.set_pixel(_data_image.get_size().x - 1, 1, color_2)
 			_elapsed_time.append(0.0)
+			checked_ripples.append(false)
 			index = _data_image.get_width() - 1
 		else:
 			# If max has been reached add impact to beginning of image.
@@ -268,6 +275,7 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 				_data_image.set_pixel(1, 0, color)
 				_elapsed_time.set(1, 0.0)
 				index = 1
+				checked_ripples[index] = false
 		
 		if object != null:
 			var self_volume: float = 1.0
@@ -484,14 +492,16 @@ func _physics_process(delta: float) -> void:
 	
 			# Factor best between 0.1 and up.
 			# TODO -- should this value be based on shader variables for impact ripple?
-			var factor: float = 0.5 #0.2985 # 0.12 * 3.25
+			var factor: float = 0.15 #0.2985 # 0.12 * 3.25
 			# This is the best value for variance that I've found. Smaller values can miss
 			# sometime and result in a missing wave. Bigger values can lead to infinity
 			# loops of ever larger amounts of waves.
 			var variance: float = 0.003 #0.0017
 			var curve_sample: float = animation_curve.sample(normalized_time)
 			# Need to use custom equal function so factor can be more precise then 0.1
-			if _objects_detected[counter] != null and is_approx_equal_by(curve_sample, factor, variance):
+			#if _objects_detected[counter] != null and is_approx_equal_by(curve_sample, factor, variance) and not checked_ripples.has(counter):
+			if _objects_detected[counter] != null and normalized_time > factor and not checked_ripples[counter]:
+				checked_ripples[counter] = true
 			#if _objects_detected[counter] != null and is_equal_approx(normalized_time, factor):# is_approx_equal_by(normalized_time, factor, variance):
 				_process_object(_objects_detected[counter])
 			# Process _elapsed_time.
@@ -523,8 +533,12 @@ func _physics_process(delta: float) -> void:
 		# Remove entries were the animations have finished.
 		# TODO -- Should a faster method be used here?
 		counter = 0
+		var removed = 0
+		var checked_removed = 0
 		while counter < _elapsed_time.size() - 1:
 			if _elapsed_time[counter] > anim_time:
+				removed += 1
+				checked_ripples.remove_at(counter)
 				raw_data.remove_at(_elapsed_time.size() + counter)
 				raw_data.remove_at(counter)
 				_elapsed_time.remove_at(counter)
