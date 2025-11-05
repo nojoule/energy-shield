@@ -94,9 +94,9 @@ var data_cleanup_interval := 155
 
 # TODO combine _objects_detected, _elpapsed_time, and checked_ripples into one dictionary.
 var _dictionary_next_key = 0
-# Each entry being a dictionary with the following Keys: "object", "_elapsed_time", "Image_Pixel_Value" 
+# Each entry being a dictionary with the following Keys: "object", "_elapsed_time", "X_Pixel", "Y_Pixel"
 # In every cleanup create a new image based on the pixel value?
-var _ripple_process_dict: Dictionary = {}
+var _ripple_process_dict: Dictionary = {"empty_pixel" : {"object": "none", "_elapsed_time": 0.0, "X_Pixel": Color.BLACK, "Y_Pixel": Color.BLACK, "X_Index": 0}}
 
 # Objects detected causing an impact. Needs to have a null entry so it is the same size
 # as the other arrays needed in wave processing.
@@ -236,12 +236,12 @@ func collapse_from(pos: Vector3) -> void:
 ## Create an impact at the [param pos] position, starting a new impact
 ## animation.
 func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: float = 0.0, impact_force := Vector3.ZERO):
-	if object == null or not objects_to_process.has(object.name):
+	if object == null or not objects_to_process.has(object):
 		if object != null:
-			objects_to_process[object.name] = object
+			objects_to_process[object] = true
 		
 		# Wait for a few milliseconds so 2 impacts don't process at the same time.
-		await get_tree().create_timer(randfn(0.02, 0.05)).timeout
+		await get_tree().create_timer(randfn(0.001, 0.05)).timeout
 		# In game only process impact right before physics frame. So impact data does not
 		# get overriden by processing code in _physcis_process().
 		await get_tree().physics_frame
@@ -255,27 +255,28 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 			impact_pos = to_local(pos)
 
 		var color = Color(impact_pos.x, impact_pos.y, impact_pos.z, 0.0)
+		var color_2 = Color.WHITE
 		var index: int = -1
 		if _data_image.get_size() < Vector2i(impact_max, impact_max):
 			_data_image.crop(_data_image.get_width() + 1, _data_image.get_height())
 			_data_image.set_pixel(_data_image.get_size().x - 1, 0, color)
-			var color_2 := Color(1.0, 1.0, 1.0, 1.0)
 			_data_image.set_pixel(_data_image.get_size().x - 1, 1, color_2)
-			_elapsed_time.append(0.0)
-			checked_ripples.append(false)
+			#_elapsed_time.append(0.0)
+			#checked_ripples.append(false)
 			index = _data_image.get_width() - 1
 		else:
 			# If max has been reached add impact to beginning of image.
-			index = _elapsed_time.max()
+			index = _ripple_process_dict.size()
+			#index = _elapsed_time.max()
 			if index != null:
 				_data_image.set_pixel(index, 0, color)
-				_elapsed_time.set(index, 0.0)
+				#_elapsed_time.set(index, 0.0)
 			else:
 				push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
 				_data_image.set_pixel(1, 0, color)
-				_elapsed_time.set(1, 0.0)
+				#_elapsed_time.set(1, 0.0)
 				index = 1
-				checked_ripples[index] = false
+				#checked_ripples[index] = false
 		
 		if object != null:
 			var self_volume: float = 1.0
@@ -401,8 +402,8 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 			var y: float = normalized_force # Force: How to normalize it?
 			var z: float = frequency_multi # Ripple frequency
 			var a: float = amplitude_multi # Ripple amplitude
-			color = Color(x, y, z, a)
-			_data_image.set_pixel(index, 1, color)
+			color_2 = Color(x, y, z, a)
+			_data_image.set_pixel(index, 1, color_2)
 			
 			# Shader variables to be affected by these numbers:
 				# 1) Radius Impact -- how big the wave is. Min 0.3. Max would between 3.0 and 5.0 (0.1, 5.0)
@@ -426,35 +427,40 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 		var impact_texture := ImageTexture.new()
 		impact_texture = impact_texture.create_from_image(_data_image)
 
-		_objects_detected.append(object)
+		#_objects_detected.append(object)
+		if object != null:
+			_ripple_process_dict[str(object.name, " at ", Engine.get_physics_frames())] = {"object": object, "_elapsed_time": 0.0, "X_Pixel": color, "Y_Pixel": color_2, "X_Index": index}
+		else:
+			_ripple_process_dict[str(object, " at ", Engine.get_physics_frames())] = {"object": object, "_elapsed_time": 0.0, "X_Pixel": color, "Y_Pixel": color_2, "X_Index": index}
 
 		# Update shader variables.
 		update_material("_impact_texture", impact_texture)
-		update_material("max_impacts", _elapsed_time.size())
+		update_material("max_impacts", _ripple_process_dict.size())
+		#update_material("max_impacts", _elapsed_time.size())
 		update_material("_relative_origin_impact", relative_impact_position)
 		
 		if object != null:
-			objects_to_process.erase(object.name)
+			objects_to_process.erase(object)
 
 
-func is_approx_equal_by(float_1: float, float_2: float, variance: float) -> bool:
-	var first_float: float = 0.0
-	var second_float: float = 0.0
-	# If a input float is negative then find the absolute value and double it so 
-	# the two float can be subtracted correctly.
-	if float_1 < 0:
-		first_float = absf(float_1 + float_1)
-	else:
-		first_float = float_1
-	if float_2 < 0:
-		second_float = absf(float_2 + float_2)
-	else:
-		second_float = float_2
-	var differance: float = abs(first_float - second_float)
-	if differance < variance and differance > -variance:
-		return true
-	else:
-		return false
+#func is_approx_equal_by(float_1: float, float_2: float, variance: float) -> bool:
+	#var first_float: float = 0.0
+	#var second_float: float = 0.0
+	## If a input float is negative then find the absolute value and double it so 
+	## the two float can be subtracted correctly.
+	#if float_1 < 0:
+		#first_float = absf(float_1 + float_1)
+	#else:
+		#first_float = float_1
+	#if float_2 < 0:
+		#second_float = absf(float_2 + float_2)
+	#else:
+		#second_float = float_2
+	#var differance: float = abs(first_float - second_float)
+	#if differance < variance and differance > -variance:
+		#return true
+	#else:
+		#return false
 
 
 func _physics_process(delta: float) -> void:
@@ -470,46 +476,86 @@ func _physics_process(delta: float) -> void:
 	# Objects that need to be checked to see if they need a ripple effect.
 	# TODO -- How to process them?
 	#var objects_to_be_processed: Array = []
-	for body in $Area3D.get_overlapping_bodies():
-		if not _objects_detected.has(body):
-			_process_object(body)
-			#objects_to_be_processed.append(body)
-	for area in $Area3D.get_overlapping_areas():
-		if not _objects_detected.has(area):
-			_process_object(area)
-			#objects_to_be_processed.append(area)
-	#if not objects_to_be_processed.is_empty():
-		#print(objects_to_be_processed.size())
+	var overlapping_bodies_areas: Array = []
+	overlapping_bodies_areas.append_array($Area3D.get_overlapping_bodies())
+	overlapping_bodies_areas.append_array($Area3D.get_overlapping_areas())
+	
+	var ripple_keys = _ripple_process_dict.keys()
+	for object in overlapping_bodies_areas:
+		for key in ripple_keys:
+			if typeof(key) == TYPE_STRING:
+				if key.begins_with(object.name):
+					break
+				else:
+					_process_object(object)
+	
+	#for body in $Area3D.get_overlapping_bodies():
+		#if not _ripple_process_dict.has(body.name):# _objects_detected.has(body):
+			#_process_object(body)
+			##objects_to_be_processed.append(body)
+	#for area in $Area3D.get_overlapping_areas():
+		#if not _ripple_process_dict.has(area.name) _objects_detected.has(area):
+			#_process_object(area)
+			##objects_to_be_processed.append(area)
+	##if not objects_to_be_processed.is_empty():
+		##print(objects_to_be_processed.size())
 
 	# Process _elapsed_times for each wave.
-	var counter := 1
-	while counter < _elapsed_time.size():
-		if _elapsed_time[counter] < anim_time:
-			var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
-			var normalized_time: float = _elapsed_time[counter] / anim_time
+	
+	for key in _ripple_process_dict:
+		if key == "empty_pixel":
+			continue
+		var entry: Dictionary = _ripple_process_dict[key]
+		if entry["_elapsed_time"] < anim_time:
+			var old_pixel_value: Color = _data_image.get_pixel(entry["X_Index"], 0)
+			var normalized_time: float = entry["_elapsed_time"] / anim_time
 			# If animation is finished see if the body that triggered the wave
 			# is still touching the shield.
-	
 			# Factor best between 0.1 and up.
 			# TODO -- should this value be based on shader variables for impact ripple?
-			var factor: float = 0.15 #0.2985 # 0.12 * 3.25
+			var factor: float = 0.2 #0.2985 # 0.12 * 3.25
 			# This is the best value for variance that I've found. Smaller values can miss
 			# sometime and result in a missing wave. Bigger values can lead to infinity
 			# loops of ever larger amounts of waves.
-			var variance: float = 0.003 #0.0017
+			#var variance: float = 0.003 #0.0017
 			var curve_sample: float = animation_curve.sample(normalized_time)
-			# Need to use custom equal function so factor can be more precise then 0.1
-			#if _objects_detected[counter] != null and is_approx_equal_by(curve_sample, factor, variance) and not checked_ripples.has(counter):
-			if _objects_detected[counter] != null and normalized_time > factor and not checked_ripples[counter]:
-				checked_ripples[counter] = true
-			#if _objects_detected[counter] != null and is_equal_approx(normalized_time, factor):# is_approx_equal_by(normalized_time, factor, variance):
-				_process_object(_objects_detected[counter])
-			# Process _elapsed_time.
+			if entry["object"] != null and normalized_time > factor and not entry.has("checked"):
+				entry["checked"] = true
+				_process_object(entry["object"])
 			
 			var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
-			_data_image.set_pixel(counter, 0, new_pixel_value)
-			_elapsed_time[counter] += delta
-		counter += 1
+			_data_image.set_pixel(entry["X_Index"], 0, new_pixel_value)
+			entry["_elapsed_time"] += delta
+	
+	
+	#var counter := 1
+	#while counter < _elapsed_time.size():
+		#if _elapsed_time[counter] < anim_time:
+			#var old_pixel_value: Color = _data_image.get_pixel(counter, 0)
+			#var normalized_time: float = _elapsed_time[counter] / anim_time
+			## If animation is finished see if the body that triggered the wave
+			## is still touching the shield.
+	#
+			## Factor best between 0.1 and up.
+			## TODO -- should this value be based on shader variables for impact ripple?
+			#var factor: float = 0.125 #0.2985 # 0.12 * 3.25
+			## This is the best value for variance that I've found. Smaller values can miss
+			## sometime and result in a missing wave. Bigger values can lead to infinity
+			## loops of ever larger amounts of waves.
+			#var variance: float = 0.003 #0.0017
+			#var curve_sample: float = animation_curve.sample(normalized_time)
+			## Need to use custom equal function so factor can be more precise then 0.1
+			##if _objects_detected[counter] != null and is_approx_equal_by(curve_sample, factor, variance) and not checked_ripples.has(counter):
+			#if _objects_detected[counter] != null and normalized_time > factor and not checked_ripples[counter]:
+				#checked_ripples[counter] = true
+			##if _objects_detected[counter] != null and is_equal_approx(normalized_time, factor):# is_approx_equal_by(normalized_time, factor, variance):
+				#_process_object(_objects_detected[counter])
+			## Process _elapsed_time.
+			#
+			#var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
+			#_data_image.set_pixel(counter, 0, new_pixel_value)
+			#_elapsed_time[counter] += delta
+		#counter += 1
 
 	# Create texture for shader.
 	var impact_texture := ImageTexture.new()
@@ -517,35 +563,56 @@ func _physics_process(delta: float) -> void:
 
 	# Update shader variables.
 	update_material("_impact_texture", impact_texture)
-	update_material("max_impacts", _elapsed_time.size())
+	update_material("max_impacts", _ripple_process_dict.size())
+	#update_material("max_impacts", _elapsed_time.size())
 
 	# Simple way of cleaning up data. Runs after "data_cleanup_interval" of physics frames.
 	if Engine.get_physics_frames() % data_cleanup_interval == 0:
-		# Convert the image data into an array that can be processed.
-		var raw_data: PackedColorArray = _data_image.get_data().to_color_array()
-
-		# Test to see if the arrays are the same length.
-		assert(_elapsed_time.size() * 2 == raw_data.size(), "_elapsed_time and raw_data are not the size 
-				same size. Something is wrong." + str(_elapsed_time.size()) + ", " + str(raw_data.size()))
-		assert(_objects_detected.size() == _elapsed_time.size(), "_objects_detected and _elapsed_time arrays
-				are not the same size. Something is wrong.")
-
-		# Remove entries were the animations have finished.
-		# TODO -- Should a faster method be used here?
-		counter = 0
-		var removed = 0
-		var checked_removed = 0
-		while counter < _elapsed_time.size() - 1:
-			if _elapsed_time[counter] > anim_time:
-				removed += 1
-				checked_ripples.remove_at(counter)
-				raw_data.remove_at(_elapsed_time.size() + counter)
-				raw_data.remove_at(counter)
-				_elapsed_time.remove_at(counter)
-				_objects_detected.remove_at(counter)
-			else:
-				counter += 1
-		_data_image.set_data(_elapsed_time.size(), _data_image.get_height(), false, Image.FORMAT_RGBAF, raw_data.to_byte_array())
+		## Convert the image data into an array that can be processed.
+		#var raw_data: PackedColorArray = _data_image.get_data().to_color_array()
+#
+		## Test to see if the arrays are the same length.
+		#assert(_elapsed_time.size() * 2 == raw_data.size(), "_elapsed_time and raw_data are not the size 
+				#same size. Something is wrong." + str(_elapsed_time.size()) + ", " + str(raw_data.size()))
+		#assert(_objects_detected.size() == _elapsed_time.size(), "_objects_detected and _elapsed_time arrays
+				#are not the same size. Something is wrong.")
+#
+		## Remove entries were the animations have finished.
+		## TODO -- Should a faster method be used here?
+		#counter = 0
+		#var removed = 0
+		#while counter < _elapsed_time.size() - 1:
+			#if _elapsed_time[counter] > anim_time:
+				#removed += 1
+				#checked_ripples.remove_at(counter)
+				#raw_data.remove_at(_elapsed_time.size() + counter)
+				#raw_data.remove_at(counter)
+				#_elapsed_time.remove_at(counter)
+				#_objects_detected.remove_at(counter)
+			#else:
+				#counter += 1
+		#_data_image.set_data(_elapsed_time.size(), _data_image.get_height(), false, Image.FORMAT_RGBAF, raw_data.to_byte_array())
+		
+		var removed_dict_entries: int = 0
+		
+		var keys: Array = _ripple_process_dict.keys()
+		
+		for key in keys:
+			var dict: Dictionary = _ripple_process_dict[key]
+			if dict["_elapsed_time"] > anim_time:
+				removed_dict_entries += 1
+				_ripple_process_dict.erase(key)
+				
+		_data_image.crop(_ripple_process_dict.size() + 1, _data_image.get_height())
+		var x: int = 0
+		for entry in _ripple_process_dict:
+			var sub_dict: Dictionary = _ripple_process_dict[entry]
+			_data_image.set_pixel(x, 0, sub_dict["X_Pixel"])
+			_data_image.set_pixel(x, 1, sub_dict["Y_Pixel"])
+			sub_dict["X_Index"] = x
+			x += 1
+		
+		print("Dictionary Entries removed: ", removed_dict_entries)#, " Removed array entries: ", removed)
 
 
 func _process_object(object: Node3D) -> void:
