@@ -429,7 +429,7 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 
 		#_objects_detected.append(object)
 		if object != null:
-			_ripple_process_dict[str(object.name, " at ", Engine.get_physics_frames())] = {"object": object, "_elapsed_time": 0.0, "X_Pixel": color, "Y_Pixel": color_2, "X_Index": index}
+			_ripple_process_dict[str(object, " at ", Engine.get_physics_frames())] = {"object": object, "_elapsed_time": 0.0, "X_Pixel": color, "Y_Pixel": color_2, "X_Index": index}
 		else:
 			_ripple_process_dict[str(object, " at ", Engine.get_physics_frames())] = {"object": object, "_elapsed_time": 0.0, "X_Pixel": color, "Y_Pixel": color_2, "X_Index": index}
 
@@ -482,13 +482,16 @@ func _physics_process(delta: float) -> void:
 	
 	var ripple_keys = _ripple_process_dict.keys()
 	for object in overlapping_bodies_areas:
-		for key in ripple_keys:
-			if typeof(key) == TYPE_STRING:
-				if key.begins_with(object.name):
-					break
-				else:
-					_process_object(object)
-	
+		if not objects_to_process.has(object):
+			var found_key: bool = false
+			for key in ripple_keys:
+				if typeof(key) == TYPE_STRING:
+					var entry = _ripple_process_dict[key]
+					if str(key).contains(str(object)) and entry["_elapsed_time"] < anim_time:
+						found_key = true
+						break
+			if not found_key:
+				_process_object(object)
 	#for body in $Area3D.get_overlapping_bodies():
 		#if not _ripple_process_dict.has(body.name):# _objects_detected.has(body):
 			#_process_object(body)
@@ -501,31 +504,32 @@ func _physics_process(delta: float) -> void:
 		##print(objects_to_be_processed.size())
 
 	# Process _elapsed_times for each wave.
-	
 	for key in _ripple_process_dict:
-		if key == "empty_pixel":
-			continue
-		var entry: Dictionary = _ripple_process_dict[key]
-		if entry["_elapsed_time"] < anim_time:
-			var old_pixel_value: Color = _data_image.get_pixel(entry["X_Index"], 0)
-			var normalized_time: float = entry["_elapsed_time"] / anim_time
-			# If animation is finished see if the body that triggered the wave
-			# is still touching the shield.
-			# Factor best between 0.1 and up.
-			# TODO -- should this value be based on shader variables for impact ripple?
-			var factor: float = 0.2 #0.2985 # 0.12 * 3.25
-			# This is the best value for variance that I've found. Smaller values can miss
-			# sometime and result in a missing wave. Bigger values can lead to infinity
-			# loops of ever larger amounts of waves.
-			#var variance: float = 0.003 #0.0017
-			var curve_sample: float = animation_curve.sample(normalized_time)
-			if entry["object"] != null and normalized_time > factor and not entry.has("checked"):
-				entry["checked"] = true
-				_process_object(entry["object"])
-			
-			var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
-			_data_image.set_pixel(entry["X_Index"], 0, new_pixel_value)
-			entry["_elapsed_time"] += delta
+		if typeof(key) == TYPE_STRING:
+			if key.begins_with("empty_pixel"):
+				continue
+			else:
+				var entry: Dictionary = _ripple_process_dict[key]
+				if entry["_elapsed_time"] < anim_time:
+					var old_pixel_value: Color = _data_image.get_pixel(entry["X_Index"], 0)
+					var normalized_time: float = entry["_elapsed_time"] / anim_time
+					# If animation is finished see if the body that triggered the wave
+					# is still touching the shield.
+					# Factor best between 0.1 and up.
+					# TODO -- should this value be based on shader variables for impact ripple?
+					var factor: float = 0.1 #0.2985 # 0.12 * 3.25
+					# This is the best value for variance that I've found. Smaller values can miss
+					# sometime and result in a missing wave. Bigger values can lead to infinity
+					# loops of ever larger amounts of waves.
+					#var variance: float = 0.003 #0.0017
+					var curve_sample: float = animation_curve.sample(normalized_time)
+					if entry["object"] != null and normalized_time > factor and not entry.has("checked"):
+						entry["checked"] = true
+						_process_object(entry["object"])
+					
+					var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
+					_data_image.set_pixel(entry["X_Index"], 0, new_pixel_value)
+					entry["_elapsed_time"] += delta
 	
 	
 	#var counter := 1
@@ -598,10 +602,11 @@ func _physics_process(delta: float) -> void:
 		var keys: Array = _ripple_process_dict.keys()
 		
 		for key in keys:
-			var dict: Dictionary = _ripple_process_dict[key]
-			if dict["_elapsed_time"] > anim_time:
-				removed_dict_entries += 1
-				_ripple_process_dict.erase(key)
+			if key != "empty_pixel":
+				var dict: Dictionary = _ripple_process_dict[key]
+				if dict["_elapsed_time"] > anim_time:
+					removed_dict_entries += 1
+					_ripple_process_dict.erase(key)
 				
 		_data_image.crop(_ripple_process_dict.size() + 1, _data_image.get_height())
 		var x: int = 0
@@ -612,7 +617,8 @@ func _physics_process(delta: float) -> void:
 			sub_dict["X_Index"] = x
 			x += 1
 		
-		print("Dictionary Entries removed: ", removed_dict_entries)#, " Removed array entries: ", removed)
+		if removed_dict_entries > 1000:
+			push_warning("Removing over 1000 entries.")
 
 
 func _process_object(object: Node3D) -> void:
