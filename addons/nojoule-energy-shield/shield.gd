@@ -34,6 +34,7 @@ signal impact_queu_next()
 ## Trigger an impact when a body enters the shield.
 @export var body_entered_impact: bool = false:
 	set(i):
+		body_entered_impact = i
 		if i or body_shape_entered_impact:
 			sustained_touch_effects = true
 		else:
@@ -42,6 +43,7 @@ signal impact_queu_next()
 ## Trigger an impact when a body shape enters the shield.
 @export var body_shape_entered_impact: bool = false:
 	set(i):
+		body_shape_entered_impact = i
 		if i or body_entered_impact:
 			sustained_touch_effects = true
 		else:
@@ -130,9 +132,6 @@ var _end_of_queue: int = 0
 # Objects that are being processed by _impact function.
 var objects_to_process: Dictionary = {}
 
-# Approximate speed of the shield to use in the impact calculations.
-var _approx_speed: float = 0.0
-
 # For use in adding velocity to impact calculations.
 var _approx_velocity := Vector3.ZERO
 
@@ -145,6 +144,8 @@ var _last_frame_loc: Vector3 = Vector3(NAN, NAN, NAN)
 
 
 func _ready() -> void:
+	_last_frame_loc = self.global_position
+	
 	# Add a random amount to the cleanup interval so all shields don't cleanup
 	# in the same frame.
 	data_cleanup_interval += randi() % int(250 * 0.25)
@@ -386,6 +387,7 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 				else:
 					normalized_force = _get_impact_force(object)
 			
+			normalized_force = clampf(remap(normalized_force, 0.0, 1.0, 1.0, 2.0), 1.0, 5.0)
 			var x: float = normalized_volume # Relative Size
 			var y: float = normalized_force # Force: How to normalize it?
 			var z: float = frequency_multi # Ripple frequency
@@ -427,17 +429,11 @@ func get_approx_velocity() -> Vector3:
 
 func _physics_process(delta: float) -> void:
 	# Recording shield's approximate speed for ripple effects.
-	if _last_frame_loc.is_equal_approx(Vector3(NAN, NAN, NAN)):
-		_last_frame_loc = self.global_position
-	else:
-		var dis: float = _last_frame_loc.distance_to(self.global_position)
-		_approx_speed = dis * delta
+	# Is this how you would find the velocity?
+	_approx_velocity = _last_frame_loc - self.global_position
+	_approx_velocity *= delta
 
-		# Is this how you would find the velocity?
-		_approx_velocity = _last_frame_loc - self.global_position
-		_approx_velocity *= delta
-
-		_last_frame_loc = self.global_position
+	_last_frame_loc = self.global_position
 
 	# update the shield generation or collapse animation
 	if _generating_or_collapsing && _generate_time <= 1.0:
@@ -449,22 +445,23 @@ func _physics_process(delta: float) -> void:
 			_generating_or_collapsing = false
 
 	# Objects that need to be checked to see if they need a ripple effect.
-	var overlapping_bodies_areas: Array = []
-	overlapping_bodies_areas.append_array($Area3D.get_overlapping_bodies())
-	overlapping_bodies_areas.append_array($Area3D.get_overlapping_areas())
-	
-	var ripple_keys = _ripple_process_dict.keys()
-	for object in overlapping_bodies_areas:
-		if not objects_to_process.has(object):
-			var found_key: bool = false
-			for key in ripple_keys:
-				if typeof(key) == TYPE_STRING:
-					var entry = _ripple_process_dict[key]
-					if str(key).contains(str(object)) and entry["_elapsed_time"] < anim_time:
-						found_key = true
-						break
-			if not found_key:
-				_process_object(object)
+	if sustained_touch_effects:
+		var overlapping_bodies_areas: Array = []
+		overlapping_bodies_areas.append_array($Area3D.get_overlapping_bodies())
+		overlapping_bodies_areas.append_array($Area3D.get_overlapping_areas())
+		
+		var ripple_keys = _ripple_process_dict.keys()
+		for object in overlapping_bodies_areas:
+			if not objects_to_process.has(object):
+				var found_key: bool = false
+				for key in ripple_keys:
+					if typeof(key) == TYPE_STRING:
+						var entry = _ripple_process_dict[key]
+						if str(key).contains(str(object)) and entry["_elapsed_time"] < anim_time:
+							found_key = true
+							break
+				if not found_key:
+					_process_object(object)
 
 	# Process _elapsed_times for each wave.
 	for key in _ripple_process_dict:
@@ -654,15 +651,14 @@ func _get_impact_force(colliding_body: CollisionObject3D, rigid_body: RigidBody3
 	var final_force := Vector3.ZERO
 	var body_force := Vector3.ZERO
 	if colliding_body.is_class("RigidBody3D"):
-		final_force += colliding_body.linear_velosity
+		final_force += colliding_body.linear_velocity
 	else:
 		if colliding_body.has_method("get_approx_velocity"):
 			final_force += colliding_body.get_approx_velocity()
 	if rigid_body != null:
-		final_force += final_force
+		final_force += rigid_body.linear_velocity
 	else:
 		final_force += _approx_velocity
-	
 	var median: float = 0.0
 	var size := self.mesh.get_aabb().size
 	median = (size.x + size.y + size.z) / 3.0
