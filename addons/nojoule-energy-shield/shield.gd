@@ -532,7 +532,6 @@ func _process_object(object: Node3D) -> void:
 	var start = self.global_position
 	var end = object.global_position
 
-
 	var shape_query := PhysicsShapeQueryParameters3D.new()
 	shape_query.shape = $Area3D/CollisionShape3D.shape
 	shape_query.transform = $Area3D.global_transform
