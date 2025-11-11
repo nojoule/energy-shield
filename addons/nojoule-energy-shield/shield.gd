@@ -32,10 +32,26 @@ signal impact_queu_next()
 @export var handle_input_events: bool = true
 
 ## Trigger an impact when a body enters the shield.
-@export var body_entered_impact: bool = false
+@export var body_entered_impact: bool = false:
+	set(i):
+		if i or body_shape_entered_impact:
+			sustained_touch_effects = true
+		else:
+			sustained_touch_effects = false
 
 ## Trigger an impact when a body shape enters the shield.
-@export var body_shape_entered_impact: bool = false
+@export var body_shape_entered_impact: bool = false:
+	set(i):
+		if i or body_entered_impact:
+			sustained_touch_effects = true
+		else:
+			sustained_touch_effects = false
+
+## When an object touches or is touching the shield trigger impacts.
+@export var sustained_touch_effects: bool = false
+
+## Incorperate speed in impact calculations.
+@export var speed_impact_effect: bool = true
 
 ## Defines if the coordinates of the origin is relative to the object position
 @export var relative_impact_position: bool = false
@@ -113,6 +129,15 @@ var _end_of_queue: int = 0
 
 # Objects that are being processed by _impact function.
 var objects_to_process: Dictionary = {}
+
+# Approximate speed of the shield to use in the impact calculations.
+var _approx_speed: float = 0.0
+
+# For use in adding velocity to impact calculations.
+var _approx_velocity := Vector3.ZERO
+
+# For calculating _approx_speed
+var _last_frame_loc: Vector3 = Vector3(NAN, NAN, NAN)
 
 ## The material used for the shield, to set the shader parameters. It is
 ## expected to be the specific energy shield shader.
@@ -227,7 +252,7 @@ func collapse_from(pos: Vector3) -> void:
 
 ## Create an impact at the [param pos] position, starting a new impact
 ## animation.
-func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: float = 0.0, impact_force := Vector3.ZERO):
+func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: float = 0.0):
 	if object == null or not objects_to_process.has(object):
 		if object != null:
 			objects_to_process[object] = true
@@ -254,9 +279,11 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 			index = _ripple_process_dict.size()
 			if index != null:
 				_data_image.set_pixel(index, 0, color)
+				_data_image.set_pixel(index, 1, color_2)
 			else:
 				push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
 				_data_image.set_pixel(1, 0, color)
+				_data_image.set_pixel(1, 1, color_2)
 				index = 1
 		
 		if object != null:
@@ -338,7 +365,7 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 			if self.mesh.is_class("PlaneMesh"):
 				if size != Vector3.ZERO:
 					object_volume = size.z * size.y
-				var dividend: float = object_volume / self_volume * 2.0 * self.scale.x
+				var dividend: float = object_volume / self_volume * self.scale.x
 				normalized_volume = remap(dividend, 0.0, 2.0, 0.3, 5.0)
 				frequency_multi = clampf(remap(dividend, 0.0, 1.6, 8.5, 2.0), 1.0, 5.5)
 				amplitude_multi = clampf(remap(dividend, 0.0, 2.0, 0.05, 2.5), 0.05, 2.5)
@@ -350,24 +377,14 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 
 			# Size, force, touch area, if this node is a child of rigidbody could use its
 			# linear_velocity and current movement force to change ripple intensity.
-			# TODO -- how to have an area3D based projectile be processed correctly?
-				# Create a custome area3D script that approximates speed and passes
-				# that data to this when it impacts the shield?
 			var normalized_force: float = 1.0
-			if is_parent_rigid_body and self.get_parent().is_class("RigidBody3D"):
-				normalized_force = _get_impact_force(impact_force, self.get_parent())
-			elif velocity_parent != null:
-				normalized_force = _get_impact_force(impact_force, velocity_parent)
-			else:
-				var max_axis: float = 0.0
-				match self.mesh.get_aabb().size.max_axis_index():
-					Vector3.AXIS_X:
-						max_axis = self.mesh.get_aabb().size.x
-					Vector3.AXIS_Y:
-						max_axis = self.mesh.get_aabb().size.y
-					Vector3.AXIS_Z:
-						max_axis = self.mesh.get_aabb().size.z
-				normalized_force = impact_force.length() / max_axis
+			if speed_impact_effect:
+				if is_parent_rigid_body and self.get_parent().is_class("RigidBody3D"):
+					normalized_force = _get_impact_force(object, self.get_parent())
+				elif velocity_parent != null:
+					normalized_force = _get_impact_force(object, velocity_parent)
+				else:
+					normalized_force = _get_impact_force(object)
 			
 			var x: float = normalized_volume # Relative Size
 			var y: float = normalized_force # Force: How to normalize it?
@@ -385,7 +402,13 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 		var impact_texture := ImageTexture.new()
 		impact_texture = impact_texture.create_from_image(_data_image)
 
-		_ripple_process_dict[str(object, " at ", Engine.get_physics_frames())] = {"object": object, "_elapsed_time": 0.0, "X_Pixel": color, "Y_Pixel": color_2, "X_Index": index}
+		_ripple_process_dict[str(object, " at ", Engine.get_physics_frames())] = {
+			"object": object, 
+			"_elapsed_time": 0.0, 
+			"X_Pixel": color, 
+			"Y_Pixel": color_2, 
+			"X_Index": index
+		}
 
 		# Update shader variables.
 		update_material("_impact_texture", impact_texture)
@@ -398,7 +421,24 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 		_curr_queue += 1
 
 
+func get_approx_velocity() -> Vector3:
+	return _approx_velocity
+
+
 func _physics_process(delta: float) -> void:
+	# Recording shield's approximate speed for ripple effects.
+	if _last_frame_loc.is_equal_approx(Vector3(NAN, NAN, NAN)):
+		_last_frame_loc = self.global_position
+	else:
+		var dis: float = _last_frame_loc.distance_to(self.global_position)
+		_approx_speed = dis * delta
+
+		# Is this how you would find the velocity?
+		_approx_velocity = _last_frame_loc - self.global_position
+		_approx_velocity *= delta
+
+		_last_frame_loc = self.global_position
+
 	# update the shield generation or collapse animation
 	if _generating_or_collapsing && _generate_time <= 1.0:
 		_generate_time += delta
@@ -441,7 +481,8 @@ func _physics_process(delta: float) -> void:
 					# Factor best between 0.1 and up.
 					var factor: float = 0.1
 					var curve_sample: float = animation_curve.sample(normalized_time)
-					if entry["object"] != null and normalized_time > factor and not entry.has("checked"):
+					if sustained_touch_effects and entry["object"] != null and normalized_time > \
+							factor and not entry.has("checked"):
 						entry["checked"] = true
 						_process_object(entry["object"])
 					
@@ -582,10 +623,7 @@ func _on_area_3d_input_event(
 
 func _on_area_3d_body_entered(body: Node3D) -> void:
 	if body_entered_impact:
-		var body_force := Vector3.ZERO
-		if body.is_class("RigidBody3D"):
-			body_force = body.linear_velosity
-		impact(body.global_position, body, false, body_force)
+		impact(body.global_position, body, false)
 	body_entered.emit(body)
 
 
@@ -593,10 +631,7 @@ func _on_area_3d_body_shape_entered(
 	body_rid: RID, body: Node3D, body_shape_index: int, local_shape_index: int
 ) -> void:
 	if body_shape_entered_impact:
-		var body_force := Vector3.ZERO
-		if body.is_class("RigidBody3D"):
-			body_force = body.linear_velosity
-		impact(body.global_position, body, false, body_force)
+		impact(body.global_position, body, false)
 	body_shape_entered.emit(body_rid, body, body_shape_index, local_shape_index)
 
 
@@ -610,12 +645,35 @@ func _load_web_shader() -> void:
 		print("Loaded web-optimized shader")
 
 
-func _get_impact_force(collision_body: CollisionObject3D, impact_force: Vector3, rigid_body: RigidBody3D) -> float:
+func _get_impact_force(colliding_body: CollisionObject3D, rigid_body: RigidBody3D = null) -> float:
+	# In order to calculate this correctly Area's that collide with this would need to have 
+	# keep track of their velocity and transmit it to this script when they collide.
+	# This script can have code that keeps track of its speed.
+	
 	# Use parent's linear_velocity and incorperate impact_force
 	# Combine forces to get a collision force?
-	var force_tmp: Vector3 = rigid_body.linear_velocity + impact_force
+	var final_force := Vector3.ZERO
+	var body_force := Vector3.ZERO
+	if colliding_body.is_class("RigidBody3D"):
+		final_force += colliding_body.linear_velosity
+	else:
+		if colliding_body.has_method("get_approx_velocity"):
+			final_force += colliding_body.get_approx_velocity()
+	if rigid_body != null:
+		final_force += final_force
+	else:
+		final_force += _approx_velocity
+	
+	var median: float = 0.0
+	var size := self.mesh.get_aabb().size
+	median = (size.x + size.y + size.z) / 3.0
+	
+	# TODO -- is there a better way of normalizing the force?
+	final_force /= median
+	final_force = final_force.clampf(0.0, 2.0)
+	#var force_tmp: Vector3 = rigid_body.linear_velocity + impact_force
 	# Get length but how to normalized it? What is the max/base value?
 	# TODO -- make the ripple between 1.0 to 2.0 times bigger depending on if their is any force behind the impact?
 			# This way the force can be estimated even if the collision body isn't controlled by the physics engine.
-	var max_force: float = rigid_body.mass * 1.0 # How to find the max force that can be exerted on the body?
-	return force_tmp.length() / max_force
+	#var max_force: float = rigid_body.mass * 1.0 # How to find the max force that can be exerted on the body?
+	return final_force.length()

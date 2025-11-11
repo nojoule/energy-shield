@@ -364,6 +364,9 @@ void vertex() {
 		if (time > 0.0 && time < 1.0) {
 			// Get impact scale and other information.
 			vec4 impact_data = texelFetch(_impact_texture, ivec2(i, 1), 0);
+			impact_data *= impact_data.y;
+			//impact_data *= _object_size;
+			//impact_data.x *= (_object_size * _object_scale) * 0.5;
 
 			float denormalized_time = denormalizeTime(
 				time,
@@ -456,6 +459,9 @@ void fragment() {
 	{
 		// Get impact scale and other information.
 		vec4 impact_data = texelFetch(_impact_texture, ivec2(i, 1), 0);
+		impact_data *= impact_data.y;
+		//impact_data *= _object_size;
+		//impact_data.x *= (_object_size * _object_scale) * 0.5;
 
 		// Get impact location and time
 		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0);
