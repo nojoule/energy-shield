@@ -1,3 +1,4 @@
+class_name NJEnergyShield
 extends MeshInstance3D
 
 ## Relay the body_entered signal from the Area3D to the shield.
@@ -112,7 +113,14 @@ func _ready() -> void:
 			var front_shader = load("res://addons/nojoule-energy-shield/shield_front.gdshader")
 			material.next_pass.shader = front_shader
 
-	update_material("object_scale", global_transform.basis.get_scale().x)
+	update_material(
+		"object_scale",
+		max(
+			global_transform.basis.get_scale().x,
+			global_transform.basis.get_scale().y,
+			global_transform.basis.get_scale().z
+		)
+	)
 
 	# Connect the input event to the shield
 	if handle_input_events and $Area3D:
@@ -240,6 +248,13 @@ func _physics_process(delta: float) -> void:
 			time_impacts.append(0.0)
 	if any_update:
 		update_material("_time_impact", time_impacts)
+
+	var new_scale = max(
+		global_transform.basis.get_scale().x,
+		global_transform.basis.get_scale().y,
+		global_transform.basis.get_scale().z
+	)
+	update_material("_object_scale", new_scale)
 
 
 func _on_area_3d_input_event(
