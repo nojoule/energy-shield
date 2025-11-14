@@ -30,6 +30,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fragment shader: Calculate offset vectors per fragment for accurate normal calculations
   - Fixed generation progress to use only `_object_scale` instead of `_object_scale * _object_size`
 
+- **camera_movement.gd**: Changed to use built-in `ui_*` input actions
+  - Replaced custom input actions (`move_forward`, `move_backward`, `move_left`, `move_right`, `move_up`, `move_down`) with Godot's built-in actions (`ui_up`, `ui_down`, `ui_left`, `ui_right`)
+  - Removed vertical movement (up/down) for simpler camera controls
+  - No longer requires custom input definitions in `project.godot`
+
 ### Added
 - **shield_plane.tscn**: Missing shader parameters
   - `shader_parameter/_relative_origin_static = true`

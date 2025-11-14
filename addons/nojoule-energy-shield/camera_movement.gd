@@ -39,18 +39,14 @@ func handle_mouse_input(_delta: float):
 func handle_movement(delta: float):
 	var direction = Vector3()
 
-	if Input.is_action_pressed("move_forward"):
+	if Input.is_action_pressed("ui_up"):
 		direction -= transform.basis.z
-	if Input.is_action_pressed("move_backward"):
+	if Input.is_action_pressed("ui_down"):
 		direction += transform.basis.z
-	if Input.is_action_pressed("move_left"):
+	if Input.is_action_pressed("ui_left"):
 		direction -= transform.basis.x
-	if Input.is_action_pressed("move_right"):
+	if Input.is_action_pressed("ui_right"):
 		direction += transform.basis.x
-	if Input.is_action_pressed("move_up"):
-		direction += transform.basis.y
-	if Input.is_action_pressed("move_down"):
-		direction -= transform.basis.y
 
 	if direction != Vector3.ZERO:
 		direction = direction.normalized()
