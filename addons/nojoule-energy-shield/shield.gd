@@ -38,7 +38,11 @@ const _MAX_IMPACTS: int = 5
 @export var body_shape_entered_impact: bool = false
 
 ## Defines if the coordinates of the origin is relative to the object position
-@export var relative_impact_position: bool = false
+@export var relative_impact_position: bool = false:
+	set(value):
+		if material:
+			update_material("_relative_origin_impact", value)
+		relative_impact_position = value
 
 # The current impact index, used to keep track of the impacts and overwrite the
 # oldest impact if the maximum number of impacts is reached.
