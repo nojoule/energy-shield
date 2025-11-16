@@ -548,6 +548,7 @@ func _physics_process(delta: float) -> void:
 
 	# Create texture for shader.
 	_data_texture = _data_texture.create_from_image(_data_image)
+	#_data_texture.update(_data_image)
 	# Update shader variables.
 	call_deferred("update_material", "_impact_texture", _data_texture)
 	call_deferred("update_material", "max_impacts", _ripple_process_dict.size())
