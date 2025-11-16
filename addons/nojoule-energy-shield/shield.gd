@@ -146,7 +146,6 @@ func generate() -> void:
 	if _generating_or_collapsing or !_collapsed:
 		return
 	generate_from(shield_origin)
-	update_material("_relative_origin_generate", true)
 
 
 ## Generate the shield from a specific position, starting the generation
@@ -156,9 +155,8 @@ func generate_from(pos: Vector3) -> void:
 		return
 	_generating_or_collapsing = true
 	_generate_time = 0.0
-	update_material("_relative_origin_generate", false)
 	update_material("_collapse", false)
-	update_material("_origin_generate", pos)
+	update_material("_origin_generate", to_local(pos))
 	update_material("_time_generate", _generate_time)
 
 
@@ -168,7 +166,6 @@ func collapse() -> void:
 	if _generating_or_collapsing or _collapsed:
 		return
 	collapse_from(shield_origin)
-	update_material("_relative_origin_generate", true)
 
 
 ## Collapse the shield from a specific position, starting the collapse
@@ -178,9 +175,8 @@ func collapse_from(pos: Vector3) -> void:
 		return
 	_generating_or_collapsing = true
 	_generate_time = 0.0
-	update_material("_relative_origin_generate", false)
 	update_material("_collapse", true)
-	update_material("_origin_generate", pos)
+	update_material("_origin_generate", to_local(pos))
 	update_material("_time_generate", _generate_time)
 
 

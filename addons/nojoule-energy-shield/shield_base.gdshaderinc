@@ -342,7 +342,7 @@ float computeGenerationProgress(
 	float time
 ) {
 	float impact_distance = length(origin - vertex);
-	return clamp(((time * (1.0 + thickness)) * size - impact_distance) / thickness, 0.0, 1.0);
+	return clamp(((time * (1.0 + thickness)) * size - impact_distance) / (thickness * size), 0.0, 1.0);
 }
 
 void vertex() {
@@ -407,7 +407,7 @@ void vertex() {
 	}
 
 	// transform the generation origin to world space
-	if (_relative_origin_generate) {
+	if (true) {
 		origin_generate_world = (MODEL_MATRIX * vec4(_origin_generate, 1.0)).xyz;
 	} else {
 		origin_generate_world = _origin_generate;
@@ -554,7 +554,7 @@ void fragment() {
 		world_pos,
 		origin_generate_world,
 		_thickness_generate,
-		_object_scale,
+		_object_scale * _object_size,
 		_time_generate
 		//mod(TIME, 1.0 / _object_scale) //see the effect looping
 	);

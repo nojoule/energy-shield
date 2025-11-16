@@ -45,8 +45,6 @@ uniform vec2 _speed_noise = vec2(0.02, 0.02);
 group_uniforms Generate_Collapse_Animation;
 /** The origin of the shield generation, where the shield will start to generate from. By default, it is expected to be in local space. */
 uniform vec3 _origin_generate = vec3(0.0, 0.5, 0.0);
-/** Defines if the coordinates of the origin is relative to the object position or in world space. */
-uniform bool _relative_origin_generate = true;
 /** The time of the generation or collapse animation, normalized between 0 and 1. */
 uniform float _time_generate = 1.0;
 /** The border thickness of the generated shield highlighting the just generated shield surface. */
