@@ -85,6 +85,9 @@ signal impact_queu_next()
 # Y-2 is used for ripple customization based on the object that triggered the ripple.
 var _data_image := Image.create_empty(1,2, false, Image.FORMAT_RGBAF)
 
+# The texture that will use data from _data_image
+var _data_texture := ImageTexture.new()
+
 # The current impact index, used to keep track of the impacts and overwrite the
 # oldest impact if the maximum number of impacts is reached.
 var _current_impact: int = 0
@@ -102,6 +105,9 @@ var _generating_or_collapsing: bool = false
 
 # Last time the _data_image was cleaned of finished animations.
 var last_cleanup_exection := 0.0
+
+# The entry in the _ripple_process_dict that is at the end of the data image or texture.
+var _last_entry_key: String = ""
 
 # The frequancy of _data_image cleanup in physcis frames. A random number will be
 # added to this to a max of 25% of this value. So not all cleanups happen in the
@@ -188,6 +194,8 @@ func _ready() -> void:
 	)
 
 	update_material("max_impacts", _ripple_process_dict.size())
+	_data_texture = _data_texture.create_from_image(_data_image)
+	update_material("_impact_texture", _data_texture)
 
 	# Connect the input event to the shield
 	if handle_input_events and $Area3D:
@@ -272,20 +280,20 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 		var index: int = -1
 		if _data_image.get_size() < Vector2i(impact_max, impact_max):
 			_data_image.crop(_data_image.get_width() + 1, _data_image.get_height())
-			_data_image.set_pixel(_data_image.get_size().x - 1, 0, color)
-			_data_image.set_pixel(_data_image.get_size().x - 1, 1, color_2)
+			_data_image.set_pixel(_data_image.get_width() - 1, 0, color)
+			_data_image.set_pixel(_data_image.get_width() - 1, 1, color_2)
 			index = _data_image.get_width() - 1
 		else:
 			# If max has been reached add impact to beginning of image.
-			index = _ripple_process_dict.size()
-			if index != null:
-				_data_image.set_pixel(index, 0, color)
-				_data_image.set_pixel(index, 1, color_2)
-			else:
-				push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
-				_data_image.set_pixel(1, 0, color)
-				_data_image.set_pixel(1, 1, color_2)
-				index = 1
+			#index = _ripple_process_dict.size()
+			#if index != null:
+				#_data_image.set_pixel(index, 0, color)
+				#_data_image.set_pixel(index, 1, color_2)
+			#else:
+			#push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
+			_data_image.set_pixel(1, 0, color)
+			_data_image.set_pixel(1, 1, color_2)
+			index = 1
 		
 		if object != null:
 			var self_volume: float = 1.0
@@ -401,10 +409,11 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 				# 3) _amplitude_impact -- Default 0.02 (0.001, .05)
 
 		# Create a new texture for the shader to use.
-		var impact_texture := ImageTexture.new()
-		impact_texture = impact_texture.create_from_image(_data_image)
+		#_data_texture = _data_texture.create_from_image(_data_image)
 
-		_ripple_process_dict[str(object, " at ", Engine.get_physics_frames())] = {
+		var entry_key: int = int(index)
+		
+		_ripple_process_dict[entry_key] = {
 			"object": object, 
 			"_elapsed_time": 0.0, 
 			"X_Pixel": color, 
@@ -413,9 +422,9 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 		}
 
 		# Update shader variables.
-		update_material("_impact_texture", impact_texture)
-		update_material("max_impacts", _ripple_process_dict.size())
-		update_material("_relative_origin_impact", relative_impact_position)
+		#update_material("_impact_texture", _data_texture)
+		#update_material("max_impacts", _ripple_process_dict.size())
+		#update_material("_relative_origin_impact", relative_impact_position)
 		
 		if object != null:
 			objects_to_process.erase(object)
@@ -444,7 +453,7 @@ func _physics_process(delta: float) -> void:
 			_collapsed = !_collapsed
 			_generating_or_collapsing = false
 
-	# Objects that need to be checked to see if they need a ripple effect.
+	# Objects that need to be checked to see if they need a wave effect.
 	if sustained_touch_effects:
 		var overlapping_bodies_areas: Array = []
 		overlapping_bodies_areas.append_array($Area3D.get_overlapping_bodies())
@@ -455,73 +464,101 @@ func _physics_process(delta: float) -> void:
 			if not objects_to_process.has(object):
 				var found_key: bool = false
 				for key in ripple_keys:
-					if typeof(key) == TYPE_STRING:
-						var entry = _ripple_process_dict[key]
-						if str(key).contains(str(object)) and entry["_elapsed_time"] < anim_time:
+					if typeof(key) == TYPE_STRING and key == "empty_pixel":
+						continue
+					elif typeof(key) == TYPE_INT:
+						var entry: Dictionary = _ripple_process_dict[key]
+						if entry.get("object") == object and entry["_elapsed_time"] < anim_time:
 							found_key = true
 							break
 				if not found_key:
 					_process_object(object)
 
-	# Process _elapsed_times for each wave.
-	for key in _ripple_process_dict:
-		if typeof(key) == TYPE_STRING:
-			if key.begins_with("empty_pixel"):
-				continue
+	# Process each wave.
+	var count := 0
+	var keys: Array = _ripple_process_dict.keys()
+	while count < keys.size():
+		var key = keys[count]
+		if typeof(key) == TYPE_STRING and key.begins_with("empty_pixel"):
+			count += 1
+			continue
+		else:
+			count += 1
+			var entry: Dictionary = _ripple_process_dict[key]
+			if entry["_elapsed_time"] < anim_time:
+				# Process _elapsed_times for each wave.
+				var old_pixel_value: Color = _data_image.get_pixel(entry["X_Index"], 0)
+				var normalized_time: float = entry["_elapsed_time"] / anim_time
+				# If animation is finished see if the body that triggered the wave
+				# is still touching the shield.
+				# Factor best between 0.1 and up.
+				var factor: float = 0.1
+				var curve_sample: float = animation_curve.sample(normalized_time)
+				if sustained_touch_effects and entry["object"] != null and normalized_time > \
+						factor and not entry.has("checked"):
+					entry["checked"] = true
+					_process_object(entry["object"])
+				
+				var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
+				_data_image.set_pixel(entry["X_Index"], 0, new_pixel_value)
+				entry["_elapsed_time"] += delta
 			else:
-				var entry: Dictionary = _ripple_process_dict[key]
-				if entry["_elapsed_time"] < anim_time:
-					var old_pixel_value: Color = _data_image.get_pixel(entry["X_Index"], 0)
-					var normalized_time: float = entry["_elapsed_time"] / anim_time
-					# If animation is finished see if the body that triggered the wave
-					# is still touching the shield.
-					# Factor best between 0.1 and up.
-					var factor: float = 0.1
-					var curve_sample: float = animation_curve.sample(normalized_time)
-					if sustained_touch_effects and entry["object"] != null and normalized_time > \
-							factor and not entry.has("checked"):
-						entry["checked"] = true
-						_process_object(entry["object"])
-					
-					var new_pixel_value: Color = Color(old_pixel_value.r, old_pixel_value.g, old_pixel_value.b, curve_sample)
-					_data_image.set_pixel(entry["X_Index"], 0, new_pixel_value)
-					entry["_elapsed_time"] += delta
-
-	# Create texture for shader.
-	var impact_texture := ImageTexture.new()
-	impact_texture = impact_texture.create_from_image(_data_image)
-
-	# Update shader variables.
-	update_material("_impact_texture", impact_texture)
-	update_material("max_impacts", _ripple_process_dict.size())
+				# Replace Dictionary Entry with Newest Impact
+				var index: int = entry["X_Index"]
+				if index < _data_image.get_width() - 1:
+					var dict_size: int = _ripple_process_dict.size()
+					var image_size: int = _data_image.get_width()
+					assert(dict_size == image_size)
+					var width: int = _data_image.get_width() - 1
+					# Move pixel at the end of the image to the index that is finished animating.
+					var last_entry: Dictionary = _ripple_process_dict[width]
+					_data_image.set_pixel(index, 0, last_entry["X_Pixel"])
+					_data_image.set_pixel(index, 1, last_entry["Y_Pixel"])
+					_ripple_process_dict.set(key, last_entry)
+					_ripple_process_dict.get(key).set("X_Index", index)
+					# Remove newest impact.
+					var result = _ripple_process_dict.erase(width)
+					assert(result)
+					_data_image.crop(_data_image.get_width() - 1, _data_image.get_height())
+					keys.remove_at(keys.size() - 1)
+				else:
+					var result = _ripple_process_dict.erase(key)
+					assert(result)
+					_data_image.crop(_data_image.get_width() - 1, _data_image.get_height())
 
 	# Simple way of cleaning up data. Runs after "data_cleanup_interval" of physics frames.
-	if Engine.get_physics_frames() % data_cleanup_interval == 0:
-		var removed_dict_entries: int = 0
-		
-		var keys: Array = _ripple_process_dict.keys()
-		
-		for key in keys:
-			if key != "empty_pixel":
-				var dict: Dictionary = _ripple_process_dict[key]
-				if dict["_elapsed_time"] > anim_time:
-					removed_dict_entries += 1
-					_ripple_process_dict.erase(key)
-		
-		_data_image.crop(_ripple_process_dict.size(), _data_image.get_height())
-		var x: int = 0
-		for entry in _ripple_process_dict:
-			var sub_dict: Dictionary = _ripple_process_dict[entry]
-			_data_image.set_pixel(x, 0, sub_dict["X_Pixel"])
-			_data_image.set_pixel(x, 1, sub_dict["Y_Pixel"])
-			sub_dict["X_Index"] = x
-			x += 1
-		
-		update_material("_impact_texture", impact_texture)
-		update_material("max_impacts", _ripple_process_dict.size())
-		
-		if removed_dict_entries > 1000:
-			push_warning("Shield.gd -- Removed over 1000 entries.")
+	#if Engine.get_physics_frames() % data_cleanup_interval == 0:
+		#var removed_dict_entries: int = 0
+		#
+		#var keys: Array = _ripple_process_dict.keys()
+		#
+		#for key in keys:
+			#if typeof(key) == TYPE_STRING and key != "empty_pixel":
+				#pass
+			#else:
+				#var dict: Dictionary = _ripple_process_dict[key]
+				#if dict["_elapsed_time"] > anim_time:
+					#removed_dict_entries += 1
+					#_ripple_process_dict.erase(key)
+		#
+		#_data_image.crop(_ripple_process_dict.size(), _data_image.get_height())
+		#var x: int = 0
+		#for entry in _ripple_process_dict:
+			#var sub_dict: Dictionary = _ripple_process_dict[entry]
+			#_data_image.set_pixel(x, 0, sub_dict["X_Pixel"])
+			#_data_image.set_pixel(x, 1, sub_dict["Y_Pixel"])
+			#sub_dict["X_Index"] = x
+			#x += 1
+		#
+		#if removed_dict_entries > 1000:
+			#push_warning("Shield.gd -- Removed over 1000 entries.")
+
+	# Create texture for shader.
+	_data_texture = _data_texture.create_from_image(_data_image)
+	# Update shader variables.
+	call_deferred("update_material", "_impact_texture", _data_texture)
+	call_deferred("update_material", "max_impacts", _ripple_process_dict.size())
+	update_material("_relative_origin_impact", relative_impact_position)
 
 
 func _process_object(object: Node3D) -> void:
