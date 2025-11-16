@@ -1410,8 +1410,15 @@ extends Node3D
 # --------------- Exports ----------------------
 ## The shield node that this script affects.
 @export var plane_node: MeshInstance3D = null
-## The change of a batch of rain drops on the shield each frame.
-@export_range(0.001, 1.0, 0.001) var rain_chance: float = 0.5
+## Max amount of rain drops in each burst. Accual value is randomized 
+## value that has a max of this value.
+@export var drops_in_burst: int = 20
+## Max time between drops in each burst. Accual value is randomized value
+## that has a max of this value.
+@export var max_time: float = 0.05
+## The change of a batch of rain drops to start falling on the shield 
+## each frame.
+@export_range(0.001, 1.0, 0.001) var rain_burst_chance: float = 0.5
 # -------------- Variables ---------------------
 var plane_size: Vector2 = Vector2.ZERO
 var raining := false
@@ -1427,7 +1434,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if not raining and randf() < rain_chance:
+	if not raining and randf() < rain_burst_chance:
 		raining = true
 		_rain()
 
@@ -1438,9 +1445,9 @@ func _process(delta: float) -> void:
 
 # ------------ Private Functions -----------------
 func _rain() -> void:
-	var rain: int = randi_range(3, 20)
+	var rain: int = randi_range(drops_in_burst * 0.1, drops_in_burst)
 	for drop in rain:
-		await get_tree().create_timer(randf_range(0.01, 0.1)).timeout
+		await get_tree().create_timer(randf_range(max_time * 0.001, max_time)).timeout
 		var offset: Vector3 = Vector3.ZERO
 		offset.x = randf_range(-plane_size.x, plane_size.x)
 		offset.y = randf_range(-plane_size.y, plane_size.y)
@@ -2080,6 +2087,7 @@ mesh = SubResource("QuadMesh_f5biq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5489197, 2.1667295, 2.15959)
 script = SubResource("GDScript_ebi6u")
 plane_node = NodePath("../ShieldPlane")
+drops_in_burst = 12
 
 [node name="ShieldPlane" parent="WaveAmountExample" instance=ExtResource("6_7wpux")]
 transform = Transform3D(4, 0, 0, 0, -1.7484555e-07, -4, 0, 4, -1.7484555e-07, -0.06220627, 2.0562174, -0.32653594)
