@@ -284,13 +284,6 @@ func impact(pos: Vector3, object: CollisionObject3D = null, collision_volume: fl
 			_data_image.set_pixel(_data_image.get_width() - 1, 1, color_2)
 			index = _data_image.get_width() - 1
 		else:
-			# If max has been reached add impact to beginning of image.
-			#index = _ripple_process_dict.size()
-			#if index != null:
-				#_data_image.set_pixel(index, 0, color)
-				#_data_image.set_pixel(index, 1, color_2)
-			#else:
-			#push_warning("_elapsed_time.max() returned null. Defaulting to the first entry.")
 			_data_image.set_pixel(1, 0, color)
 			_data_image.set_pixel(1, 1, color_2)
 			index = 1
