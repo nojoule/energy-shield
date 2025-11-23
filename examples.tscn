@@ -1,10 +1,11 @@
-[gd_scene load_steps=58 format=3 uid="uid://bl8u8bcaa4sax"]
+[gd_scene load_steps=77 format=3 uid="uid://bl8u8bcaa4sax"]
 
 [ext_resource type="Script" uid="uid://f1263sbcv8qy" path="res://addons/nojoule-energy-shield/camera_movement.gd" id="1_1ksrw"]
 [ext_resource type="PackedScene" uid="uid://bvqb5fugcfm5k" path="res://addons/nojoule-energy-shield/shield_plane.tscn" id="1_uycqw"]
 [ext_resource type="Shader" uid="uid://dcko35tc4k343" path="res://addons/nojoule-energy-shield/shield.gdshader" id="2_u8gy5"]
 [ext_resource type="PackedScene" uid="uid://bqo3es5yd4r70" path="res://addons/nojoule-energy-shield/shield_sphere.tscn" id="3_twgkm"]
 [ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="4_cgev7"]
+[ext_resource type="PackedScene" uid="uid://dd146l0thx0ep" path="res://addons/nojoule-energy-shield/shield_large_plane.tscn" id="6_gafkj"]
 
 [sub_resource type="Environment" id="Environment_nl0ma"]
 glow_enabled = true
@@ -70,8 +71,7 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -138,8 +138,7 @@ shader_parameter/_active_static_offset_hl = false
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -226,7 +225,7 @@ shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
 shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.39955252, 1, 0.3, 1)
+shader_parameter/_color_shield = Color(0.7905753, 0.2371726, 0.2371726, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
@@ -242,8 +241,7 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -293,7 +291,7 @@ shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
 shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.39955235, 0.3, 1, 1)
+shader_parameter/_color_shield = Color(0.7905753, 0.2371726, 0.2371726, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
@@ -309,8 +307,7 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -401,8 +398,7 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -468,8 +464,7 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -537,11 +532,23 @@ func _process(delta: float):
 	if time_passed > impact_cooldown:
 		var impact_point = left_sphere.global_position
 		var random_point = random_point_on_sphere(0.5)
-		left_sphere.impact(impact_point + random_point)
+		left_sphere.impact(impact_point + random_point, null)
 		impact_point = right_sphere.global_position
-		right_sphere.impact(impact_point + random_point)
+		right_sphere.impact(impact_point + random_point, null)
 		time_passed -= impact_cooldown
 "
+
+[sub_resource type="Image" id="Image_gafkj"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 183, 93, 65, 0, 228, 73, 63, 138, 29, 123, 62, 0, 0, 128, 63, 117, 11, 106, 65, 198, 58, 252, 62, 172, 108, 158, 190, 227, 227, 120, 63, 214, 229, 95, 65, 170, 34, 63, 62, 24, 45, 237, 189, 96, 184, 87, 63, 39, 92, 106, 65, 220, 26, 102, 63, 128, 68, 84, 189, 243, 20, 14, 63, 188, 151, 104, 65, 36, 216, 67, 62, 32, 247, 188, 188, 30, 14, 90, 61),
+"format": "RGBAFloat",
+"height": 1,
+"mipmaps": false,
+"width": 6
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_4ipop"]
+image = SubResource("Image_gafkj")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6c8gp"]
 render_priority = 0
@@ -580,8 +587,8 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(14.029361, 1.0486741, -0.0031508803), Vector3(14.116005, 1.057034, 0.15220135), Vector3(14.450467, 0.71548975, 0.4432551), Vector3(14.589874, 0.9425334, 0.13098124), Vector3(13.951329, 0.21136057, 0.09876725)])
-shader_parameter/_time_impact = [0.99339813, 0.9149255, 0.70265734, 0.3005528, 0.0]
+shader_parameter/_impact_texture = SubResource("ImageTexture_4ipop")
+shader_parameter/max_impacts = 6
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -613,6 +620,18 @@ resource_local_to_scene = true
 resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
+
+[sub_resource type="Image" id="Image_p4d26"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40, 183, 117, 65, 0, 228, 73, 63, 138, 29, 123, 62, 0, 0, 128, 63, 186, 5, 129, 65, 198, 58, 252, 62, 172, 108, 158, 190, 227, 227, 120, 63, 214, 229, 119, 65, 170, 34, 63, 62, 24, 45, 237, 189, 96, 184, 87, 63, 19, 46, 129, 65, 220, 26, 102, 63, 128, 68, 84, 189, 243, 20, 14, 63, 222, 75, 128, 65, 36, 216, 67, 62, 32, 247, 188, 188, 30, 14, 90, 61),
+"format": "RGBAFloat",
+"height": 1,
+"mipmaps": false,
+"width": 6
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_4ef46"]
+image = SubResource("Image_p4d26")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8terc"]
 render_priority = 0
@@ -651,8 +670,8 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(15.529361, 1.0486741, -0.0031508803), Vector3(15.616005, 1.057034, 0.15220135), Vector3(15.950467, 0.71548975, 0.4432551), Vector3(16.089874, 0.9425334, 0.13098124), Vector3(15.451329, 0.21136057, 0.09876725)])
-shader_parameter/_time_impact = [0.99339813, 0.9149255, 0.70265734, 0.3005528, 0.0]
+shader_parameter/_impact_texture = SubResource("ImageTexture_4ef46")
+shader_parameter/max_impacts = 6
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -714,11 +733,23 @@ func _process(delta: float):
 	if time_passed > impact_cooldown:
 		var impact_point = left_sphere.global_position
 		var random_point = random_point_on_sphere(0.5)
-		left_sphere.impact(impact_point + random_point)
+		left_sphere.impact(impact_point + random_point, null)
 		impact_point = right_sphere.global_position
-		right_sphere.impact(impact_point + random_point)
+		right_sphere.impact(impact_point + random_point, null)
 		time_passed -= impact_cooldown
 "
+
+[sub_resource type="Image" id="Image_bmvli"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 68, 185, 152, 65, 36, 85, 7, 63, 28, 218, 239, 62, 0, 0, 128, 63, 163, 224, 154, 65, 187, 132, 246, 62, 220, 71, 242, 62, 227, 227, 120, 63, 104, 54, 151, 65, 139, 102, 117, 63, 0, 36, 202, 186, 96, 184, 87, 63, 208, 255, 151, 65, 29, 123, 29, 63, 14, 138, 221, 190, 243, 20, 14, 63, 15, 15, 152, 65, 209, 232, 131, 63, 216, 93, 155, 61, 30, 14, 90, 61),
+"format": "RGBAFloat",
+"height": 1,
+"mipmaps": false,
+"width": 6
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_qir2u"]
+image = SubResource("Image_bmvli")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_67oo1"]
 render_priority = 0
@@ -757,8 +788,8 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(19.0653, 0.69395256, 0.45503747), Vector3(19.491186, 0.4895103, -0.42381698), Vector3(19.702892, 0.38851964, -0.012841642), Vector3(19.428976, 0.20777881, -0.2532392), Vector3(19.113714, 0.67647403, 0.47495037)])
-shader_parameter/_time_impact = [0.99339813, 0.9149255, 0.70265734, 0.3005528, 0.0]
+shader_parameter/_impact_texture = SubResource("ImageTexture_qir2u")
+shader_parameter/max_impacts = 6
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -790,6 +821,18 @@ resource_local_to_scene = true
 resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
+
+[sub_resource type="Image" id="Image_fwokt"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 163, 224, 166, 65, 187, 132, 246, 62, 220, 71, 242, 62, 227, 227, 120, 63, 104, 54, 163, 65, 139, 102, 117, 63, 0, 36, 202, 186, 96, 184, 87, 63, 208, 255, 163, 65, 29, 123, 29, 63, 14, 138, 221, 190, 243, 20, 14, 63, 15, 15, 164, 65, 209, 232, 131, 63, 216, 93, 155, 61, 30, 14, 90, 61),
+"format": "RGBAFloat",
+"height": 1,
+"mipmaps": false,
+"width": 5
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_k4rd2"]
+image = SubResource("Image_fwokt")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_x0bsn"]
 render_priority = 0
@@ -829,8 +872,8 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = Array[Vector3]([Vector3(20.5653, 0.69395256, 0.45503747), Vector3(20.991186, 0.4895103, -0.42381698), Vector3(21.202892, 0.38851964, -0.012841642), Vector3(20.928976, 0.20777881, -0.2532392), Vector3(20.613714, 0.67647403, 0.47495037)])
-shader_parameter/_time_impact = [0.99339813, 0.9149255, 0.70265734, 0.3005528, 0.0]
+shader_parameter/_impact_texture = SubResource("ImageTexture_k4rd2")
+shader_parameter/max_impacts = 5
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -915,8 +958,7 @@ shader_parameter/_active_static_offset_hl = false
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = PackedVector3Array(0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -982,8 +1024,7 @@ shader_parameter/_active_static_offset_hl = false
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_origin_impact = PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-shader_parameter/_time_impact = PackedFloat32Array(0, 0, 0, 0, 0)
+shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -1011,6 +1052,171 @@ resource_local_to_scene = true
 resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
+
+[sub_resource type="GDScript" id="GDScript_c24vm"]
+script/source = "@tool
+extends Node3D
+
+var rotation_speed: float = 45.0
+
+#@onready var sphere: MeshInstance3D = $ShieldSphere
+#@onready var plane: MeshInstance3D = $ShieldPlane
+
+func _process(delta: float) -> void:
+	pass
+	#sphere.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+	#plane.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rtp1g"]
+albedo_color = Color(0.4, 0.4, 0.4, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_d06iw"]
+material = SubResource("StandardMaterial3D_rtp1g")
+size = Vector2(4, 1)
+orientation = 1
+
+[sub_resource type="Image" id="Image_rtp1g"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 158, 59, 229, 65, 156, 128, 222, 63, 184, 47, 167, 190, 0, 0, 128, 63, 92, 150, 243, 65, 141, 183, 70, 64, 184, 47, 167, 190, 0, 0, 128, 63, 31, 186, 222, 65, 56, 214, 169, 64, 184, 47, 167, 190, 0, 0, 128, 63, 15, 55, 234, 65, 56, 83, 51, 64, 184, 47, 167, 190, 0, 0, 128, 63, 169, 168, 1, 66, 247, 180, 184, 64, 184, 47, 167, 190, 0, 0, 128, 63, 112, 139, 225, 65, 10, 43, 24, 64, 184, 47, 167, 190, 0, 0, 128, 63, 36, 98, 229, 65, 212, 117, 138, 191, 184, 47, 167, 190, 0, 0, 128, 63, 51, 77, 215, 65, 232, 148, 8, 64, 184, 47, 167, 190, 0, 0, 128, 63, 163, 229, 235, 65, 181, 133, 0, 64, 184, 47, 167, 190, 0, 0, 128, 63, 200, 226, 230, 65, 85, 71, 43, 64, 184, 47, 167, 190, 0, 0, 128, 63, 147, 189, 246, 65, 28, 227, 61, 64, 184, 47, 167, 190, 0, 0, 128, 63, 169, 113, 228, 65, 72, 116, 69, 62, 184, 47, 167, 190, 0, 0, 128, 63, 132, 186, 246, 65, 232, 137, 89, 191, 184, 47, 167, 190, 0, 0, 128, 63, 74, 116, 216, 65, 172, 175, 155, 64, 184, 47, 167, 190, 0, 0, 128, 63, 99, 177, 219, 65, 188, 201, 53, 191, 184, 47, 167, 190, 0, 0, 128, 63, 17, 44, 231, 65, 233, 135, 19, 64, 184, 47, 167, 190, 0, 0, 128, 63, 0, 126, 3, 66, 172, 108, 38, 64, 184, 47, 167, 190, 0, 0, 128, 63, 37, 90, 7, 66, 212, 13, 150, 64, 184, 47, 167, 190, 0, 0, 128, 63, 57, 201, 0, 66, 212, 238, 67, 64, 184, 47, 167, 190, 0, 0, 128, 63, 61, 58, 253, 65, 174, 166, 243, 191, 184, 47, 167, 190, 0, 0, 128, 63, 66, 176, 207, 65, 89, 138, 153, 64, 184, 47, 167, 190, 0, 0, 128, 63, 138, 17, 220, 65, 140, 127, 79, 64, 184, 47, 167, 190, 0, 0, 128, 63, 30, 98, 211, 65, 22, 15, 190, 64, 184, 47, 167, 190, 0, 0, 128, 63, 216, 104, 245, 65, 131, 139, 5, 64, 184, 47, 167, 190, 0, 0, 128, 63, 125, 64, 241, 65, 186, 80, 139, 64, 184, 47, 167, 190, 0, 0, 128, 63, 227, 162, 214, 65, 92, 236, 102, 63, 184, 47, 167, 190, 0, 0, 128, 63, 47, 83, 5, 66, 144, 163, 125, 64, 184, 47, 167, 190, 0, 0, 128, 63, 232, 209, 250, 65, 71, 58, 129, 64, 184, 47, 167, 190, 0, 0, 128, 63, 159, 5, 2, 66, 212, 22, 119, 63, 184, 47, 167, 190, 0, 0, 128, 63, 0, 108, 251, 65, 228, 110, 190, 191, 184, 47, 167, 190, 0, 0, 128, 63, 59, 177, 236, 65, 156, 92, 52, 64, 184, 47, 167, 190, 0, 0, 128, 63, 90, 231, 241, 65, 122, 80, 75, 64, 184, 47, 167, 190, 0, 0, 128, 63, 143, 15, 214, 65, 70, 52, 153, 64, 184, 47, 167, 190, 0, 0, 128, 63, 185, 70, 245, 65, 244, 141, 66, 191, 184, 47, 167, 190, 0, 0, 128, 63, 42, 60, 218, 65, 112, 234, 1, 191, 184, 47, 167, 190, 0, 0, 128, 63, 87, 188, 249, 65, 158, 58, 152, 64, 184, 47, 167, 190, 0, 0, 128, 63, 66, 161, 5, 66, 133, 23, 173, 64, 184, 47, 167, 190, 118, 231, 127, 63, 170, 23, 5, 66, 200, 137, 11, 191, 184, 47, 167, 190, 118, 231, 127, 63, 44, 242, 3, 66, 174, 220, 217, 63, 184, 47, 167, 190, 118, 231, 127, 63, 210, 88, 243, 65, 22, 39, 179, 64, 184, 47, 167, 190, 118, 231, 127, 63, 181, 4, 239, 65, 22, 95, 64, 64, 184, 47, 167, 190, 118, 231, 127, 63, 145, 63, 216, 65, 22, 95, 149, 191, 184, 47, 167, 190, 118, 231, 127, 63, 177, 147, 5, 66, 30, 102, 182, 64, 184, 47, 167, 190, 118, 231, 127, 63, 56, 171, 1, 66, 170, 119, 130, 64, 184, 47, 167, 190, 118, 231, 127, 63, 233, 156, 0, 66, 200, 115, 200, 191, 184, 47, 167, 190, 254, 104, 127, 63, 190, 85, 233, 65, 84, 225, 176, 63, 184, 47, 167, 190, 254, 104, 127, 63, 14, 160, 235, 65, 240, 226, 163, 64, 184, 47, 167, 190, 254, 104, 127, 63, 29, 24, 238, 65, 200, 34, 137, 64, 184, 47, 167, 190, 254, 104, 127, 63, 123, 38, 216, 65, 160, 170, 58, 64, 184, 47, 167, 190, 254, 104, 127, 63, 127, 191, 240, 65, 148, 131, 92, 63, 184, 47, 167, 190, 254, 104, 127, 63, 189, 146, 253, 65, 208, 183, 191, 190, 184, 47, 167, 190, 254, 104, 127, 63, 248, 29, 229, 65, 84, 232, 166, 64, 184, 47, 167, 190, 254, 104, 127, 63, 237, 144, 226, 65, 222, 73, 26, 64, 184, 47, 167, 190, 254, 104, 127, 63, 32, 72, 215, 65, 80, 89, 137, 64, 184, 47, 167, 190, 254, 104, 127, 63, 140, 95, 215, 65, 64, 1, 224, 190, 184, 47, 167, 190, 254, 104, 127, 63, 165, 220, 215, 65, 30, 80, 84, 64, 184, 47, 167, 190, 87, 79, 126, 63, 176, 231, 222, 65, 128, 73, 214, 189, 184, 47, 167, 190, 87, 79, 126, 63, 6, 2, 223, 65, 132, 45, 208, 191, 184, 47, 167, 190, 87, 79, 126, 63, 205, 189, 239, 65, 199, 63, 167, 63, 184, 47, 167, 190, 87, 79, 126, 63, 45, 140, 235, 65, 14, 113, 196, 63, 184, 47, 167, 190, 87, 79, 126, 63, 20, 14, 209, 65, 96, 2, 224, 62, 184, 47, 167, 190, 87, 79, 126, 63, 229, 115, 1, 66, 52, 198, 68, 64, 184, 47, 167, 190, 87, 79, 126, 63, 78, 139, 6, 66, 208, 31, 25, 191, 184, 47, 167, 190, 87, 79, 126, 63, 157, 177, 216, 65, 179, 119, 30, 64, 184, 47, 167, 190, 87, 79, 126, 63, 223, 132, 241, 65, 219, 185, 2, 64, 184, 47, 167, 190, 87, 79, 126, 63, 10, 48, 246, 65, 28, 218, 247, 62, 184, 47, 167, 190, 87, 79, 126, 63, 112, 117, 213, 65, 180, 143, 139, 64, 184, 47, 167, 190, 87, 79, 126, 63, 26, 134, 220, 65, 120, 252, 63, 63, 184, 47, 167, 190, 136, 234, 124, 63, 40, 68, 225, 65, 240, 136, 180, 64, 184, 47, 167, 190, 136, 234, 124, 63, 159, 81, 1, 66, 72, 235, 60, 64, 184, 47, 167, 190, 136, 234, 124, 63, 161, 0, 218, 65, 244, 173, 171, 64, 184, 47, 167, 190, 152, 3, 122, 63, 224, 240, 4, 66, 114, 83, 160, 64, 184, 47, 167, 190, 152, 3, 122, 63, 139, 170, 234, 65, 64, 98, 233, 189, 184, 47, 167, 190, 152, 3, 122, 63, 173, 240, 1, 66, 46, 35, 49, 64, 184, 47, 167, 190, 152, 3, 122, 63, 110, 137, 244, 65, 162, 60, 117, 64, 184, 47, 167, 190, 152, 3, 122, 63, 98, 244, 217, 65, 99, 148, 209, 63, 184, 47, 167, 190, 152, 3, 122, 63, 150, 207, 250, 65, 30, 182, 234, 63, 184, 47, 167, 190, 59, 164, 118, 63, 118, 19, 5, 66, 219, 209, 175, 64, 184, 47, 167, 190, 59, 164, 118, 63, 132, 219, 6, 66, 230, 191, 167, 191, 184, 47, 167, 190, 59, 164, 118, 63, 18, 238, 6, 66, 192, 124, 226, 63, 184, 47, 167, 190, 59, 164, 118, 63, 246, 190, 5, 66, 203, 26, 27, 64, 184, 47, 167, 190, 44, 48, 117, 63, 222, 212, 233, 65, 46, 8, 123, 63, 184, 47, 167, 190, 44, 48, 117, 63, 86, 36, 245, 65, 254, 211, 63, 63, 184, 47, 167, 190, 44, 48, 117, 63, 29, 195, 209, 65, 136, 221, 156, 64, 184, 47, 167, 190, 44, 48, 117, 63, 130, 176, 5, 66, 196, 243, 88, 64, 184, 47, 167, 190, 44, 48, 117, 63, 254, 68, 6, 66, 92, 64, 135, 63, 184, 47, 167, 190, 44, 48, 117, 63, 64, 187, 226, 65, 228, 68, 21, 64, 184, 47, 167, 190, 44, 48, 117, 63, 157, 123, 2, 66, 146, 44, 13, 64, 184, 47, 167, 190, 136, 252, 112, 63, 222, 141, 232, 65, 252, 136, 1, 63, 184, 47, 167, 190, 136, 252, 112, 63, 210, 224, 233, 65, 113, 155, 160, 63, 184, 47, 167, 190, 136, 252, 112, 63, 61, 149, 6, 66, 80, 232, 181, 64, 184, 47, 167, 190, 136, 252, 112, 63, 54, 126, 224, 65, 94, 66, 79, 64, 184, 47, 167, 190, 194, 162, 105, 63, 147, 121, 238, 65, 104, 132, 189, 64, 184, 47, 167, 190, 194, 162, 105, 63, 38, 7, 246, 65, 124, 108, 42, 64, 184, 47, 167, 190, 194, 162, 105, 63, 104, 2, 212, 65, 90, 14, 203, 63, 184, 47, 167, 190, 194, 162, 105, 63, 176, 62, 5, 66, 172, 43, 98, 64, 184, 47, 167, 190, 194, 162, 105, 63, 60, 48, 208, 65, 74, 22, 191, 63, 184, 47, 167, 190, 246, 216, 97, 63, 60, 131, 2, 66, 60, 116, 136, 64, 184, 47, 167, 190, 246, 216, 97, 63, 178, 94, 213, 65, 55, 147, 198, 63, 184, 47, 167, 190, 246, 216, 97, 63, 111, 62, 214, 65, 184, 253, 57, 64, 184, 47, 167, 190, 246, 216, 97, 63, 243, 58, 7, 66, 244, 240, 161, 64, 184, 47, 167, 190, 42, 8, 91, 63, 129, 82, 254, 65, 226, 40, 91, 63, 184, 47, 167, 190, 42, 8, 91, 63, 162, 221, 246, 65, 88, 39, 166, 64, 184, 47, 167, 190, 42, 8, 91, 63, 149, 88, 234, 65, 40, 237, 87, 64, 184, 47, 167, 190, 26, 165, 78, 63, 217, 18, 2, 66, 12, 155, 139, 191, 184, 47, 167, 190, 26, 165, 78, 63, 186, 4, 234, 65, 224, 61, 119, 64, 184, 47, 167, 190, 26, 165, 78, 63, 86, 84, 224, 65, 103, 168, 150, 64, 184, 47, 167, 190, 26, 165, 78, 63, 211, 209, 3, 66, 200, 44, 149, 64, 184, 47, 167, 190, 26, 165, 78, 63, 206, 73, 215, 65, 26, 244, 8, 64, 184, 47, 167, 190, 26, 165, 78, 63, 66, 24, 0, 66, 8, 16, 73, 62, 184, 47, 167, 190, 121, 150, 71, 63, 190, 41, 243, 65, 200, 226, 178, 64, 184, 47, 167, 190, 121, 150, 71, 63, 181, 206, 221, 65, 250, 58, 99, 64, 184, 47, 167, 190, 121, 150, 71, 63, 111, 12, 1, 66, 176, 64, 80, 191, 184, 47, 167, 190, 121, 150, 71, 63, 143, 71, 231, 65, 132, 203, 139, 63, 184, 47, 167, 190, 121, 150, 71, 63, 78, 194, 253, 65, 0, 46, 131, 188, 184, 47, 167, 190, 121, 150, 71, 63, 0, 83, 244, 65, 128, 251, 220, 190, 184, 47, 167, 190, 121, 150, 71, 63, 187, 165, 211, 65, 51, 157, 197, 63, 184, 47, 167, 190, 215, 158, 61, 63, 147, 236, 231, 65, 14, 146, 174, 64, 184, 47, 167, 190, 215, 158, 61, 63, 254, 20, 253, 65, 30, 125, 125, 64, 184, 47, 167, 190, 215, 158, 61, 63, 75, 97, 221, 65, 20, 81, 151, 191, 184, 47, 167, 190, 215, 158, 61, 63, 147, 67, 223, 65, 26, 66, 158, 64, 184, 47, 167, 190, 215, 158, 61, 63, 195, 52, 210, 65, 90, 90, 164, 63, 184, 47, 167, 190, 215, 158, 61, 63, 86, 133, 239, 65, 100, 190, 31, 191, 184, 47, 167, 190, 215, 158, 61, 63, 109, 118, 242, 65, 109, 84, 255, 63, 184, 47, 167, 190, 215, 158, 61, 63, 246, 109, 220, 65, 124, 133, 106, 64, 184, 47, 167, 190, 215, 158, 61, 63, 216, 199, 208, 65, 46, 117, 55, 63, 184, 47, 167, 190, 215, 158, 61, 63, 170, 79, 248, 65, 164, 102, 42, 64, 184, 47, 167, 190, 215, 158, 61, 63, 87, 230, 237, 65, 108, 165, 103, 191, 184, 47, 167, 190, 215, 158, 61, 63, 250, 0, 248, 65, 110, 168, 149, 64, 184, 47, 167, 190, 190, 1, 48, 63, 93, 253, 232, 65, 37, 134, 19, 64, 184, 47, 167, 190, 190, 1, 48, 63, 65, 114, 1, 66, 114, 15, 20, 63, 184, 47, 167, 190, 190, 1, 48, 63, 232, 85, 244, 65, 111, 46, 67, 64, 184, 47, 167, 190, 190, 1, 48, 63, 42, 253, 225, 65, 198, 60, 158, 191, 184, 47, 167, 190, 190, 1, 48, 63, 231, 79, 1, 66, 72, 205, 103, 64, 184, 47, 167, 190, 190, 1, 48, 63, 189, 57, 6, 66, 102, 196, 85, 64, 184, 47, 167, 190, 190, 1, 48, 63, 162, 8, 5, 66, 128, 172, 11, 190, 184, 47, 167, 190, 190, 1, 48, 63, 245, 143, 6, 66, 32, 161, 88, 62, 184, 47, 167, 190, 97, 227, 39, 63, 223, 33, 2, 66, 186, 188, 54, 64, 184, 47, 167, 190, 97, 227, 39, 63, 18, 202, 251, 65, 187, 142, 154, 64, 184, 47, 167, 190, 97, 227, 39, 63, 72, 33, 224, 65, 144, 197, 99, 190, 184, 47, 167, 190, 97, 227, 39, 63, 13, 151, 248, 65, 168, 51, 99, 63, 184, 47, 167, 190, 97, 227, 39, 63, 88, 129, 220, 65, 235, 101, 32, 64, 184, 47, 167, 190, 97, 227, 39, 63, 224, 29, 253, 65, 81, 179, 106, 64, 184, 47, 167, 190, 97, 227, 39, 63, 172, 166, 218, 65, 170, 82, 122, 64, 184, 47, 167, 190, 97, 227, 39, 63, 40, 197, 213, 65, 237, 149, 171, 64, 184, 47, 167, 190, 97, 227, 39, 63, 29, 68, 228, 65, 200, 126, 227, 191, 184, 47, 167, 190, 97, 227, 39, 63, 161, 251, 241, 65, 56, 168, 156, 62, 184, 47, 167, 190, 97, 227, 39, 63, 64, 3, 209, 65, 192, 204, 30, 64, 184, 47, 167, 190, 97, 227, 39, 63, 144, 77, 5, 66, 18, 239, 247, 191, 184, 47, 167, 190, 23, 67, 31, 63, 73, 89, 227, 65, 56, 131, 246, 63, 184, 47, 167, 190, 23, 67, 31, 63, 125, 118, 222, 65, 226, 46, 252, 63, 184, 47, 167, 190, 23, 67, 31, 63, 178, 181, 228, 65, 137, 109, 23, 64, 184, 47, 167, 190, 23, 67, 31, 63, 88, 129, 245, 65, 64, 236, 130, 190, 184, 47, 167, 190, 23, 67, 31, 63, 136, 254, 247, 65, 237, 133, 155, 64, 184, 47, 167, 190, 243, 20, 14, 63, 113, 216, 238, 65, 192, 141, 67, 190, 184, 47, 167, 190, 243, 20, 14, 63, 105, 131, 5, 66, 78, 74, 157, 64, 184, 47, 167, 190, 243, 20, 14, 63, 231, 219, 230, 65, 124, 255, 160, 64, 184, 47, 167, 190, 243, 20, 14, 63, 37, 63, 249, 65, 242, 127, 181, 191, 184, 47, 167, 190, 243, 20, 14, 63, 131, 99, 249, 65, 48, 162, 155, 190, 184, 47, 167, 190, 156, 240, 3, 63, 175, 242, 207, 65, 5, 230, 151, 64, 184, 47, 167, 190, 156, 240, 3, 63, 67, 82, 1, 66, 112, 29, 91, 62, 184, 47, 167, 190, 156, 240, 3, 63, 177, 138, 222, 65, 174, 114, 163, 64, 184, 47, 167, 190, 156, 240, 3, 63, 197, 108, 249, 65, 16, 15, 138, 64, 184, 47, 167, 190, 156, 240, 3, 63, 165, 24, 216, 65, 238, 94, 225, 191, 184, 47, 167, 190, 156, 240, 3, 63, 116, 67, 251, 65, 146, 229, 127, 64, 184, 47, 167, 190, 156, 240, 3, 63, 148, 243, 3, 66, 96, 160, 155, 190, 184, 47, 167, 190, 156, 240, 3, 63, 105, 112, 4, 66, 15, 172, 118, 64, 184, 47, 167, 190, 156, 240, 3, 63, 216, 246, 242, 65, 28, 51, 233, 191, 184, 47, 167, 190, 156, 240, 3, 63, 188, 148, 242, 65, 237, 162, 46, 64, 184, 47, 167, 190, 156, 240, 3, 63, 148, 254, 1, 66, 248, 124, 233, 190, 184, 47, 167, 190, 156, 240, 3, 63, 250, 151, 7, 66, 144, 207, 135, 191, 184, 47, 167, 190, 74, 32, 212, 62, 232, 141, 214, 65, 106, 45, 74, 63, 184, 47, 167, 190, 74, 32, 212, 62, 14, 188, 230, 65, 92, 21, 203, 62, 184, 47, 167, 190, 74, 32, 212, 62, 210, 190, 7, 66, 136, 17, 33, 63, 184, 47, 167, 190, 74, 32, 212, 62, 200, 208, 3, 66, 80, 150, 116, 190, 184, 47, 167, 190, 74, 32, 212, 62, 203, 127, 215, 65, 6, 247, 170, 64, 184, 47, 167, 190, 74, 32, 212, 62, 194, 204, 255, 65, 248, 244, 128, 64, 184, 47, 167, 190, 74, 32, 212, 62, 175, 162, 222, 65, 200, 207, 142, 191, 184, 47, 167, 190, 74, 32, 212, 62, 172, 39, 238, 65, 120, 40, 159, 62, 184, 47, 167, 190, 74, 32, 212, 62, 200, 139, 214, 65, 246, 157, 174, 64, 184, 47, 167, 190, 74, 32, 212, 62, 40, 152, 4, 66, 120, 126, 169, 64, 184, 47, 167, 190, 74, 32, 212, 62, 255, 188, 210, 65, 8, 122, 22, 64, 184, 47, 167, 190, 12, 251, 187, 62, 5, 195, 229, 65, 64, 45, 19, 63, 184, 47, 167, 190, 12, 251, 187, 62, 24, 193, 215, 65, 79, 116, 3, 64, 184, 47, 167, 190, 12, 251, 187, 62, 208, 144, 230, 65, 178, 80, 144, 191, 184, 47, 167, 190, 12, 251, 187, 62, 122, 215, 0, 66, 118, 223, 158, 191, 184, 47, 167, 190, 12, 251, 187, 62, 204, 174, 212, 65, 8, 47, 72, 191, 184, 47, 167, 190, 200, 255, 135, 62, 112, 67, 5, 66, 156, 108, 203, 191, 184, 47, 167, 190, 200, 255, 135, 62, 101, 209, 5, 66, 78, 158, 20, 64, 184, 47, 167, 190, 200, 255, 135, 62, 68, 176, 7, 66, 52, 55, 183, 191, 184, 47, 167, 190, 200, 255, 135, 62, 132, 41, 253, 65, 180, 244, 170, 62, 184, 47, 167, 190, 200, 255, 135, 62, 13, 34, 219, 65, 160, 192, 154, 190, 184, 47, 167, 190, 200, 255, 135, 62, 212, 173, 230, 65, 190, 164, 155, 63, 184, 47, 167, 190, 200, 255, 135, 62, 223, 0, 3, 66, 122, 215, 160, 191, 184, 47, 167, 190, 200, 255, 135, 62, 16, 49, 234, 65, 224, 122, 233, 189, 184, 47, 167, 190, 200, 255, 135, 62, 38, 69, 248, 65, 232, 13, 31, 64, 184, 47, 167, 190, 200, 255, 135, 62, 35, 254, 220, 65, 16, 116, 49, 64, 184, 47, 167, 190, 177, 9, 69, 62, 19, 135, 4, 66, 48, 218, 45, 190, 184, 47, 167, 190, 177, 9, 69, 62, 75, 231, 226, 65, 44, 47, 188, 64, 184, 47, 167, 190, 177, 9, 69, 62, 142, 161, 212, 65, 134, 137, 205, 63, 184, 47, 167, 190, 177, 9, 69, 62, 118, 138, 5, 66, 2, 203, 40, 64, 184, 47, 167, 190, 177, 9, 69, 62, 32, 1, 2, 66, 26, 99, 170, 64, 184, 47, 167, 190, 177, 9, 69, 62, 82, 55, 218, 65, 168, 224, 153, 190, 184, 47, 167, 190, 177, 9, 69, 62, 184, 121, 216, 65, 236, 192, 194, 62, 184, 47, 167, 190, 177, 9, 69, 62, 250, 232, 235, 65, 166, 115, 177, 63, 184, 47, 167, 190, 177, 9, 69, 62, 89, 184, 235, 65, 42, 163, 35, 64, 184, 47, 167, 190, 177, 9, 69, 62, 12, 91, 223, 65, 42, 234, 252, 63, 184, 47, 167, 190, 176, 94, 130, 61, 110, 25, 208, 65, 48, 196, 145, 190, 184, 47, 167, 190, 176, 94, 130, 61, 189, 18, 227, 65, 138, 245, 174, 191, 184, 47, 167, 190, 176, 94, 130, 61, 77, 255, 0, 66, 192, 109, 164, 61, 184, 47, 167, 190, 176, 94, 130, 61, 176, 8, 211, 65, 118, 48, 135, 191, 184, 47, 167, 190, 176, 94, 130, 61, 5, 69, 1, 66, 126, 140, 111, 64, 184, 47, 167, 190, 176, 94, 130, 61, 146, 88, 224, 65, 83, 126, 4, 64, 184, 47, 167, 190, 0, 0, 0, 0, 23, 117, 238, 65, 4, 178, 32, 64, 184, 47, 167, 190, 0, 0, 0, 0, 230, 243, 207, 65, 178, 204, 181, 64, 184, 47, 167, 190, 0, 0, 0, 0, 115, 52, 253, 65, 70, 37, 61, 64, 184, 47, 167, 190, 0, 0, 0, 0, 57, 21, 227, 65, 42, 148, 181, 64, 184, 47, 167, 190, 0, 0, 0, 0, 175, 194, 2, 66, 117, 8, 158, 64, 184, 47, 167, 190, 0, 0, 0, 0, 224, 124, 255, 65, 48, 146, 231, 191, 184, 47, 167, 190, 0, 0, 0, 0, 190, 13, 1, 66, 120, 162, 167, 191, 184, 47, 167, 190, 0, 0, 0, 0),
+"format": "RGBAFloat",
+"height": 1,
+"mipmaps": false,
+"width": 221
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_c24vm"]
+image = SubResource("Image_rtp1g")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_d06iw"]
+render_priority = 0
+shader = ExtResource("2_u8gy5")
+shader_parameter/_quantization = true
+shader_parameter/_steps_quantization = 5
+shader_parameter/_object_scale = 1.0
+shader_parameter/_object_size = 4.0
+shader_parameter/_only_on_wave_visibility = false
+shader_parameter/_start_falloff_visibility = 0.5
+shader_parameter/_end_falloff_visibility = 0.3
+shader_parameter/_time_multiplier_activation = 1.0
+shader_parameter/_distance_multiplier_activation = 1.0
+shader_parameter/_width_time_activation = 1.0
+shader_parameter/_enable_highlight_intersection = true
+shader_parameter/_width_highlight_intersection = 1.0
+shader_parameter/_noise_texture = ExtResource("4_cgev7")
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
+shader_parameter/_relative_origin_generate = true
+shader_parameter/_time_generate = 1.0
+shader_parameter/_thickness_generate = 0.25
+shader_parameter/_collapse = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/glow_enabled = true
+shader_parameter/glow_strength = 10.0
+shader_parameter/_active_static = false
+shader_parameter/_origin_static = Vector3(0, 0, 0)
+shader_parameter/_speed_static = 0.1
+shader_parameter/_frequency_static = 80.0
+shader_parameter/_amplitude_static = 0.002
+shader_parameter/_normal_amplitude_static = 0.002
+shader_parameter/_effect_radius_static = 1.2
+shader_parameter/_active_static_offset_hl = true
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_relative_origin_static = true
+shader_parameter/_impact_texture = SubResource("ImageTexture_c24vm")
+shader_parameter/max_impacts = 221
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 0.0
+shader_parameter/_fade_waves_impact = 2.0
+shader_parameter/_amplitude_impact = 0.02
+shader_parameter/_normal_amplitude_impact = 0.05
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
+shader_parameter/_active_border = true
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_show_normals = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_y1ek8"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_d06iw")
+size = Vector2(1, 1)
+subdivide_width = 128
+subdivide_depth = 128
+
+[sub_resource type="GDScript" id="GDScript_rjylp"]
+script/source = "@tool
+extends \"res://addons/nojoule-energy-shield/shield.gd\"
+"
+
+[sub_resource type="Curve" id="Curve_bu7l6"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="GDScript" id="GDScript_ivoxr"]
+script/source = "@tool
+extends Node3D
+
+
+# --------------- Signals ----------------------
+#signal
+# ---------------- Enums -----------------------
+#enum
+# -------------- Constants ---------------------
+#const
+# --------------- Exports ----------------------
+@export var plane_node: MeshInstance3D = null
+@export var rain_amount: float = 25.0
+@export var rain_speed: float = 1.0
+@export var rain_interval: float = 500.0
+# -------------- Variables ---------------------
+var plane_size: Vector2 = Vector2.ZERO
+var last_rain: float = 0.0
+# --------------- Onready ----------------------
+#@onready
+
+
+# ------------ Process Functions -----------------
+func _ready() -> void:
+	plane_size.x = plane_node.mesh.size.x * plane_node.scale.x
+	plane_size.y = plane_node.mesh.size.y * plane_node.scale.y
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _physics_process(delta: float) -> void:
+	var current = Time.get_ticks_msec()
+	if current - last_rain >= rain_interval * (randf() + 0.1):
+		last_rain = current
+		var rain: int = randi_range(int(rain_amount * 0.2), int(rain_amount * 0.8))
+		for drop in rain:
+			var offset: Vector3 = Vector3.ZERO
+			offset.x = randf_range(-plane_size.x, plane_size.x)
+			offset.y = randf_range(-plane_size.y, plane_size.y)
+			var drop_pos: Vector3 = plane_node.global_position + offset
+			plane_node.impact(drop_pos, null)
+
+
+# ------------ Private Functions -----------------
+#func _example() -> void:
+	#pass
+
+
+# ------------ Public Functions -----------------
+#func example() -> void:
+	#pass
+"
 
 [node name="EnergyShieldExamples" type="Node3D"]
 
@@ -1047,7 +1253,7 @@ width = 700.0
 mesh = SubResource("QuadMesh_f5biq")
 
 [node name="ShieldPlane" parent="InteractionExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.8684557, -0.52691805, 2.3064894e-08, 0, -4.37114e-08, -1, 0.52691805, 0.8684557, -3.8011656e-08, -0.75, 0.6, 0)
+transform = Transform3D(-0.71358514, -0.7232641, 3.165493e-08, 0, -4.37114e-08, -1, 0.7232641, -0.71358514, 3.1233665e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_e83g8")
 animation_curve = SubResource("Curve_cwp47")
 
@@ -1085,7 +1291,7 @@ skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_ibf8e")
 
 [node name="ShieldPlane" parent="ColorExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.96117514, -0.32889938, 1.4397549e-08, 0, -4.37114e-08, -1, 0.32889938, 0.96117514, -4.2068326e-08, -0.75, 0.6, 0)
+transform = Transform3D(-0.54233116, -0.859278, 3.7606394e-08, 0, -4.37114e-08, -1, 0.859278, -0.54233116, 2.3737902e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_tb5o1")
 skeleton = NodePath("../ShieldSphere")
 animation_curve = SubResource("Curve_u31ny")
@@ -1119,7 +1325,7 @@ mesh = SubResource("SphereMesh_bycw3")
 animation_curve = SubResource("Curve_t2u8o")
 
 [node name="ShieldPlane" parent="DepthHighlight" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-0.60806745, -0.81097907, 3.547427e-08, 0, -4.37114e-08, -1, 0.81097907, -0.60806745, 2.6598494e-08, -0.75, 0.6, 0)
+transform = Transform3D(-0.64853054, 0.7792222, -3.4085456e-08, 0, -4.37114e-08, -1, -0.7792222, -0.64853054, 2.8368701e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_6jtgg")
 animation_curve = SubResource("Curve_wk33k")
 
@@ -1133,7 +1339,7 @@ mesh = SubResource("BoxMesh_qsywp")
 skeleton = NodePath("../EnvironmentSphere")
 
 [node name="EnvironmentMovingPlatform" type="MeshInstance3D" parent="DepthHighlight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.3311069, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.66560304, 0)
 mesh = SubResource("BoxMesh_8tyb0")
 
 [node name="QuantizationExample" type="Node3D" parent="."]
@@ -1234,13 +1440,49 @@ width = 640.0
 mesh = SubResource("QuadMesh_f5biq")
 
 [node name="ShieldSphere" parent="WaveOptionsExample" instance=ExtResource("3_twgkm")]
-transform = Transform3D(0.9962704, 0, 0.12068705, 0, 1, 0, -0.12068705, 0, 0.9962704, 0.75, 0.6, 0)
+transform = Transform3D(-0.11294386, 0, -0.99734885, 0, 1, 0, 0.99734885, 0, -0.11294386, 0.75, 0.6, 0)
 mesh = SubResource("SphereMesh_n6kln")
 skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_l06v0")
 
 [node name="ShieldPlane" parent="WaveOptionsExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.9962704, 0.0854309, 0.0854309, 0, 0.707107, -0.707107, -0.12068705, 0.7052775, 0.7052775, -0.75, 0.6, 0)
+transform = Transform3D(-0.11294386, -0.70605206, -0.70605206, 0, 0.707107, -0.707107, 0.99734885, -0.07995818, -0.07995818, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_h6f4g")
 skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_24ojw")
+
+[node name="WaveAmountExample" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 0)
+script = SubResource("GDScript_c24vm")
+
+[node name="Heading" type="Label3D" parent="WaveAmountExample"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
+pixel_size = 0.003
+modulate = Color(1, 0.763636, 0, 1)
+text = "Number of Ripples
+"
+font_size = 40
+
+[node name="Description" type="Label3D" parent="WaveAmountExample"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
+pixel_size = 0.003
+text = "The amount of ripples being processed is Dynamic."
+vertical_alignment = 0
+autowrap_mode = 3
+width = 640.0
+
+[node name="Ground" type="MeshInstance3D" parent="WaveAmountExample"]
+mesh = SubResource("QuadMesh_d06iw")
+
+[node name="ShieldPlane" parent="WaveAmountExample" instance=ExtResource("6_gafkj")]
+transform = Transform3D(4, 0, 0, 0, -1.7484555e-07, -4, 0, 4, -1.7484555e-07, -0.06220627, 2.0562174, -0.32653594)
+mesh = SubResource("PlaneMesh_y1ek8")
+script = SubResource("GDScript_rjylp")
+animation_curve = SubResource("Curve_bu7l6")
+shield_origin = Vector3(0, 0.5, 0)
+
+[node name="Rain Creator" type="Node3D" parent="WaveAmountExample" node_paths=PackedStringArray("plane_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1667295, 2.15959)
+script = SubResource("GDScript_ivoxr")
+plane_node = NodePath("../ShieldPlane")
+rain_amount = 15.0

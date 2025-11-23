@@ -2,6 +2,11 @@
 This addon for Godot provides an energy shield that can be easily integrated into your scenes. You can use either the `shield_plane.tscn` or `shield_sphere.tscn` directly, or apply the shader to other materials. Note that some adjustments may be needed to ensure proper functionality on meshes other than planes and spheres.
 
 ## Changes
+- 1.3.1: Velocity Incorperated into Impact Effect
+	NOTE: For impacts with non RigidBody3D nodes to incorperate the node's velocity it would need to: 1) keep track of their approximate velocity, and 2) have a function called "get_approx_velocity" that would return that approximated velocity.
+- 1.3.0: Touch Based Ripple Effects
+	This also changes the size of the ripples depending on the size of the object that is touching the shield.
+	NOTE: To have this feature look the best, don't scale the shield mesh or any of its parents.
 - 1.2.0: Adding Dynamic number of Impacts
 - 1.1.0: Origin for static waves and impacts can now be set to relative, so the movement of the object won't influence the impact/static waves
 - 1.0.1: Web build compatibility

@@ -40,8 +40,7 @@ float denormalizeTime(
  * Compute the offset for the vertex position from impacts.
  */
 float computeImpactOffset(
-	vec3 vertex,
-	vec3 origin,
+	vec3 origin_offset,
 	float radius,
 	float frequency,
 	float waves,
@@ -49,7 +48,7 @@ float computeImpactOffset(
 	float amplitude,
 	float time
 ) {
-	float impact_distance = length(origin - vertex);
+	float impact_distance = length(origin_offset);
 	// the wave starts at -sin(-0.5 * PI)
 	float wave_position =
 		max((time - impact_distance) * frequency, - 0.5 * PI);
@@ -88,14 +87,13 @@ float computeImpactOffset(
  * Compute the offset for the vertex position from static waves.
  */
 float computeStaticOffset(
-	vec3 vertex,
-	vec3 origin,
+	vec3 origin_offset,
 	float radius,
 	float frequency,
 	float amplitude,
 	float time
 ) {
-	float impact_distance = length(origin - vertex);
+	float impact_distance = length(origin_offset);
 	float wave_position = (time - impact_distance) * frequency;
 	float surface_offset = -sin(wave_position) * amplitude;
 
@@ -169,8 +167,7 @@ vec3 adjustNormal(
  * Adjust the normal based on the wave generated from an impact and check if the effect is active at the position based on the time.
  */
 vec3 adjustImpactNormal(
-	vec3 position,
-	vec3 origin,
+	vec3 origin_offset,
 	float radius,
 	float frequency,
 	float waves,
@@ -181,7 +178,7 @@ vec3 adjustImpactNormal(
 	mat4 model_view,
 	bool backface
 ) {
-	float distance = length(origin - position);
+	float distance = length(origin_offset);
 	float wave_phase = -distance * frequency;
 	float current_wave_position =
 		max((time - distance) * frequency, - 0.5 * PI);
@@ -197,7 +194,7 @@ vec3 adjustImpactNormal(
 		float distance_fade = smoothstep(radius, 0.0, distance);
 
 		// calculate direction and the slope of the wave at the current position
-		vec3 wave_direction = normalize(position - origin);
+		vec3 wave_direction = normalize(-origin_offset);
 		wave_direction =
 			normalize((model_view * vec4(wave_direction, 0.0)).xyz);
 		float wave_amplitude = amplitude * distance_fade * time_fade;
@@ -224,8 +221,7 @@ vec3 adjustImpactNormal(
  * Adjust the normal based on the wave generated from a static effect.
  */
 vec3 adjustStaticNormal(
-	vec3 position,
-	vec3 origin,
+	vec3 origin_offset,
 	float radius,
 	float frequency,
 	float amplitude,
@@ -234,14 +230,14 @@ vec3 adjustStaticNormal(
 	mat4 model_view,
 	bool backface
 ) {
-	float distance = length(origin - position);
+	float distance = length(origin_offset);
 
 	// fade out the waves over distance
 	float distance_fade = smoothstep(radius, 0.0, distance);
 
 	// calculate direction and the slope of the wave at the current position
 	float wave_phase = -distance * frequency;
-	vec3 wave_direction = normalize(position - origin);
+	vec3 wave_direction = normalize(-origin_offset);
 	wave_direction = normalize((model_view * vec4(wave_direction, 0.0)).xyz);
 	float wave_amplitude = amplitude * distance_fade;
 	float slope = calculateSlope(time, wave_amplitude, frequency, wave_phase);
@@ -262,24 +258,22 @@ vec3 adjustStaticNormal(
 }
 
 float getAffectionStrengthStatic(
-	vec3 position,
-	vec3 origin,
+	vec3 origin_offset,
 	float radius
 ) {
-	float distance = length(origin - position);
+	float distance = length(origin_offset);
 	return smoothstep(radius, 0.0, distance);
 }
 
 float getAffectionStrengthImpact(
-	vec3 position,
-	vec3 origin,
+	vec3 origin_offset,
 	float radius,
 	float frequency,
 	float waves,
 	float fade_waves,
 	float time
 ) {
-	float distance = length(origin - position);
+	float distance = length(origin_offset);
 	float wave_phase = -distance * frequency;
 	float current_wave_position = (time - distance) * frequency;
 	float current_wave_count = current_wave_position / (2.0 * PI);
@@ -356,28 +350,38 @@ void vertex() {
 	impact_offset = 0.0;
 	for(int i=0;i<max_impacts;++i)
 	{
-		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0); //texture(_impact_texture, vec2(float(i), 0.0));
+		// transform the generation origin to world space
+		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0);
 		vec3 origin_impact = full.rgb;
+		float time = full.a;
 		if (_relative_origin_impact) {
 			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
 		}
-		float time = full.a;
+		vec3 origin_impact_offset = (origin_impact - world_pos);
+		if (_relative_origin_impact) {
+			origin_impact_offset = origin_impact_offset / _object_scale;
+		}
 		if (time > 0.0 && time < 1.0) {
+			// Get impact scale and other information.
+			vec4 impact_data = texelFetch(_impact_texture, ivec2(i, 1), 0);
+			impact_data *= impact_data.y;
+			//impact_data *= _object_size;
+			//impact_data.x *= (_object_size * _object_scale) * 0.5;
+
 			float denormalized_time = denormalizeTime(
 				time,
-				_frequency_impact / _object_scale,
+				_frequency_impact * impact_data.z,
 				_waves_impact + _fade_waves_impact,
-				_radius_impact * _object_scale
+				_radius_impact * impact_data.x
 			);
 
 			impact_offset += computeImpactOffset(
-				world_pos,
-				origin_impact,
-				_radius_impact * _object_scale,
-				_frequency_impact / _object_scale,
+				origin_impact_offset,
+				_radius_impact * impact_data.x,
+				_frequency_impact * impact_data.z,
 				_waves_impact,
 				_fade_waves_impact,
-				_amplitude_impact,
+				_amplitude_impact * impact_data.a,
 				denormalized_time
 			);
 		}
@@ -385,17 +389,21 @@ void vertex() {
 
 	// calculate the vertex displacement from the static wave effect
 	if (_active_static) {
+
 		// transform the static origin to world space
 		if (_relative_origin_static) {
 			origin_static_world = (MODEL_MATRIX * vec4(_origin_static, 1.0)).xyz;
 		} else {
 			origin_static_world = _origin_static;
 		}
+		vec3 origin_static_offset = (origin_static_world - world_pos);
+		if (_relative_origin_static) {
+			origin_static_offset = origin_static_offset / _object_scale;
+		}
 		static_offset = computeStaticOffset(
-			world_pos,
-			origin_static_world,
-			_effect_radius_static * _object_scale,
-			_frequency_static / _object_scale,
+			origin_static_offset,
+			_effect_radius_static,
+			_frequency_static,
 			_amplitude_static,
 			TIME * _speed_static
 		);
@@ -405,7 +413,7 @@ void vertex() {
 
 	// transform the generation origin to world space
 	if (_relative_origin_generate) {
-		origin_generate_world = (MODEL_MATRIX * vec4(_origin_generate * _object_scale, 1.0)).xyz;
+		origin_generate_world = (MODEL_MATRIX * vec4(_origin_generate, 1.0)).xyz;
 	} else {
 		origin_generate_world = _origin_generate;
 	}
@@ -422,13 +430,15 @@ void fragment() {
 	// calculate the modified normal based on static wave traveling across the shield surface
 	vec3 static_normal = vec3(0.0);
 	if (_active_static) {
-
+		vec3 origin_static_offset = (origin_static_world - world_pos);
+		if (_relative_origin_static) {
+			origin_static_offset = origin_static_offset / _object_scale;
+		}
 		static_normal = adjustStaticNormal(
-			world_pos,
-			origin_static_world,
-			_effect_radius_static * _object_scale,
-			_frequency_static / _object_scale,
-			_normal_amplitude_static * _object_scale,
+			origin_static_offset,
+			_effect_radius_static,
+			_frequency_static,
+			_normal_amplitude_static,
 			TIME * _speed_static,
 			NORMAL,
 			VIEW_MATRIX,
@@ -436,9 +446,8 @@ void fragment() {
 		);
 		if (_only_on_wave_visibility) {
 			float static_affection = getAffectionStrengthStatic(
-				world_pos,
-				origin_static_world,
-				_effect_radius_static * _object_scale
+				origin_static_offset,
+				_effect_radius_static
 			);
 			effect_visibility = max(effect_visibility, static_affection);
 		}
@@ -448,28 +457,37 @@ void fragment() {
 	vec3 impact_normal = vec3(0.0);
 	for(int i=0;i<max_impacts;++i)
 	{
+		// Get impact scale and other information.
+		vec4 impact_data = texelFetch(_impact_texture, ivec2(i, 1), 0);
+		impact_data *= impact_data.y;
+		//impact_data *= _object_size;
+		//impact_data.x *= (_object_size * _object_scale) * 0.5;
+
+		// Get impact location and time
 		vec4 full = texelFetch(_impact_texture, ivec2(i, 0), 0);
 		vec3 origin_impact = full.rgb;
+		float time = full.a;
+		// transform the generation origin to world space
+		vec3 origin_impact_offset = (origin_impact - world_pos);
 		if (_relative_origin_impact) {
 			origin_impact = (MODEL_MATRIX * vec4(origin_impact, 1.0)).xyz;
+			origin_impact_offset = origin_impact_offset / _object_scale;
 		}
-		float time = full.a;
 		if (time > 0.0 && time < 1.0) {
 			float denormalized_time = denormalizeTime(
 				time,
-				_frequency_impact / _object_scale,
+				_frequency_impact * impact_data.z,
 				_waves_impact + _fade_waves_impact,
-				_radius_impact * _object_scale
+				_radius_impact * impact_data.x
 			);
 
 			impact_normal += adjustImpactNormal(
-				world_pos,
-				origin_impact,
-				_radius_impact * _object_scale,
-				_frequency_impact / _object_scale,
+				origin_impact_offset,
+				_radius_impact * impact_data.x,
+				_frequency_impact * impact_data.z,
 				_waves_impact,
 				_fade_waves_impact,
-				_normal_amplitude_impact * _object_scale,
+				_normal_amplitude_impact,
 				denormalized_time,
 				NORMAL,
 				VIEW_MATRIX,
@@ -477,10 +495,9 @@ void fragment() {
 			);
 			if (_only_on_wave_visibility) {
 				float impact_affection = getAffectionStrengthImpact(
-					world_pos,
-					origin_impact,
-					_radius_impact * _object_scale,
-					_frequency_impact / _object_scale,
+					origin_impact_offset,
+					_radius_impact * impact_data.x,
+					_frequency_impact * impact_data.z,
 					_waves_impact,
 					_fade_waves_impact,
 					time
@@ -491,7 +508,7 @@ void fragment() {
 	}
 
 	// combine the normals and normalize the result, this is the new surface normal at this fragment
-	vec3 new_normal = normalize(static_normal + impact_normal  + 0.001 * NORMAL);
+	vec3 new_normal = normalize(static_normal + impact_normal + 0.001 * NORMAL);
 	NORMAL = new_normal;
 
 	// calculate the shield visibility, which determines the color and transparency of the shield.
@@ -551,9 +568,9 @@ void fragment() {
 		world_pos,
 		origin_generate_world,
 		_thickness_generate,
-		_object_scale * _object_size,
+		_object_scale,
 		_time_generate
-		//mod(TIME, 1.0 / _object_scale * _object_size) //see the effect looping
+		//mod(TIME, 1.0 / _object_scale) //see the effect looping
 	);
 	if (_collapse) {
 		if (creation_progress >= 1.0) {

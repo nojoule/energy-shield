@@ -21,11 +21,6 @@ config/icon="res://icon.png"
 
 settings/stdout/print_fps=true
 
-[display]
-
-window/size/viewport_width=1900
-window/size/viewport_height=1080
-
 [input]
 
 move_forward={

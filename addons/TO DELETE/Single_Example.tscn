@@ -1,0 +1,210 @@
+[gd_scene load_steps=21 format=3 uid="uid://ksrcdpqka5hd"]
+
+[ext_resource type="PackedScene" uid="uid://dd146l0thx0ep" path="res://addons/nojoule-energy-shield/shield_large_plane.tscn" id="1_m2183"]
+[ext_resource type="Script" uid="uid://f1263sbcv8qy" path="res://addons/nojoule-energy-shield/camera_movement.gd" id="1_xrgca"]
+[ext_resource type="Shader" uid="uid://dcko35tc4k343" path="res://addons/nojoule-energy-shield/shield.gdshader" id="2_xrgca"]
+[ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="3_3xjmj"]
+
+[sub_resource type="Environment" id="Environment_3xjmj"]
+background_mode = 1
+background_color = Color(0.0863636, 0.0863636, 0.0863636, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.2, 0.2, 0.2, 1)
+glow_enabled = true
+glow_mix = 0.01
+glow_blend_mode = 4
+
+[sub_resource type="GDScript" id="GDScript_ud2ue"]
+script/source = "@tool
+extends Node3D
+
+var rotation_speed: float = 45.0
+
+#@onready var sphere: MeshInstance3D = $ShieldSphere
+#@onready var plane: MeshInstance3D = $ShieldPlane
+
+func _process(delta: float) -> void:
+	pass
+	#sphere.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+	#plane.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7wpux"]
+albedo_color = Color(0.4, 0.4, 0.4, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_dubyl"]
+material = SubResource("StandardMaterial3D_7wpux")
+size = Vector2(4, 1)
+orientation = 1
+
+[sub_resource type="Image" id="Image_xrgca"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63),
+"format": "RGBAFloat",
+"height": 2,
+"mipmaps": false,
+"width": 1
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_3xjmj"]
+image = SubResource("Image_xrgca")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ftut7"]
+render_priority = 0
+shader = ExtResource("2_xrgca")
+shader_parameter/_quantization = true
+shader_parameter/_steps_quantization = 5
+shader_parameter/_object_scale = 1.0
+shader_parameter/_object_size = 4.0
+shader_parameter/_only_on_wave_visibility = false
+shader_parameter/_start_falloff_visibility = 0.5
+shader_parameter/_end_falloff_visibility = 0.3
+shader_parameter/_time_multiplier_activation = 1.0
+shader_parameter/_distance_multiplier_activation = 1.0
+shader_parameter/_width_time_activation = 1.0
+shader_parameter/_enable_highlight_intersection = true
+shader_parameter/_width_highlight_intersection = 1.0
+shader_parameter/_noise_texture = ExtResource("3_3xjmj")
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
+shader_parameter/_relative_origin_generate = true
+shader_parameter/_time_generate = 1.0
+shader_parameter/_thickness_generate = 0.25
+shader_parameter/_collapse = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/glow_enabled = true
+shader_parameter/glow_strength = 10.0
+shader_parameter/_active_static = false
+shader_parameter/_origin_static = Vector3(0, 0, 0)
+shader_parameter/_speed_static = 0.1
+shader_parameter/_frequency_static = 80.0
+shader_parameter/_amplitude_static = 0.002
+shader_parameter/_normal_amplitude_static = 0.002
+shader_parameter/_effect_radius_static = 1.2
+shader_parameter/_active_static_offset_hl = true
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_relative_origin_static = true
+shader_parameter/_impact_texture = SubResource("ImageTexture_3xjmj")
+shader_parameter/max_impacts = 1
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 0.0
+shader_parameter/_fade_waves_impact = 1.0
+shader_parameter/_amplitude_impact = 0.02
+shader_parameter/_normal_amplitude_impact = 0.05
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
+shader_parameter/_active_border = true
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_show_normals = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_h84rp"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_ftut7")
+size = Vector2(1, 1)
+subdivide_width = 128
+subdivide_depth = 128
+
+[sub_resource type="GDScript" id="GDScript_gpvpb"]
+script/source = "@tool
+extends \"res://addons/nojoule-energy-shield/shield.gd\"
+"
+
+[sub_resource type="Curve" id="Curve_ud2ue"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_ssr6m"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_psgc5"]
+points = PackedVector3Array(-0.049999997, -0.04999998, -0.04999998, 0.049997684, 0.049999997, 0.049999997, 0.049997684, 0.049999997, -0.049999997, 0.049997684, -0.049999997, 0.049999997, -0.049999997, 0.04999998, 0.04999998, 0.049997684, -0.049999997, -0.049999997, -0.049999997, 0.04999998, -0.04999998, -0.049999997, -0.04999998, 0.04999998)
+
+[sub_resource type="BoxMesh" id="BoxMesh_11aai"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_t2peu"]
+points = PackedVector3Array(-0.25, -0.25, -0.25, 0.25, 0.25, 0.25, 0.25, -0.25, 0.25, 0.25, 0.25, -0.25, -0.25, 0.25, 0.25, 0.25, -0.25, -0.25, -0.25, -0.25, 0.25, -0.25, 0.25, -0.25)
+
+[sub_resource type="SphereMesh" id="SphereMesh_vcv1m"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_lgkmg"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnv" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3xjmj")
+
+[node name="MainLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.925871, -0.32722, 0.18892, 0, 0.5, 0.866025, -0.377841, -0.801827, 0.462935, 0, 10, 0)
+light_energy = 0.2
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.951428, 0.307871, 0, -0.307871, 0.951428, 0, 0.797, 1.867)
+script = ExtResource("1_xrgca")
+
+[node name="TouchWaveExample2" type="Node3D" parent="."]
+script = SubResource("GDScript_ud2ue")
+
+[node name="Heading" type="Label3D" parent="TouchWaveExample2"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
+pixel_size = 0.003
+modulate = Color(1, 0.763636, 0, 1)
+text = "SIZE OF IMPACTS"
+font_size = 40
+
+[node name="Description" type="Label3D" parent="TouchWaveExample2"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
+pixel_size = 0.003
+text = "The frequence of amplitude are based on the size of the object that hits the shield."
+vertical_alignment = 0
+autowrap_mode = 3
+width = 640.0
+
+[node name="Ground" type="MeshInstance3D" parent="TouchWaveExample2"]
+mesh = SubResource("QuadMesh_dubyl")
+
+[node name="ShieldPlane" parent="TouchWaveExample2" instance=ExtResource("1_m2183")]
+transform = Transform3D(4, 0, 0, 0, -1.7484555e-07, -4, 0, 4, -1.7484555e-07, -0.06311798, 2.036953, -0.3245566)
+mesh = SubResource("PlaneMesh_h84rp")
+script = SubResource("GDScript_gpvpb")
+animation_curve = SubResource("Curve_ud2ue")
+shield_origin = Vector3(0, 0.5, 0)
+
+[node name="Small_Cube" type="MeshInstance3D" parent="TouchWaveExample2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6260233, 0.77337617, -0.34158024)
+mesh = SubResource("BoxMesh_ssr6m")
+metadata/_edit_group_ = true
+
+[node name="Small_Cube" type="StaticBody3D" parent="TouchWaveExample2/Small_Cube"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample2/Small_Cube/Small_Cube"]
+shape = SubResource("ConvexPolygonShape3D_psgc5")
+
+[node name="Medium_Cube" type="MeshInstance3D" parent="TouchWaveExample2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2669079, 2.2992122, -0.34158024)
+mesh = SubResource("BoxMesh_11aai")
+metadata/_edit_group_ = true
+
+[node name="Medium_Cube" type="StaticBody3D" parent="TouchWaveExample2/Medium_Cube"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample2/Medium_Cube/Medium_Cube"]
+shape = SubResource("ConvexPolygonShape3D_t2peu")
+
+[node name="Sphere" type="MeshInstance3D" parent="TouchWaveExample2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.81038976, 3.0100214, -0.5768346)
+mesh = SubResource("SphereMesh_vcv1m")
+metadata/_edit_group_ = true
+
+[node name="Sphere" type="StaticBody3D" parent="TouchWaveExample2/Sphere"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample2/Sphere/Sphere"]
+shape = SubResource("SphereShape3D_lgkmg")

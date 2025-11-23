@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=3 uid="uid://b687koijwjkt4"]
+[gd_scene load_steps=108 format=3 uid="uid://b687koijwjkt4"]
 
 [ext_resource type="Script" uid="uid://f1263sbcv8qy" path="res://addons/nojoule-energy-shield/camera_movement.gd" id="1_1ksrw"]
 [ext_resource type="PackedScene" uid="uid://bvqb5fugcfm5k" path="res://addons/nojoule-energy-shield/shield_plane.tscn" id="1_uycqw"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://bqo3es5yd4r70" path="res://addons/nojoule-energy-shield/shield_sphere.tscn" id="3_twgkm"]
 [ext_resource type="Texture2D" uid="uid://dnqegf8mxqli" path="res://addons/nojoule-energy-shield/shield_noise.tres" id="4_cgev7"]
 [ext_resource type="PackedScene" uid="uid://dd146l0thx0ep" path="res://addons/nojoule-energy-shield/shield_large_plane.tscn" id="6_7wpux"]
-[ext_resource type="Script" uid="uid://elxwg3d4hkmt" path="res://addons/nojoule-energy-shield/rain_creator.gd" id="7_1v2vh"]
 
 [sub_resource type="Environment" id="Environment_nl0ma"]
 background_mode = 1
@@ -29,11 +28,11 @@ func _process(delta: float) -> void:
 	plane.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
 "
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wy7so"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7wpux"]
 albedo_color = Color(0.4, 0.4, 0.4, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_f5biq"]
-material = SubResource("StandardMaterial3D_wy7so")
+material = SubResource("StandardMaterial3D_7wpux")
 size = Vector2(4, 1)
 orientation = 1
 
@@ -229,7 +228,7 @@ shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
 shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.48197103, 0.14459132, 0.14459132, 1)
+shader_parameter/_color_shield = Color(0.3, 1, 0.35851556, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
@@ -295,7 +294,7 @@ shader_parameter/_relative_origin_generate = true
 shader_parameter/_time_generate = 1.0
 shader_parameter/_thickness_generate = 0.25
 shader_parameter/_collapse = false
-shader_parameter/_color_shield = Color(0.48197103, 0.14459132, 0.14459132, 1)
+shader_parameter/_color_shield = Color(0.3, 0.35851556, 1, 1)
 shader_parameter/_color_brightness_shield = 15.0
 shader_parameter/_intensity_shield = 2.5
 shader_parameter/glow_enabled = true
@@ -505,7 +504,7 @@ height = 0.4
 size = Vector3(0.3, 0.3, 0.3)
 
 [sub_resource type="BoxMesh" id="BoxMesh_8tyb0"]
-size = Vector3(1.1, 0.05, 1.1)
+size = Vector3(1.1, 0.1, 1.1)
 
 [sub_resource type="GDScript" id="GDScript_v1qj6"]
 script/source = "@tool
@@ -536,23 +535,23 @@ func _process(delta: float):
 	if time_passed > impact_cooldown:
 		var impact_point = left_sphere.global_position
 		var random_point = random_point_on_sphere(0.5)
-		left_sphere.impact(impact_point + random_point)
+		left_sphere.impact(impact_point + random_point, null)
 		impact_point = right_sphere.global_position
-		right_sphere.impact(impact_point + random_point)
+		right_sphere.impact(impact_point + random_point, null)
 		time_passed -= impact_cooldown
 "
 
-[sub_resource type="Image" id="Image_1v2vh"]
+[sub_resource type="Image" id="Image_7wpux"]
 data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 250, 98, 65, 62, 69, 139, 63, 56, 242, 179, 189, 0, 0, 128, 63, 218, 80, 103, 65, 237, 62, 132, 63, 12, 175, 14, 62, 22, 67, 123, 63, 32, 43, 98, 65, 27, 152, 128, 63, 204, 124, 138, 62, 206, 236, 94, 63, 68, 180, 103, 65, 38, 38, 48, 62, 8, 159, 235, 189, 127, 69, 28, 63, 141, 221, 106, 65, 78, 22, 38, 63, 202, 5, 129, 62, 211, 209, 19, 62),
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 81, 101, 65, 222, 7, 208, 62, 30, 56, 232, 190, 210, 41, 196, 62, 246, 9, 97, 65, 174, 140, 78, 62, 116, 184, 116, 62, 223, 85, 127, 63, 151, 23, 96, 65, 104, 147, 128, 63, 144, 104, 39, 190, 108, 143, 111, 63, 39, 176, 102, 65, 234, 97, 124, 63, 86, 56, 138, 190, 172, 236, 63, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63),
 "format": "RGBAFloat",
-"height": 1,
+"height": 2,
 "mipmaps": false,
-"width": 6
+"width": 5
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_uqd61"]
-image = SubResource("Image_1v2vh")
+[sub_resource type="ImageTexture" id="ImageTexture_1v2vh"]
+image = SubResource("Image_7wpux")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6c8gp"]
 render_priority = 0
@@ -591,8 +590,8 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_impact_texture = SubResource("ImageTexture_uqd61")
-shader_parameter/max_impacts = 6
+shader_parameter/_impact_texture = SubResource("ImageTexture_1v2vh")
+shader_parameter/max_impacts = 5
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -625,17 +624,17 @@ resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="Image" id="Image_p05bc"]
+[sub_resource type="Image" id="Image_uqd61"]
 data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 41, 250, 122, 65, 62, 69, 139, 63, 56, 242, 179, 189, 0, 0, 128, 63, 218, 80, 127, 65, 237, 62, 132, 63, 12, 175, 14, 62, 22, 67, 123, 63, 32, 43, 122, 65, 27, 152, 128, 63, 204, 124, 138, 62, 206, 236, 94, 63, 68, 180, 127, 65, 38, 38, 48, 62, 8, 159, 235, 189, 127, 69, 28, 63, 199, 110, 129, 65, 78, 22, 38, 63, 202, 5, 129, 62, 211, 209, 19, 62),
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 29, 81, 125, 65, 222, 7, 208, 62, 30, 56, 232, 190, 210, 41, 196, 62, 246, 9, 121, 65, 174, 140, 78, 62, 116, 184, 116, 62, 223, 85, 127, 63, 151, 23, 120, 65, 104, 147, 128, 63, 144, 104, 39, 190, 108, 143, 111, 63, 39, 176, 126, 65, 234, 97, 124, 63, 86, 56, 138, 190, 172, 236, 63, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63),
 "format": "RGBAFloat",
-"height": 1,
+"height": 2,
 "mipmaps": false,
-"width": 6
+"width": 5
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_be0g3"]
-image = SubResource("Image_p05bc")
+[sub_resource type="ImageTexture" id="ImageTexture_p05bc"]
+image = SubResource("Image_uqd61")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8terc"]
 render_priority = 0
@@ -674,8 +673,8 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_impact_texture = SubResource("ImageTexture_be0g3")
-shader_parameter/max_impacts = 6
+shader_parameter/_impact_texture = SubResource("ImageTexture_p05bc")
+shader_parameter/max_impacts = 5
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -737,23 +736,23 @@ func _process(delta: float):
 	if time_passed > impact_cooldown:
 		var impact_point = left_sphere.global_position
 		var random_point = random_point_on_sphere(0.5)
-		left_sphere.impact(impact_point + random_point)
+		left_sphere.impact(impact_point + random_point, null)
 		impact_point = right_sphere.global_position
-		right_sphere.impact(impact_point + random_point)
+		right_sphere.impact(impact_point + random_point, null)
 		time_passed -= impact_cooldown
 "
 
-[sub_resource type="Image" id="Image_0hl5u"]
+[sub_resource type="Image" id="Image_be0g3"]
 data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 231, 170, 157, 65, 159, 149, 15, 63, 38, 99, 72, 62, 0, 0, 128, 63, 42, 64, 152, 65, 118, 248, 187, 62, 204, 240, 196, 190, 22, 67, 123, 63, 56, 152, 157, 65, 236, 63, 28, 63, 128, 88, 96, 190, 206, 236, 94, 63, 161, 208, 156, 65, 244, 119, 231, 62, 78, 92, 165, 190, 127, 69, 28, 63, 153, 133, 154, 65, 170, 79, 232, 62, 32, 131, 242, 190, 211, 209, 19, 62),
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 93, 151, 65, 147, 185, 49, 63, 176, 115, 186, 62, 210, 41, 196, 62, 117, 204, 150, 65, 21, 181, 33, 63, 104, 160, 152, 62, 223, 85, 127, 63, 8, 103, 150, 65, 104, 139, 81, 63, 192, 207, 150, 59, 108, 143, 111, 63, 52, 14, 155, 65, 170, 82, 99, 63, 120, 18, 198, 62, 172, 236, 63, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63),
 "format": "RGBAFloat",
-"height": 1,
+"height": 2,
 "mipmaps": false,
-"width": 6
+"width": 5
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_o6kf4"]
-image = SubResource("Image_0hl5u")
+[sub_resource type="ImageTexture" id="ImageTexture_0hl5u"]
+image = SubResource("Image_be0g3")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_67oo1"]
 render_priority = 0
@@ -792,8 +791,8 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_impact_texture = SubResource("ImageTexture_o6kf4")
-shader_parameter/max_impacts = 6
+shader_parameter/_impact_texture = SubResource("ImageTexture_0hl5u")
+shader_parameter/max_impacts = 5
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -826,17 +825,17 @@ resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="Image" id="Image_d2qpy"]
+[sub_resource type="Image" id="Image_o6kf4"]
 data = {
-"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 231, 170, 169, 65, 159, 149, 15, 63, 38, 99, 72, 62, 0, 0, 128, 63, 42, 64, 164, 65, 118, 248, 187, 62, 204, 240, 196, 190, 22, 67, 123, 63, 56, 152, 169, 65, 236, 63, 28, 63, 128, 88, 96, 190, 206, 236, 94, 63, 161, 208, 168, 65, 244, 119, 231, 62, 78, 92, 165, 190, 127, 69, 28, 63, 153, 133, 166, 65, 170, 79, 232, 62, 32, 131, 242, 190, 211, 209, 19, 62),
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 93, 163, 65, 147, 185, 49, 63, 176, 115, 186, 62, 210, 41, 196, 62, 117, 204, 162, 65, 21, 181, 33, 63, 104, 160, 152, 62, 223, 85, 127, 63, 8, 103, 162, 65, 104, 139, 81, 63, 192, 207, 150, 59, 108, 143, 111, 63, 52, 14, 167, 65, 170, 82, 99, 63, 120, 18, 198, 62, 172, 236, 63, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63),
 "format": "RGBAFloat",
-"height": 1,
+"height": 2,
 "mipmaps": false,
-"width": 6
+"width": 5
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_ebi6u"]
-image = SubResource("Image_d2qpy")
+[sub_resource type="ImageTexture" id="ImageTexture_d2qpy"]
+image = SubResource("Image_o6kf4")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_x0bsn"]
 render_priority = 0
@@ -876,8 +875,8 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
-shader_parameter/_impact_texture = SubResource("ImageTexture_ebi6u")
-shader_parameter/max_impacts = 6
+shader_parameter/_impact_texture = SubResource("ImageTexture_d2qpy")
+shader_parameter/max_impacts = 5
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
 shader_parameter/_fade_waves_impact = 2.0
@@ -1058,12 +1057,24 @@ resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6mbxq"]
+[sub_resource type="Image" id="Image_ebi6u"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"format": "RGBAFloat",
+"height": 2,
+"mipmaps": false,
+"width": 1
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_ok5g2"]
+image = SubResource("Image_ebi6u")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tkmln"]
 render_priority = 0
 shader = ExtResource("2_u8gy5")
-shader_parameter/_quantization = true
+shader_parameter/_quantization = false
 shader_parameter/_steps_quantization = 5
-shader_parameter/_object_scale = 1.0
+shader_parameter/_object_scale = 4.0
 shader_parameter/_object_size = 4.0
 shader_parameter/_only_on_wave_visibility = false
 shader_parameter/_start_falloff_visibility = 0.5
@@ -1096,6 +1107,7 @@ shader_parameter/_active_static_offset_hl = true
 shader_parameter/_strength_static_offset_hl = 1.0
 shader_parameter/_intensity_static_offset_hl = 5.0
 shader_parameter/_relative_origin_static = true
+shader_parameter/_impact_texture = SubResource("ImageTexture_ok5g2")
 shader_parameter/max_impacts = 1
 shader_parameter/_frequency_impact = 20.0
 shader_parameter/_waves_impact = 0.0
@@ -1112,14 +1124,418 @@ shader_parameter/_intensity_border = 2.0
 shader_parameter/_percentage_border = 0.1
 shader_parameter/_show_normals = false
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_ok5g2"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_m4u1x"]
 resource_local_to_scene = true
-material = SubResource("ShaderMaterial_6mbxq")
+material = SubResource("ShaderMaterial_tkmln")
 size = Vector2(1, 1)
-subdivide_width = 1024
-subdivide_depth = 1024
+subdivide_width = 256
+subdivide_depth = 256
+
+[sub_resource type="GDScript" id="GDScript_ok5g2"]
+script/source = "@tool
+extends \"res://addons/nojoule-energy-shield/shield.gd\"
+"
 
 [sub_resource type="Curve" id="Curve_ftut7"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_ftut7"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_m4u1x"]
+points = PackedVector3Array(-0.049999997, -0.04999998, -0.04999998, 0.049997684, 0.049999997, 0.049999997, 0.049997684, 0.049999997, -0.049999997, 0.049997684, -0.049999997, 0.049999997, -0.049999997, 0.04999998, 0.04999998, 0.049997684, -0.049999997, -0.049999997, -0.049999997, 0.04999998, -0.04999998, -0.049999997, -0.04999998, 0.04999998)
+
+[sub_resource type="BoxMesh" id="BoxMesh_tkmln"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ukj8r"]
+points = PackedVector3Array(-0.25, -0.25, -0.25, 0.25, 0.25, 0.25, 0.25, -0.25, 0.25, 0.25, 0.25, -0.25, -0.25, 0.25, 0.25, 0.25, -0.25, -0.25, -0.25, -0.25, 0.25, -0.25, 0.25, -0.25)
+
+[sub_resource type="SphereMesh" id="SphereMesh_ebi6u"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ok5g2"]
+
+[sub_resource type="Image" id="Image_ftut7"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"format": "RGBAFloat",
+"height": 2,
+"mipmaps": false,
+"width": 1
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_m4u1x"]
+image = SubResource("Image_ftut7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ftut7"]
+render_priority = 0
+shader = ExtResource("2_u8gy5")
+shader_parameter/_quantization = false
+shader_parameter/_steps_quantization = 5
+shader_parameter/_object_scale = 3.0
+shader_parameter/_object_size = 3.0
+shader_parameter/_only_on_wave_visibility = false
+shader_parameter/_start_falloff_visibility = 0.5
+shader_parameter/_end_falloff_visibility = 0.3
+shader_parameter/_time_multiplier_activation = 1.0
+shader_parameter/_distance_multiplier_activation = 1.0
+shader_parameter/_width_time_activation = 1.0
+shader_parameter/_enable_highlight_intersection = true
+shader_parameter/_width_highlight_intersection = 1.0
+shader_parameter/_noise_texture = ExtResource("4_cgev7")
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
+shader_parameter/_relative_origin_generate = true
+shader_parameter/_time_generate = 1.0
+shader_parameter/_thickness_generate = 0.25
+shader_parameter/_collapse = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/glow_enabled = true
+shader_parameter/glow_strength = 0.1
+shader_parameter/_active_static = false
+shader_parameter/_origin_static = Vector3(0, 0.5, 0)
+shader_parameter/_speed_static = 0.1
+shader_parameter/_frequency_static = 80.0
+shader_parameter/_amplitude_static = 0.002
+shader_parameter/_normal_amplitude_static = 0.002
+shader_parameter/_effect_radius_static = 1.2
+shader_parameter/_active_static_offset_hl = true
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_relative_origin_static = true
+shader_parameter/_impact_texture = SubResource("ImageTexture_m4u1x")
+shader_parameter/max_impacts = 1
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 0.0
+shader_parameter/_fade_waves_impact = 2.0
+shader_parameter/_amplitude_impact = 0.02
+shader_parameter/_normal_amplitude_impact = 0.05
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
+shader_parameter/_active_border = false
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_show_normals = false
+
+[sub_resource type="SphereMesh" id="SphereMesh_ukj8r"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_ftut7")
+radial_segments = 256
+rings = 256
+
+[sub_resource type="GDScript" id="GDScript_ukj8r"]
+script/source = "@tool
+extends \"res://addons/nojoule-energy-shield/shield.gd\"
+"
+
+[sub_resource type="Curve" id="Curve_65qv3"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Image" id="Image_tkmln"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"format": "RGBAFloat",
+"height": 2,
+"mipmaps": false,
+"width": 1
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_ukj8r"]
+image = SubResource("Image_tkmln")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ukj8r"]
+render_priority = 0
+shader = ExtResource("2_u8gy5")
+shader_parameter/_quantization = false
+shader_parameter/_steps_quantization = 5
+shader_parameter/_object_scale = 3.0
+shader_parameter/_object_size = 1.0
+shader_parameter/_only_on_wave_visibility = false
+shader_parameter/_start_falloff_visibility = 0.5
+shader_parameter/_end_falloff_visibility = 0.3
+shader_parameter/_time_multiplier_activation = 2.0
+shader_parameter/_distance_multiplier_activation = 1.0
+shader_parameter/_width_time_activation = 0.2
+shader_parameter/_enable_highlight_intersection = true
+shader_parameter/_width_highlight_intersection = 1.0
+shader_parameter/_noise_texture = ExtResource("4_cgev7")
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
+shader_parameter/_relative_origin_generate = true
+shader_parameter/_time_generate = 1.0
+shader_parameter/_thickness_generate = 0.25
+shader_parameter/_collapse = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/glow_enabled = true
+shader_parameter/glow_strength = 0.1
+shader_parameter/_active_static = false
+shader_parameter/_origin_static = Vector3(0, 0.5, 0)
+shader_parameter/_speed_static = 0.1
+shader_parameter/_frequency_static = 80.0
+shader_parameter/_amplitude_static = 0.002
+shader_parameter/_normal_amplitude_static = 0.002
+shader_parameter/_effect_radius_static = 1.2
+shader_parameter/_active_static_offset_hl = true
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_relative_origin_static = true
+shader_parameter/_impact_texture = SubResource("ImageTexture_ukj8r")
+shader_parameter/max_impacts = 1
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 0.0
+shader_parameter/_fade_waves_impact = 2.0
+shader_parameter/_amplitude_impact = 0.02
+shader_parameter/_normal_amplitude_impact = 0.05
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
+shader_parameter/_active_border = false
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_show_normals = false
+
+[sub_resource type="SphereMesh" id="SphereMesh_65qv3"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_ukj8r")
+radius = 1.5
+height = 3.0
+radial_segments = 256
+rings = 256
+
+[sub_resource type="GDScript" id="GDScript_xrw65"]
+script/source = "@tool
+extends \"res://addons/nojoule-energy-shield/shield.gd\"
+"
+
+[sub_resource type="Curve" id="Curve_ahtcd"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ukj8r"]
+radius = 1.5
+
+[sub_resource type="GDScript" id="GDScript_ftut7"]
+script/source = "@tool
+extends Node3D
+
+var rotation_speed: float = 45.0
+
+var amplitude: float = 0.5
+var frequency: float = 0.2
+var time_passed: float = 0.0
+var initial_position: Vector3 = Vector3(0.75, 0.6, 0.0)
+
+@onready var sphere: MeshInstance3D = $ShieldSphere
+@onready var plane: MeshInstance3D = $ShieldPlane
+@onready var moving_box: MeshInstance3D = $EnvironmentMovingPlatform
+
+#func _process(delta: float):
+	#if moving_box:
+		#time_passed += delta
+		#var y_offset = amplitude * sin(time_passed * frequency * TAU)
+		#moving_box.transform.origin = initial_position + Vector3(0, y_offset, 0)
+#
+	#plane.rotate(Vector3.UP, deg_to_rad(rotation_speed * delta))
+"
+
+[sub_resource type="SphereMesh" id="SphereMesh_ftut7"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_mpt4m")
+radial_segments = 256
+rings = 256
+
+[sub_resource type="Curve" id="Curve_m4u1x"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="SphereMesh" id="SphereMesh_m4u1x"]
+radius = 0.2
+height = 0.4
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tkmln"]
+radius = 0.2
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tkmln"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_64ak4")
+size = Vector2(1, 1)
+subdivide_width = 128
+subdivide_depth = 128
+
+[sub_resource type="Curve" id="Curve_ukj8r"]
+resource_local_to_scene = true
+resource_name = "animation_curve"
+_data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ftut7"]
+radius = 0.20230041
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_65qv3"]
+points = PackedVector3Array(0.15, 0.15, 0.15, 0.15, 0.15, -0.15, -0.15, 0.15, 0.15, 0.15, -0.15, 0.15, 0.15, -0.15, -0.15, -0.15, 0.15, -0.15, -0.15, -0.15, 0.15, -0.15, -0.15, -0.15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ftut7"]
+size = Vector3(1.09729, 0.09661865, 1)
+
+[sub_resource type="GDScript" id="GDScript_ebi6u"]
+script/source = "@tool
+extends Node3D
+
+
+# --------------- Signals ----------------------
+#signal
+# ---------------- Enums -----------------------
+#enum
+# -------------- Constants ---------------------
+#const
+# --------------- Exports ----------------------
+## The shield node that this script affects.
+@export var plane_node: MeshInstance3D = null
+## Max amount of rain drops in each burst. Accual value is randomized 
+## value that has a max of this value.
+@export var drops_in_burst: int = 20
+## Max time between drops in each burst. Accual value is randomized value
+## that has a max of this value.
+@export var max_time: float = 0.05
+## The change of a batch of rain drops to start falling on the shield 
+## each frame.
+@export_range(0.001, 1.0, 0.001) var rain_burst_chance: float = 0.5
+# -------------- Variables ---------------------
+var plane_size: Vector2 = Vector2.ZERO
+var raining := false
+# --------------- Onready ----------------------
+#@onready
+
+
+# ------------ Process Functions -----------------
+func _ready() -> void:
+	plane_size.x = plane_node.mesh.size.x * plane_node.scale.x
+	plane_size.y = plane_node.mesh.size.y * plane_node.scale.y
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	if not raining and randf() < rain_burst_chance:
+		raining = true
+		_rain()
+
+
+#func _physics_process(delta: float) -> void:
+	#pass
+
+
+# ------------ Private Functions -----------------
+func _rain() -> void:
+	var rain: int = randi_range(drops_in_burst * 0.1, drops_in_burst)
+	for drop in rain:
+		await get_tree().create_timer(randf_range(max_time * 0.001, max_time)).timeout
+		var offset: Vector3 = Vector3.ZERO
+		offset.x = randf_range(-plane_size.x, plane_size.x)
+		offset.y = randf_range(-plane_size.y, plane_size.y)
+		var drop_pos: Vector3 = plane_node.global_position + offset
+		plane_node.impact(drop_pos, null)
+	raining = false
+
+
+# ------------ Public Functions -----------------
+#func example() -> void:
+	#pass
+"
+
+[sub_resource type="Image" id="Image_65qv3"]
+data = {
+"data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 151, 47, 66, 28, 79, 45, 63, 184, 47, 167, 190, 112, 102, 93, 63, 185, 194, 49, 66, 48, 78, 46, 191, 184, 47, 167, 190, 127, 69, 28, 63, 85, 29, 46, 66, 210, 108, 168, 64, 184, 47, 167, 190, 40, 17, 58, 63, 60, 115, 49, 66, 241, 182, 2, 64, 184, 47, 167, 190, 16, 152, 125, 63, 244, 176, 42, 66, 2, 155, 174, 63, 184, 47, 167, 190, 89, 111, 0, 63, 233, 163, 43, 66, 61, 10, 35, 64, 184, 47, 167, 190, 248, 87, 124, 63, 205, 189, 46, 66, 120, 32, 141, 62, 184, 47, 167, 190, 149, 202, 238, 62, 25, 120, 39, 66, 112, 177, 145, 62, 184, 47, 167, 190, 30, 14, 90, 61, 130, 101, 59, 66, 131, 142, 151, 63, 184, 47, 167, 190, 84, 82, 119, 63, 116, 95, 64, 66, 146, 180, 38, 64, 184, 47, 167, 190, 112, 87, 59, 62, 143, 84, 48, 66, 156, 132, 116, 63, 184, 47, 167, 190, 228, 171, 95, 63, 136, 38, 67, 66, 118, 88, 179, 64, 184, 47, 167, 190, 77, 154, 50, 63, 63, 49, 49, 66, 2, 120, 37, 64, 184, 47, 167, 190, 54, 144, 117, 63, 106, 102, 54, 66, 100, 191, 222, 191, 184, 47, 167, 190, 131, 176, 125, 62, 66, 78, 53, 66, 224, 134, 126, 63, 184, 47, 167, 190, 35, 143, 227, 62, 4, 203, 55, 66, 46, 123, 253, 63, 184, 47, 167, 190, 178, 70, 41, 63, 246, 50, 56, 66, 24, 4, 135, 64, 184, 47, 167, 190, 219, 50, 103, 63, 215, 32, 62, 66, 181, 4, 61, 64, 184, 47, 167, 190, 69, 195, 10, 63, 15, 44, 50, 66, 236, 79, 96, 191, 184, 47, 167, 190, 172, 236, 63, 63, 23, 129, 39, 66, 80, 231, 121, 64, 184, 47, 167, 190, 68, 242, 18, 63, 215, 40, 45, 66, 81, 40, 239, 63, 184, 47, 167, 190, 12, 97, 68, 63, 176, 227, 35, 66, 115, 84, 5, 64, 184, 47, 167, 190, 152, 144, 88, 63, 92, 172, 43, 66, 86, 213, 175, 64, 184, 47, 167, 190, 229, 133, 140, 62, 92, 69, 62, 66, 243, 82, 183, 64, 184, 47, 167, 190, 255, 255, 127, 63, 240, 88, 67, 66, 159, 146, 209, 63, 184, 47, 167, 190, 244, 72, 120, 63, 28, 232, 66, 66, 5, 35, 67, 64, 184, 47, 167, 190, 38, 68, 158, 62, 103, 111, 57, 66, 35, 195, 59, 64, 184, 47, 167, 190, 112, 203, 234, 61, 180, 67, 62, 66, 76, 129, 147, 191, 184, 47, 167, 190, 100, 200, 126, 63, 43, 216, 40, 66, 47, 79, 192, 64, 184, 47, 167, 190, 240, 192, 9, 62, 191, 18, 51, 66, 254, 130, 34, 64, 184, 47, 167, 190, 20, 53, 171, 62, 201, 125, 59, 66, 202, 133, 61, 64, 184, 47, 167, 190, 0, 238, 127, 63, 100, 245, 39, 66, 141, 149, 42, 64, 184, 47, 167, 190, 106, 138, 124, 63, 187, 6, 57, 66, 227, 86, 123, 64, 184, 47, 167, 190, 180, 163, 35, 63, 103, 151, 52, 66, 54, 34, 228, 191, 184, 47, 167, 190, 193, 22, 192, 62, 92, 189, 52, 66, 96, 18, 200, 189, 184, 47, 167, 190, 103, 205, 127, 63, 181, 80, 41, 66, 183, 73, 136, 63, 184, 47, 167, 190, 94, 169, 127, 63, 34, 234, 65, 66, 2, 155, 201, 191, 184, 47, 167, 190, 146, 139, 127, 63, 95, 205, 66, 66, 35, 185, 165, 64, 184, 47, 167, 190, 60, 170, 73, 63, 92, 136, 40, 66, 154, 103, 206, 191, 184, 47, 167, 190, 212, 228, 113, 63, 67, 105, 55, 66, 144, 137, 169, 190, 184, 47, 167, 190, 175, 111, 126, 63, 226, 27, 42, 66, 169, 45, 175, 64, 184, 47, 167, 190, 102, 155, 115, 63, 164, 53, 51, 66, 236, 100, 79, 64, 184, 47, 167, 190, 223, 85, 127, 63, 213, 91, 66, 66, 121, 181, 150, 64, 184, 47, 167, 190, 246, 20, 127, 63, 129, 39, 39, 66, 68, 247, 30, 191, 184, 47, 167, 190, 134, 200, 122, 63, 9, 48, 67, 66, 158, 243, 197, 191, 184, 47, 167, 190, 81, 125, 81, 63, 238, 25, 44, 66, 11, 124, 35, 64, 184, 47, 167, 190, 105, 176, 76, 63, 139, 103, 60, 66, 77, 150, 128, 64, 184, 47, 167, 190, 94, 11, 112, 63, 253, 243, 51, 66, 144, 21, 161, 64, 184, 47, 167, 190, 33, 238, 99, 63, 212, 250, 40, 66, 234, 31, 7, 64, 184, 47, 167, 190, 148, 119, 108, 63, 128, 212, 56, 66, 102, 38, 186, 64, 184, 47, 167, 190, 157, 144, 102, 63, 66, 194, 61, 66, 208, 111, 79, 63, 184, 47, 167, 190, 50, 238, 123, 63, 225, 180, 43, 66, 164, 31, 140, 64, 184, 47, 167, 190, 238, 13, 110, 63, 208, 71, 50, 66, 110, 218, 177, 64, 184, 47, 167, 190, 128, 10, 105, 63, 111, 167, 62, 66, 35, 196, 158, 64, 184, 47, 167, 190, 142, 46, 121, 63, 78, 254, 41, 66, 70, 235, 123, 63, 184, 47, 167, 190, 120, 47, 208, 62, 232, 46, 54, 66, 220, 6, 189, 63, 184, 47, 167, 190, 143, 169, 179, 62, 160, 14, 37, 66, 16, 129, 196, 191, 184, 47, 167, 190, 49, 78, 176, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63),
+"format": "RGBAFloat",
+"height": 2,
+"mipmaps": false,
+"width": 58
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_xrw65"]
+image = SubResource("Image_65qv3")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m4u1x"]
+render_priority = 0
+shader = ExtResource("2_u8gy5")
+shader_parameter/_quantization = true
+shader_parameter/_steps_quantization = 5
+shader_parameter/_object_scale = 4.0
+shader_parameter/_object_size = 4.0
+shader_parameter/_only_on_wave_visibility = false
+shader_parameter/_start_falloff_visibility = 0.5
+shader_parameter/_end_falloff_visibility = 0.3
+shader_parameter/_time_multiplier_activation = 1.0
+shader_parameter/_distance_multiplier_activation = 1.0
+shader_parameter/_width_time_activation = 1.0
+shader_parameter/_enable_highlight_intersection = true
+shader_parameter/_width_highlight_intersection = 1.0
+shader_parameter/_noise_texture = ExtResource("4_cgev7")
+shader_parameter/_speed_noise = Vector2(0.02, 0.02)
+shader_parameter/_origin_generate = Vector3(0, 0.5, 0)
+shader_parameter/_relative_origin_generate = true
+shader_parameter/_time_generate = 1.0
+shader_parameter/_thickness_generate = 0.25
+shader_parameter/_collapse = false
+shader_parameter/_color_shield = Color(0.26, 0.975, 1, 1)
+shader_parameter/_color_brightness_shield = 15.0
+shader_parameter/_intensity_shield = 3.0
+shader_parameter/glow_enabled = true
+shader_parameter/glow_strength = 10.0
+shader_parameter/_active_static = false
+shader_parameter/_origin_static = Vector3(0, 0, 0)
+shader_parameter/_speed_static = 0.1
+shader_parameter/_frequency_static = 80.0
+shader_parameter/_amplitude_static = 0.002
+shader_parameter/_normal_amplitude_static = 0.002
+shader_parameter/_effect_radius_static = 1.2
+shader_parameter/_active_static_offset_hl = true
+shader_parameter/_strength_static_offset_hl = 1.0
+shader_parameter/_intensity_static_offset_hl = 5.0
+shader_parameter/_relative_origin_static = true
+shader_parameter/_impact_texture = SubResource("ImageTexture_xrw65")
+shader_parameter/max_impacts = 58
+shader_parameter/_frequency_impact = 20.0
+shader_parameter/_waves_impact = 1.0
+shader_parameter/_fade_waves_impact = 2.0
+shader_parameter/_amplitude_impact = 0.02
+shader_parameter/_normal_amplitude_impact = 0.05
+shader_parameter/_radius_impact = 1.0
+shader_parameter/_active_impact_offset_hl = true
+shader_parameter/_strength_impact_offset_hl = 1.0
+shader_parameter/_intensity_impact_offset_hl = 5.0
+shader_parameter/_relative_origin_impact = false
+shader_parameter/_active_border = true
+shader_parameter/_intensity_border = 2.0
+shader_parameter/_percentage_border = 0.1
+shader_parameter/_show_normals = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ftut7"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_m4u1x")
+size = Vector2(1, 1)
+subdivide_width = 256
+subdivide_depth = 256
+
+[sub_resource type="Curve" id="Curve_tkmln"]
 resource_local_to_scene = true
 resource_name = "animation_curve"
 _data = [Vector2(0, 0), 0.0, 2.60088, 0, 0, Vector2(0.996183, 1), 0.0, 0.0, 0, 0]
@@ -1160,7 +1576,7 @@ width = 700.0
 mesh = SubResource("QuadMesh_f5biq")
 
 [node name="ShieldPlane" parent="InteractionExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-1.0319442, 0.012967169, -5.713022e-10, 0, -4.37114e-08, -1, -0.012967169, -1.0319442, 4.518321e-08, -0.75, 0.6, 0)
+transform = Transform3D(1.0506952, 0.39181075, -1.7157971e-08, 0, -4.37114e-08, -1, -0.39181075, 1.0506952, -4.6027896e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_e83g8")
 animation_curve = SubResource("Curve_cwp47")
 
@@ -1198,7 +1614,7 @@ skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_ibf8e")
 
 [node name="ShieldPlane" parent="ColorExample" instance=ExtResource("1_uycqw")]
-transform = Transform3D(-1.0090486, -0.2168028, 9.488842e-09, 0, -4.37114e-08, -1, 0.2168028, -1.0090486, 4.4173113e-08, -0.75, 0.6, 0)
+transform = Transform3D(0.9371477, 0.6154537, -2.6962441e-08, 0, -4.37114e-08, -1, -0.6154537, 0.9371477, -4.105284e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_tb5o1")
 skeleton = NodePath("../ShieldSphere")
 animation_curve = SubResource("Curve_u31ny")
@@ -1232,7 +1648,7 @@ mesh = SubResource("SphereMesh_bycw3")
 animation_curve = SubResource("Curve_t2u8o")
 
 [node name="ShieldPlane" parent="DepthHighlight" instance=ExtResource("1_uycqw")]
-transform = Transform3D(0.104887955, 1.0245414, -4.4828408e-08, 0, -4.37114e-08, -1, -1.0245414, 0.104887955, -4.5903064e-09, -0.75, 0.6, 0)
+transform = Transform3D(-0.9323464, 0.61793876, -2.7050286e-08, 0, -4.37114e-08, -1, -0.61793876, -0.9323464, 4.08214e-08, -0.75, 0.6, 0)
 mesh = SubResource("PlaneMesh_6jtgg")
 animation_curve = SubResource("Curve_wk33k")
 
@@ -1246,7 +1662,7 @@ mesh = SubResource("BoxMesh_qsywp")
 skeleton = NodePath("../EnvironmentSphere")
 
 [node name="EnvironmentMovingPlatform" type="MeshInstance3D" parent="DepthHighlight"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.74911195, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.45368385, 0)
 mesh = SubResource("BoxMesh_8tyb0")
 
 [node name="QuantizationExample" type="Node3D" parent="."]
@@ -1277,6 +1693,7 @@ mesh = SubResource("SphereMesh_yjboh")
 skeleton = NodePath("../..")
 script = SubResource("GDScript_6h0e3")
 animation_curve = SubResource("Curve_7vbqd")
+tmp_impact_layer = 0
 
 [node name="ShieldSphere2" parent="QuantizationExample" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.6, 0)
@@ -1284,6 +1701,7 @@ mesh = SubResource("SphereMesh_bkub6")
 skeleton = NodePath("../ShieldSphere")
 script = SubResource("GDScript_eeeod")
 animation_curve = SubResource("Curve_dggen")
+tmp_impact_layer = 0
 
 [node name="NoiseTextureExample" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0)
@@ -1315,6 +1733,7 @@ mesh = SubResource("SphereMesh_ptlbr")
 skeleton = NodePath("../Description")
 script = SubResource("GDScript_nr1vk")
 animation_curve = SubResource("Curve_rgfh0")
+tmp_impact_layer = 0
 
 [node name="ShieldSphere2" parent="NoiseTextureExample" instance=ExtResource("3_twgkm")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.6, 0)
@@ -1322,6 +1741,7 @@ mesh = SubResource("SphereMesh_5y2kl")
 skeleton = NodePath("../ShieldSphere")
 script = SubResource("GDScript_dkdx8")
 animation_curve = SubResource("Curve_envml")
+tmp_impact_layer = 0
 
 [node name="WaveOptionsExample" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 0)
@@ -1358,19 +1778,301 @@ mesh = SubResource("PlaneMesh_h6f4g")
 skeleton = NodePath("../..")
 animation_curve = SubResource("Curve_24ojw")
 
-[node name="WaveOptionsExample2" type="Node3D" parent="."]
+[node name="TouchWaveExample" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0, 0)
 script = SubResource("GDScript_iiy7r")
 
-[node name="Heading" type="Label3D" parent="WaveOptionsExample2"]
+[node name="Heading" type="Label3D" parent="TouchWaveExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
 pixel_size = 0.003
 modulate = Color(1, 0.763636, 0, 1)
-text = "Number of Ripples
+text = "SIZE OF IMPACTS"
+font_size = 40
+
+[node name="Description" type="Label3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
+pixel_size = 0.003
+text = "The frequence of amplitude are based on the size of the object that hits the shield."
+vertical_alignment = 0
+autowrap_mode = 3
+width = 640.0
+
+[node name="Ground" type="MeshInstance3D" parent="TouchWaveExample"]
+mesh = SubResource("QuadMesh_f5biq")
+
+[node name="Ground2" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 0)
+mesh = SubResource("QuadMesh_f5biq")
+
+[node name="ShieldPlane" parent="TouchWaveExample" instance=ExtResource("6_7wpux")]
+transform = Transform3D(4, 0, 0, 0, -1.7484555e-07, -4, 0, 4, -1.7484555e-07, -0.06311798, 2.036953, -0.3245566)
+mesh = SubResource("PlaneMesh_m4u1x")
+script = SubResource("GDScript_ok5g2")
+animation_curve = SubResource("Curve_ftut7")
+shield_origin = Vector3(0, 0.5, 0)
+body_shape_entered_impact = true
+sustained_touch_effects = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77337617, -0.34158024)
+mesh = SubResource("BoxMesh_ftut7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_m4u1x")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1211777, 0.77337617, -0.34158024)
+mesh = SubResource("BoxMesh_ftut7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D5"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D5/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_m4u1x")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.9657478, 1.4891255, 0.8735239)
+mesh = SubResource("BoxMesh_ftut7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D6"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D6/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_m4u1x")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.890068, 1.4891255, 0.7618235)
+mesh = SubResource("BoxMesh_ftut7")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D7"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D7/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_m4u1x")
+
+[node name="MeshInstance3D10" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.516087, 0.6312996, 0.45671052)
+mesh = SubResource("BoxMesh_ftut7")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D10"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D10/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_m4u1x")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2161007, 2.2992122, -0.34158024)
+mesh = SubResource("BoxMesh_tkmln")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D2"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D2/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_ukj8r")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.611103, 2.2992122, -0.34158024)
+mesh = SubResource("BoxMesh_tkmln")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D8"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D8/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_ukj8r")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.687126, 2.299212, 0.6885712)
+mesh = SubResource("BoxMesh_tkmln")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D9"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D9/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_ukj8r")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5757904, 3.0100214, -0.5768346)
+mesh = SubResource("SphereMesh_ebi6u")
+
+[node name="RigidBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D3"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D3/RigidBody3D"]
+shape = SubResource("SphereShape3D_ok5g2")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3866386, 3.0100214, -0.5768346)
+mesh = SubResource("SphereMesh_ebi6u")
+
+[node name="RigidBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D4"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D4/RigidBody3D"]
+shape = SubResource("SphereShape3D_ok5g2")
+
+[node name="MeshInstance3D11" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1211777, 0.77337617, -5.3456926)
+mesh = SubResource("BoxMesh_ftut7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D11"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D11/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_m4u1x")
+
+[node name="MeshInstance3D12" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.9657478, 1.4891255, -4.1796255)
+mesh = SubResource("BoxMesh_ftut7")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D12"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D12/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_m4u1x")
+
+[node name="MeshInstance3D13" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.890068, 1.4891255, -4.2422886)
+mesh = SubResource("BoxMesh_ftut7")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D13"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D13/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_m4u1x")
+
+[node name="MeshInstance3D14" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.611103, 2.2992122, -5.3456926)
+mesh = SubResource("BoxMesh_tkmln")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D14"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D14/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_ukj8r")
+
+[node name="MeshInstance3D15" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.687126, 2.299212, -4.3155413)
+mesh = SubResource("BoxMesh_tkmln")
+metadata/_edit_group_ = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D15"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D15/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_ukj8r")
+
+[node name="MeshInstance3D16" type="MeshInstance3D" parent="TouchWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3866386, 3.0100214, -5.580947)
+mesh = SubResource("SphereMesh_ebi6u")
+
+[node name="RigidBody3D" type="StaticBody3D" parent="TouchWaveExample/MeshInstance3D16"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TouchWaveExample/MeshInstance3D16/RigidBody3D"]
+shape = SubResource("SphereShape3D_ok5g2")
+
+[node name="ShieldSphere" parent="TouchWaveExample" instance=ExtResource("3_twgkm")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 4.2635193, 1.7235548, -0.5892613)
+mesh = SubResource("SphereMesh_ukj8r")
+script = SubResource("GDScript_ukj8r")
+animation_curve = SubResource("Curve_65qv3")
+body_shape_entered_impact = true
+sustained_touch_effects = true
+
+[node name="ShieldSphere2" parent="TouchWaveExample" instance=ExtResource("3_twgkm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.359707, 1.4820731, -5.6317677)
+mesh = SubResource("SphereMesh_65qv3")
+script = SubResource("GDScript_xrw65")
+animation_curve = SubResource("Curve_ahtcd")
+body_shape_entered_impact = true
+sustained_touch_effects = true
+
+[node name="CollisionShape3D" parent="TouchWaveExample/ShieldSphere2/Area3D" index="0"]
+shape = SubResource("SphereShape3D_ukj8r")
+
+[node name="PersistanceWaveExample" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
+script = SubResource("GDScript_ftut7")
+
+[node name="Heading" type="Label3D" parent="PersistanceWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
+pixel_size = 0.003
+modulate = Color(1, 0.763636, 0, 1)
+text = "WAVES UPDATE"
+font_size = 40
+
+[node name="Description" type="Label3D" parent="PersistanceWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
+pixel_size = 0.003
+text = "When an object is still touching the shield the waves update.
+"
+vertical_alignment = 0
+autowrap_mode = 3
+width = 700.0
+
+[node name="Ground" type="MeshInstance3D" parent="PersistanceWaveExample"]
+mesh = SubResource("QuadMesh_f5biq")
+
+[node name="ShieldSphere" parent="PersistanceWaveExample" instance=ExtResource("3_twgkm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.6, 0)
+mesh = SubResource("SphereMesh_ftut7")
+animation_curve = SubResource("Curve_m4u1x")
+body_shape_entered_impact = true
+sustained_touch_effects = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PersistanceWaveExample/ShieldSphere"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46717834, 0, 0)
+mesh = SubResource("SphereMesh_m4u1x")
+skeleton = NodePath("../../..")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="PersistanceWaveExample/ShieldSphere/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PersistanceWaveExample/ShieldSphere/MeshInstance3D/StaticBody3D"]
+shape = SubResource("SphereShape3D_tkmln")
+
+[node name="ShieldPlane" parent="PersistanceWaveExample" instance=ExtResource("1_uycqw")]
+transform = Transform3D(-1.0502911, 0.1443969, -6.316446e-09, 0, -4.37114e-08, -1, -0.1443969, -1.0502911, 4.5972918e-08, -0.7500267, 0.6024786, -0.00084102154)
+mesh = SubResource("PlaneMesh_tkmln")
+animation_curve = SubResource("Curve_ukj8r")
+body_shape_entered_impact = true
+sustained_touch_effects = true
+
+[node name="EnvironmentSphere" type="MeshInstance3D" parent="PersistanceWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.6, -0.126896)
+mesh = SubResource("SphereMesh_7cs7f")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="PersistanceWaveExample/EnvironmentSphere"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PersistanceWaveExample/EnvironmentSphere/StaticBody3D"]
+shape = SubResource("SphereShape3D_ftut7")
+
+[node name="EnvironmentCube" type="MeshInstance3D" parent="PersistanceWaveExample"]
+transform = Transform3D(0.8988938, 0.2727654, 0.342913, 0, 0.782608, -0.622515, -0.43816736, 0.55957425, 0.7034809, -1.072689, 0.6, 0.16005987)
+mesh = SubResource("BoxMesh_qsywp")
+skeleton = NodePath("../EnvironmentSphere")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="PersistanceWaveExample/EnvironmentCube"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PersistanceWaveExample/EnvironmentCube/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_65qv3")
+
+[node name="EnvironmentMovingPlatform" type="MeshInstance3D" parent="PersistanceWaveExample"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 1.1047462, 0)
+mesh = SubResource("BoxMesh_8tyb0")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="PersistanceWaveExample/EnvironmentMovingPlatform"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PersistanceWaveExample/EnvironmentMovingPlatform/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00079345703, -0.0011291504, 0)
+shape = SubResource("BoxShape3D_ftut7")
+
+[node name="WaveAmountExample" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 0, 0)
+script = SubResource("GDScript_iiy7r")
+
+[node name="Heading" type="Label3D" parent="WaveAmountExample"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.0775828, 0.61109)
+pixel_size = 0.003
+modulate = Color(1, 0.763636, 0, 1)
+text = "NUMBER OF WAVES
 "
 font_size = 40
 
-[node name="Description" type="Label3D" parent="WaveOptionsExample2"]
+[node name="Description" type="Label3D" parent="WaveAmountExample"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, -0.138092, 0.671599)
 pixel_size = 0.003
 text = "The amount of ripples being processed is Dynamic."
@@ -1378,17 +2080,21 @@ vertical_alignment = 0
 autowrap_mode = 3
 width = 640.0
 
-[node name="Ground" type="MeshInstance3D" parent="WaveOptionsExample2"]
+[node name="Ground" type="MeshInstance3D" parent="WaveAmountExample"]
 mesh = SubResource("QuadMesh_f5biq")
 
-[node name="ShieldPlane" parent="WaveOptionsExample2" instance=ExtResource("6_7wpux")]
-transform = Transform3D(4, 0, 0, 0, -1.7484555e-07, -4, 0, 4, -1.7484555e-07, -0.06220627, 2.0562174, -0.32653594)
-mesh = SubResource("PlaneMesh_ok5g2")
-animation_curve = SubResource("Curve_ftut7")
-shield_origin = Vector3(0, 0.5, 0)
-body_shape_entered_impact = true
-
-[node name="Rain Creator" type="Node3D" parent="WaveOptionsExample2" node_paths=PackedStringArray("plane_node")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1667295, 2.15959)
-script = ExtResource("7_1v2vh")
+[node name="Rain Creator" type="Node3D" parent="WaveAmountExample" node_paths=PackedStringArray("plane_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5489197, 2.1667295, 2.15959)
+script = SubResource("GDScript_ebi6u")
 plane_node = NodePath("../ShieldPlane")
+drops_in_burst = 12
+
+[node name="ShieldPlane" parent="WaveAmountExample" instance=ExtResource("6_7wpux")]
+transform = Transform3D(4, 0, 0, 0, -1.7484555e-07, -4, 0, 4, -1.7484555e-07, -0.06220627, 2.0562174, -0.32653594)
+mesh = SubResource("PlaneMesh_ftut7")
+script = SubResource("GDScript_ok5g2")
+animation_curve = SubResource("Curve_tkmln")
+shield_origin = Vector3(0, 0.5, 0)
+speed_impact_effect = false
+
+[editable path="TouchWaveExample/ShieldSphere2"]
