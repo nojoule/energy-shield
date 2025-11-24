@@ -2,6 +2,7 @@
 This addon for Godot provides an energy shield that can be easily integrated into your scenes. You can use either the `shield_plane.tscn` or `shield_sphere.tscn` directly, or apply the shader to other materials. Note that some adjustments may be needed to ensure proper functionality on meshes other than planes and spheres.
 
 ## Changes
+- 1.1.1: Change scaling behaviour to be more consistent (optionally scale ripple and impact waves with the object scale)
 - 1.1.0: Origin for static waves and impacts can now be set to relative, so the movement of the object won't influence the impact/static waves
 - 1.0.1: Web build compatibility
 
