@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `generate_from()` and `collapse_from()`: Now convert world space positions to local space using `to_local()`, simplifying shader logic
   - Removed `_relative_origin_generate` parameter updates (no longer needed)
 
-- **shield_base.gdshaderinc**: Major refactoring of wave calculations and generation origin handling
+- **shield_base.gdshaderinc**: Refactoring of wave calculations and generation origin handling
   - Changed function signatures to use offset vectors instead of separate world positions
     - `computeImpactOffset()`, `computeStaticOffset()`, `adjustImpactNormal()`, `adjustStaticNormal()`, `getAffectionStrengthStatic()`, `getAffectionStrengthImpact()`
   - Wave direction calculations now use `normalize(-origin_offset)` instead of `normalize(position - origin)`
